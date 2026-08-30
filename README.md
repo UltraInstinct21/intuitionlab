@@ -1,4 +1,4 @@
-# 💡 IntuitionLab — Interactive SDE Sheet Notebook & Visualizer
+# IntuitionLab: Interactive SDE Sheet Notebook & Visualizer
 
 An interactive algorithmic notebook and study companion for the **Striver's SDE Sheet (191 Problems)**. Built with a tactile schoolyard cream-paper aesthetic, step-by-step interactive diagram engines, dual-language code viewers (Python 3 & C++), and deep first-principles intuition.
 
