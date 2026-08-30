@@ -15,7 +15,10 @@ import {
   StringVisualizer,
   BinarySearchVisualizer,
   HeapVisualizer,
-  ProblemDataVisualizer,
+  ArrayStepVisualizer,
+  StackStepVisualizer,
+  BSTStepVisualizer,
+  DPStepVisualizer,
 } from './visualizers';
 
 interface DiagramVisualizerProps {
@@ -68,7 +71,21 @@ const SPECIALIZED: Record<string, React.FC<{ problem: Problem }>> = {
   'symmetric tree': TreeVisualizer,
   'flatten binary tree to linked list': TreeVisualizer,
   'children sum property in binary tree': TreeVisualizer,
-  'climbing stairs': GreedyVisualizer,
+  'climbing stairs': DPStepVisualizer,
+  'house robber': DPStepVisualizer,
+  '0/1 knapsack problem': DPStepVisualizer,
+  'longest common subsequence': DPStepVisualizer,
+  'longest increasing subsequence': DPStepVisualizer,
+  'edit distance': DPStepVisualizer,
+  'matrix chain multiplication': DPStepVisualizer,
+  'palindrome partitioning': DPStepVisualizer,
+  'rod cutting': DPStepVisualizer,
+  'egg dropping problem': DPStepVisualizer,
+  'word break': DPStepVisualizer,
+  'longest palindromic subsequence': DPStepVisualizer,
+  'burst balloons': DPStepVisualizer,
+  'dungeon game': DPStepVisualizer,
+  'unique paths': DPStepVisualizer,
   'n meetings in one room': GreedyVisualizer,
   'minimum number of platforms required for a railway station': GreedyVisualizer,
   'job sequencing problem': GreedyVisualizer,
@@ -137,19 +154,82 @@ const SPECIALIZED: Record<string, React.FC<{ problem: Problem }>> = {
   'aggressive cows': BinarySearchVisualizer,
 };
 
+const BST_TITLES = new Set([
+  'search in a binary search tree', 'validate binary search tree',
+  'lowest common ancestor of a binary search tree', 'inorder successor in bst',
+  'floor in a bst', 'ceil in a bst', 'two sum iv - input is a bst',
+  'kth smallest element in a bst', 'construct bst from given keys',
+  'construct binary search tree from preorder traversal', 'binary search tree iterator',
+  'largest bst', 'serialize and deserialize binary tree',
+  'populating next right pointers in each node', 'pair sum in bst',
+  'binary tree to bst', 'bst to balanced bst', 'kth largest element in bst',
+  'find a pair with a given sum in bst',
+  'kth smallest and largest element in bst',
+]);
+
+const STACK_TITLES = new Set([
+  'valid parentheses', 'next greater element i', 'next smaller element',
+  'largest rectangle in histogram', 'sliding window maximum', 'min stack',
+  'rotten oranges', 'online stock span', 'maximum of minimums for every window size',
+  'the celebrity problem', 'implement stack using arrays', 'implement queue using arrays',
+  'implement stack using queues', 'implement queue using stacks', 'sort a stack',
+]);
+
+const ARRAY_TITLES = new Set([
+  'pascal\'s triangle', 'next permutation', 'rotate image', 'merge intervals',
+  'merge sorted array', 'find the duplicate number', 'find the repeating and missing number',
+  'inversion of array', 'search a 2d matrix', 'pow(x, n)', 'majority element',
+  'majority element ii', 'reverse pairs', 'two sum', '4sum',
+  'longest consecutive sequence', 'largest subarray with k sum',
+  'count subarrays with given xor k', 'longest substring without repeating characters',
+  '3sum', 'trapping rain water', 'remove duplicates from sorted array',
+  'max consecutive ones',
+]);
+
+const DP_TITLES = new Set([
+  'matrix chain multiplication', 'word break', 'longest palindromic subsequence',
+  'burst balloons', 'dungeon game',
+]);
+
 const LABELS: Record<string, string> = {
-  matrix: 'set matrix zeroes', sort_colors: 'sort colors (dutch flag)', kadane: "kadane's algorithm",
-  linked_list: 'linked list', tree: 'binary tree traversal', graph: 'graph traversal',
-  trie: 'trie / prefix tree', backtracking: 'backtracking', greedy: 'greedy algorithm',
-  heap: 'heap operations', string: 'string matching', binary_search: 'binary search',
-  problem_data: 'step-by-step walkthrough',
+  specialized: 'interactive visualization',
+  array_step: 'array step-by-step',
+  stack_step: 'stack/queue step-by-step',
+  bst_step: 'bst step-by-step',
+  dp_step: 'dp table step-by-step',
 };
+
+function getVisualType(problem: Problem): { type: string; viz: React.FC<{ problem: Problem }> } {
+  const key = (problem.title || '').toLowerCase();
+
+  if (SPECIALIZED[key]) return { type: 'specialized', viz: SPECIALIZED[key] };
+  if (BST_TITLES.has(key)) return { type: 'bst_step', viz: BSTStepVisualizer };
+  if (STACK_TITLES.has(key)) return { type: 'stack_step', viz: StackStepVisualizer };
+  if (ARRAY_TITLES.has(key)) return { type: 'array_step', viz: ArrayStepVisualizer };
+  if (DP_TITLES.has(key)) return { type: 'dp_step', viz: DPStepVisualizer };
+
+  const topic = (problem.topicTitle || '').toLowerCase();
+  const tags = (problem.tags || []).join(' ').toLowerCase();
+
+  if (topic.includes('binary search tree') || tags.includes('bst') || tags.includes('binary search tree')) return { type: 'bst_step', viz: BSTStepVisualizer };
+  if (topic.includes('stack') || topic.includes('queue') || tags.includes('stack') || tags.includes('queue')) return { type: 'stack_step', viz: StackStepVisualizer };
+  if (topic.includes('dynamic')) return { type: 'dp_step', viz: DPStepVisualizer };
+  if (topic.includes('array') || tags.includes('array') || tags.includes('two pointer') || tags.includes('sliding window')) return { type: 'array_step', viz: ArrayStepVisualizer };
+  if (topic.includes('linked')) return { type: 'specialized', viz: LinkedListVisualizer };
+  if (topic.includes('graph')) return { type: 'specialized', viz: GraphVisualizer };
+  if (topic.includes('trie')) return { type: 'specialized', viz: TrieVisualizer };
+  if (topic.includes('backtrack') || topic.includes('recursion')) return { type: 'specialized', viz: BacktrackingVisualizer };
+  if (topic.includes('greedy')) return { type: 'specialized', viz: GreedyVisualizer };
+  if (topic.includes('heap')) return { type: 'specialized', viz: HeapVisualizer };
+  if (topic.includes('binary search')) return { type: 'specialized', viz: BinarySearchVisualizer };
+  if (topic.includes('string')) return { type: 'specialized', viz: StringVisualizer };
+
+  return { type: 'array_step', viz: ArrayStepVisualizer };
+}
 
 export const DiagramVisualizer: React.FC<DiagramVisualizerProps> = ({ problem }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const key = (problem.title || '').toLowerCase();
-  const Spec = SPECIALIZED[key];
-  const label = Spec ? (LABELS[Object.entries(SPECIALIZED).find(([k, v]) => v === Spec)?.[0] || ''] || 'specialized') : 'step-by-step walkthrough';
+  const { type, viz: Viz } = getVisualType(problem);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -167,9 +247,9 @@ export const DiagramVisualizer: React.FC<DiagramVisualizerProps> = ({ problem })
             <p className="text-xs sm:text-sm text-on-surface-variant font-sans">step through each iteration with granular state explanations and code mappings.</p>
           </div>
         </div>
-        <Badge variant="medium" className="text-xs font-mono hidden sm:inline-flex">{label}</Badge>
+        <Badge variant="medium" className="text-xs font-mono hidden sm:inline-flex">{LABELS[type]} visual model</Badge>
       </div>
-      {Spec ? <Spec problem={problem} /> : <ProblemDataVisualizer problem={problem} />}
+      <Viz problem={problem} />
     </div>
   );
 };

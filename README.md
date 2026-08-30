@@ -30,7 +30,7 @@ An interactive algorithmic notebook and study companion for the **Striver's SDE 
 ## 🛠️ Tech Stack
 
 * **Frontend:** React 18, Vite 6, TypeScript, Tailwind CSS, Radix UI primitives, Lucide Icons, GSAP, Canvas Confetti.
-* **Backend:** Node.js, Express, Supabase Client (`@supabase/supabase-js`), CORS.
+* **Backend:** Node.js, Express, CORS.
 * **Data Pipeline:** Automated markdown parser generating structured JSON datasets (`scripts/parse_solutions.cjs`).
 
 ---
@@ -62,22 +62,6 @@ npm start
 ```bash
 npm run build
 ```
-
----
-
-## 🌐 Deployment
-
-### Vercel (Frontend & Serverless API)
-1. Push this repository to GitHub.
-2. Import repository on [Vercel](https://vercel.com).
-3. Set Framework to **Vite**, Build Command to `npm run build`, and Output Directory to `dist`.
-4. (Optional) Add `SUPABASE_URL` and `SUPABASE_ANON_KEY` to Vercel Environment Variables.
-5. Deploy!
-
-### Supabase (Cloud Database)
-1. Create a project at [supabase.com](https://supabase.com).
-2. Run [`backend/schema.sql`](backend/schema.sql) in the Supabase SQL Editor.
-3. Add credentials to `backend/.env` and run `cd backend && npm run migrate`.
 
 ---
 

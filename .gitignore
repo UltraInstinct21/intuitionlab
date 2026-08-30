@@ -1,13 +1,25 @@
-# Node
+# Node & Dependencies
 node_modules/
 dist/
+dist-ssr/
+*.local
+
+# Environment & Secrets
 .env
 .env.*
+backend/.env
+backend/.env.*
 
-# Vercel
+# Deployment & Hosting Configurations
+vercel.json
 .vercel/
+api/
+backend/schema.sql
 output/
 
-# OS
+# OS & Editor
 .DS_Store
 Thumbs.db
+*.log
+.vscode/
+.idea/
