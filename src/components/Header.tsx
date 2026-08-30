@@ -14,6 +14,7 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronRight,
+  Lightbulb,
 } from 'lucide-react';
 import {
   Dialog,
@@ -29,6 +30,7 @@ interface HeaderProps {
   onPrevProblem: () => void;
   onNextProblem: () => void;
   onRandomProblem: () => void;
+  onNavigateHome?: () => void;
   isSolved: boolean;
   isBookmarked: boolean;
   onToggleSolved: () => void;
@@ -43,6 +45,7 @@ export const Header: React.FC<HeaderProps> = ({
   onPrevProblem,
   onNextProblem,
   onRandomProblem,
+  onNavigateHome,
   isSolved,
   isBookmarked,
   onToggleSolved,
@@ -78,9 +81,13 @@ export const Header: React.FC<HeaderProps> = ({
             <Menu className="w-5 h-5" />
           </button>
 
-          <div className="flex items-center gap-2 group cursor-pointer" onClick={onRandomProblem}>
+          <div
+            className="flex items-center gap-2 group cursor-pointer"
+            onClick={onNavigateHome || onRandomProblem}
+            title="Return to Home Landing Page"
+          >
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-container text-on-primary-container font-extrabold text-sm border border-charcoal shadow-sm group-hover:rotate-12 transition-transform duration-300">
-              ✍️
+              <Lightbulb className="w-4 h-4 text-on-primary-container" />
             </span>
             <div className="flex flex-col">
               <span className="font-display text-lg font-extrabold lowercase leading-tight text-charcoal tracking-tight">
