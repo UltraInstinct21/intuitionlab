@@ -1,0 +1,2553 @@
+[
+  {
+    "id": "01_Arrays",
+    "index": 1,
+    "title": "Arrays",
+    "count": 6,
+    "problems": [
+      {
+        "id": "01_Arrays/01-set-matrix-zeroes",
+        "slug": "01-set-matrix-zeroes",
+        "number": 73,
+        "title": "Set Matrix Zeroes",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Hash Table",
+          "Matrix"
+        ]
+      },
+      {
+        "id": "01_Arrays/02-pascals-triangle",
+        "slug": "02-pascals-triangle",
+        "number": 118,
+        "title": "Pascal's Triangle",
+        "difficulty": "Easy",
+        "tags": [
+          "Array",
+          "Dynamic Programming"
+        ]
+      },
+      {
+        "id": "01_Arrays/03-next-permutation",
+        "slug": "03-next-permutation",
+        "number": 31,
+        "title": "Next Permutation",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Two Pointers"
+        ]
+      },
+      {
+        "id": "01_Arrays/04-kadanes-algorithm",
+        "slug": "04-kadanes-algorithm",
+        "number": 53,
+        "title": "Maximum Subarray",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Divide and Conquer",
+          "Dynamic Programming"
+        ]
+      },
+      {
+        "id": "01_Arrays/05-sort-colors",
+        "slug": "05-sort-colors",
+        "number": 75,
+        "title": "Sort Colors",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Two Pointers",
+          "Sorting"
+        ]
+      },
+      {
+        "id": "01_Arrays/06-stock-buy-and-sell",
+        "slug": "06-stock-buy-and-sell",
+        "number": 121,
+        "title": "Best Time to Buy and Sell Stock",
+        "difficulty": "Easy",
+        "tags": [
+          "Array",
+          "Dynamic Programming"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "02_Arrays_Part_II",
+    "index": 2,
+    "title": "Arrays Part 2",
+    "count": 6,
+    "problems": [
+      {
+        "id": "02_Arrays_Part_II/01-rotate-image",
+        "slug": "01-rotate-image",
+        "number": 48,
+        "title": "Rotate Image",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Math",
+          "Matrix"
+        ]
+      },
+      {
+        "id": "02_Arrays_Part_II/02-merge-intervals",
+        "slug": "02-merge-intervals",
+        "number": 56,
+        "title": "Merge Intervals",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Sorting"
+        ]
+      },
+      {
+        "id": "02_Arrays_Part_II/03-merge-two-sorted-arrays",
+        "slug": "03-merge-two-sorted-arrays",
+        "number": 88,
+        "title": "Merge Sorted Array",
+        "difficulty": "Easy",
+        "tags": [
+          "Array",
+          "Two Pointers",
+          "Sorting"
+        ]
+      },
+      {
+        "id": "02_Arrays_Part_II/04-find-the-duplicate-number",
+        "slug": "04-find-the-duplicate-number",
+        "number": 287,
+        "title": "Find the Duplicate Number",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Two Pointers",
+          "Binary Search"
+        ]
+      },
+      {
+        "id": "02_Arrays_Part_II/05-find-the-repeating-and-missing-number",
+        "slug": "05-find-the-repeating-and-missing-number",
+        "number": null,
+        "title": "Find the Repeating and Missing Number",
+        "difficulty": "Hard",
+        "tags": [
+          "Array",
+          "Math"
+        ]
+      },
+      {
+        "id": "02_Arrays_Part_II/06-inversion-of-array",
+        "slug": "06-inversion-of-array",
+        "number": null,
+        "title": "Inversion of Array",
+        "difficulty": "Hard",
+        "tags": [
+          "Array",
+          "Divide and Conquer",
+          "Merge Sort"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "03_Arrays_Part_III",
+    "index": 3,
+    "title": "Arrays Part 3",
+    "count": 6,
+    "problems": [
+      {
+        "id": "03_Arrays_Part_III/01-search-in-a-2d-matrix",
+        "slug": "01-search-in-a-2d-matrix",
+        "number": 74,
+        "title": "Search a 2D Matrix",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Binary Search",
+          "Matrix"
+        ]
+      },
+      {
+        "id": "03_Arrays_Part_III/02-powx-n",
+        "slug": "02-powx-n",
+        "number": 50,
+        "title": "Pow(x, n)",
+        "difficulty": "Medium",
+        "tags": [
+          "Math",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "03_Arrays_Part_III/03-majority-element",
+        "slug": "03-majority-element",
+        "number": 169,
+        "title": "Majority Element",
+        "difficulty": "Easy",
+        "tags": [
+          "Array",
+          "Hash Table",
+          "Sorting",
+          "Divide and Conquer"
+        ]
+      },
+      {
+        "id": "03_Arrays_Part_III/04-majority-element-ii",
+        "slug": "04-majority-element-ii",
+        "number": 229,
+        "title": "Majority Element II",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Hash Table",
+          "Counting"
+        ]
+      },
+      {
+        "id": "03_Arrays_Part_III/05-grid-unique-paths",
+        "slug": "05-grid-unique-paths",
+        "number": 62,
+        "title": "Unique Paths",
+        "difficulty": "Medium",
+        "tags": [
+          "Math",
+          "Dynamic Programming",
+          "Combinatorics"
+        ]
+      },
+      {
+        "id": "03_Arrays_Part_III/06-reverse-pairs",
+        "slug": "06-reverse-pairs",
+        "number": 493,
+        "title": "Reverse Pairs",
+        "difficulty": "Hard",
+        "tags": [
+          "Array",
+          "Binary Search",
+          "Divide and Conquer",
+          "Merge Sort"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "04_Arrays_Part_IV",
+    "index": 4,
+    "title": "Arrays Part 4",
+    "count": 6,
+    "problems": [
+      {
+        "id": "04_Arrays_Part_IV/01-two-sum",
+        "slug": "01-two-sum",
+        "number": 1,
+        "title": "Two Sum",
+        "difficulty": "Easy",
+        "tags": [
+          "Array",
+          "Hash Table"
+        ]
+      },
+      {
+        "id": "04_Arrays_Part_IV/02-4sum",
+        "slug": "02-4sum",
+        "number": 18,
+        "title": "4Sum",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Two Pointers",
+          "Sorting"
+        ]
+      },
+      {
+        "id": "04_Arrays_Part_IV/03-longest-consecutive-sequence",
+        "slug": "03-longest-consecutive-sequence",
+        "number": 128,
+        "title": "Longest Consecutive Sequence",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Hash Table",
+          "Union Find"
+        ]
+      },
+      {
+        "id": "04_Arrays_Part_IV/04-largest-subarray-with-k-sum",
+        "slug": "04-largest-subarray-with-k-sum",
+        "number": null,
+        "title": "Largest Subarray with K Sum (Longest Subarray with Sum K)",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Hash Table",
+          "Prefix Sum"
+        ]
+      },
+      {
+        "id": "04_Arrays_Part_IV/05-count-subarrays-with-given-xor-k",
+        "slug": "05-count-subarrays-with-given-xor-k",
+        "number": null,
+        "title": "Count Subarrays with Given XOR K",
+        "difficulty": "Hard",
+        "tags": [
+          "Array",
+          "Hash Table",
+          "Bit Manipulation"
+        ]
+      },
+      {
+        "id": "04_Arrays_Part_IV/06-longest-substring-without-repeating-characters",
+        "slug": "06-longest-substring-without-repeating-characters",
+        "number": 3,
+        "title": "Longest Substring Without Repeating Characters",
+        "difficulty": "Medium",
+        "tags": [
+          "Hash Table",
+          "String",
+          "Sliding Window"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "05_Linked_List",
+    "index": 5,
+    "title": "Linked List",
+    "count": 6,
+    "problems": [
+      {
+        "id": "05_Linked_List/01-reverse-a-ll",
+        "slug": "01-reverse-a-ll",
+        "number": 206,
+        "title": "Reverse Linked List",
+        "difficulty": "Easy",
+        "tags": [
+          "Linked List",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "05_Linked_List/02-find-middle-of-linked-list",
+        "slug": "02-find-middle-of-linked-list",
+        "number": 876,
+        "title": "Middle of the Linked List",
+        "difficulty": "Easy",
+        "tags": [
+          "Linked List",
+          "Two Pointers"
+        ]
+      },
+      {
+        "id": "05_Linked_List/03-merge-two-sorted-lists",
+        "slug": "03-merge-two-sorted-lists",
+        "number": 21,
+        "title": "Merge Two Sorted Lists",
+        "difficulty": "Easy",
+        "tags": [
+          "Linked List",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "05_Linked_List/04-remove-nth-node-from-end",
+        "slug": "04-remove-nth-node-from-end",
+        "number": 19,
+        "title": "Remove Nth Node From End of List",
+        "difficulty": "Medium",
+        "tags": [
+          "Linked List",
+          "Two Pointers"
+        ]
+      },
+      {
+        "id": "05_Linked_List/05-add-two-numbers",
+        "slug": "05-add-two-numbers",
+        "number": 2,
+        "title": "Add Two Numbers",
+        "difficulty": "Medium",
+        "tags": [
+          "Linked List",
+          "Math",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "05_Linked_List/06-delete-node-in-a-linked-list",
+        "slug": "06-delete-node-in-a-linked-list",
+        "number": 237,
+        "title": "Delete Node in a Linked List",
+        "difficulty": "Medium",
+        "tags": [
+          "Linked List"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "06_Linked_List_Part_II",
+    "index": 6,
+    "title": "Linked List Part 2",
+    "count": 6,
+    "problems": [
+      {
+        "id": "06_Linked_List_Part_II/01-find-the-intersection-point-of-y-ll",
+        "slug": "01-find-the-intersection-point-of-y-ll",
+        "number": 160,
+        "title": "Intersection of Two Linked Lists",
+        "difficulty": "Easy",
+        "tags": [
+          "Linked List",
+          "Two Pointers"
+        ]
+      },
+      {
+        "id": "06_Linked_List_Part_II/02-detect-a-loop-in-ll",
+        "slug": "02-detect-a-loop-in-ll",
+        "number": 141,
+        "title": "Linked List Cycle",
+        "difficulty": "Easy",
+        "tags": [
+          "Linked List",
+          "Two Pointers",
+          "Hash Table"
+        ]
+      },
+      {
+        "id": "06_Linked_List_Part_II/03-reverse-ll-in-group-of-given-size-k",
+        "slug": "03-reverse-ll-in-group-of-given-size-k",
+        "number": 25,
+        "title": "Reverse Nodes in k-Group",
+        "difficulty": "Hard",
+        "tags": [
+          "Linked List",
+          "Recursion",
+          "Stack"
+        ]
+      },
+      {
+        "id": "06_Linked_List_Part_II/04-check-if-ll-is-palindrome-or-not",
+        "slug": "04-check-if-ll-is-palindrome-or-not",
+        "number": 234,
+        "title": "Palindrome Linked List",
+        "difficulty": "Easy",
+        "tags": [
+          "Linked List",
+          "Two Pointers",
+          "Stack",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "06_Linked_List_Part_II/05-find-the-starting-point-in-ll",
+        "slug": "05-find-the-starting-point-in-ll",
+        "number": 142,
+        "title": "Linked List Cycle II",
+        "difficulty": "Medium",
+        "tags": [
+          "Linked List",
+          "Two Pointers"
+        ]
+      },
+      {
+        "id": "06_Linked_List_Part_II/06-flattening-of-ll",
+        "slug": "06-flattening-of-ll",
+        "number": null,
+        "title": "Flatten a Multilevel Doubly Linked List",
+        "difficulty": "Hard",
+        "tags": [
+          "Linked List",
+          "DFS",
+          "Stack",
+          "Recursion"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "07_Linked_List_and_Arrays",
+    "index": 7,
+    "title": "Linked List and Arrays",
+    "count": 6,
+    "problems": [
+      {
+        "id": "07_Linked_List_and_Arrays/01-rotate-a-ll",
+        "slug": "01-rotate-a-ll",
+        "number": 61,
+        "title": "Rotate List",
+        "difficulty": "Medium",
+        "tags": [
+          "Linked List",
+          "Two Pointers"
+        ]
+      },
+      {
+        "id": "07_Linked_List_and_Arrays/02-clone-a-ll-with-random-and-next-pointer",
+        "slug": "02-clone-a-ll-with-random-and-next-pointer",
+        "number": 138,
+        "title": "Copy List with Random Pointer",
+        "difficulty": "Medium",
+        "tags": [
+          "Linked List",
+          "Hash Map"
+        ]
+      },
+      {
+        "id": "07_Linked_List_and_Arrays/03-3sum",
+        "slug": "03-3sum",
+        "number": 15,
+        "title": "3Sum",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Two Pointers",
+          "Sorting"
+        ]
+      },
+      {
+        "id": "07_Linked_List_and_Arrays/04-trapping-rainwater",
+        "slug": "04-trapping-rainwater",
+        "number": 42,
+        "title": "Trapping Rain Water",
+        "difficulty": "Hard",
+        "tags": [
+          "Array",
+          "Two Pointers",
+          "Stack",
+          "Dynamic Programming"
+        ]
+      },
+      {
+        "id": "07_Linked_List_and_Arrays/05-remove-duplicates-from-sorted-array",
+        "slug": "05-remove-duplicates-from-sorted-array",
+        "number": 26,
+        "title": "Remove Duplicates from Sorted Array",
+        "difficulty": "Easy",
+        "tags": [
+          "Array",
+          "Two Pointers"
+        ]
+      },
+      {
+        "id": "07_Linked_List_and_Arrays/06-maximum-consecutive-ones",
+        "slug": "06-maximum-consecutive-ones",
+        "number": 485,
+        "title": "Max Consecutive Ones",
+        "difficulty": "Easy",
+        "tags": [
+          "Array"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "08_Greedy_Algorithm",
+    "index": 8,
+    "title": "Greedy Algorithm",
+    "count": 6,
+    "problems": [
+      {
+        "id": "08_Greedy_Algorithm/01-n-meetings-in-one-room",
+        "slug": "01-n-meetings-in-one-room",
+        "number": null,
+        "title": "N Meetings in One Room",
+        "difficulty": "Medium",
+        "tags": [
+          "Greedy",
+          "Sorting"
+        ]
+      },
+      {
+        "id": "08_Greedy_Algorithm/02-minimum-number-of-platforms",
+        "slug": "02-minimum-number-of-platforms",
+        "number": null,
+        "title": "Minimum Number of Platforms Required for a Railway Station",
+        "difficulty": "Medium",
+        "tags": [
+          "Greedy",
+          "Sorting",
+          "Two Pointers"
+        ]
+      },
+      {
+        "id": "08_Greedy_Algorithm/03-job-sequencing-problem",
+        "slug": "03-job-sequencing-problem",
+        "number": null,
+        "title": "Job Sequencing Problem",
+        "difficulty": "Medium",
+        "tags": [
+          "Greedy",
+          "Disjoint Set",
+          "Sorting"
+        ]
+      },
+      {
+        "id": "08_Greedy_Algorithm/04-fractional-knapsack",
+        "slug": "04-fractional-knapsack",
+        "number": null,
+        "title": "Fractional Knapsack",
+        "difficulty": "Medium",
+        "tags": [
+          "Greedy",
+          "Sorting"
+        ]
+      },
+      {
+        "id": "08_Greedy_Algorithm/05-minimum-coins",
+        "slug": "05-minimum-coins",
+        "number": null,
+        "title": "Minimum Coins (Coin Change)",
+        "difficulty": "Medium",
+        "tags": [
+          "Greedy",
+          "Dynamic Programming",
+          "Math"
+        ]
+      },
+      {
+        "id": "08_Greedy_Algorithm/06-assign-cookies",
+        "slug": "06-assign-cookies",
+        "number": null,
+        "title": "Assign Cookies",
+        "difficulty": "Easy",
+        "tags": [
+          "Greedy",
+          "Sorting",
+          "Two Pointers"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "09_Recursion",
+    "index": 9,
+    "title": "Recursion",
+    "count": 6,
+    "problems": [
+      {
+        "id": "09_Recursion/01-subset-sums",
+        "slug": "01-subset-sums",
+        "number": null,
+        "title": "Subset Sums",
+        "difficulty": "Hard",
+        "tags": [
+          "Recursion",
+          "Backtracking",
+          "Bit Manipulation"
+        ]
+      },
+      {
+        "id": "09_Recursion/02-subsets-ii",
+        "slug": "02-subsets-ii",
+        "number": null,
+        "title": "Subsets II",
+        "difficulty": "Medium",
+        "tags": [
+          "Recursion",
+          "Backtracking",
+          "Array"
+        ]
+      },
+      {
+        "id": "09_Recursion/03-combination-sum",
+        "slug": "03-combination-sum",
+        "number": null,
+        "title": "Combination Sum",
+        "difficulty": "Medium",
+        "tags": [
+          "Recursion",
+          "Backtracking",
+          "Array"
+        ]
+      },
+      {
+        "id": "09_Recursion/04-combination-sum-ii",
+        "slug": "04-combination-sum-ii",
+        "number": null,
+        "title": "Combination Sum II",
+        "difficulty": "Medium",
+        "tags": [
+          "Recursion",
+          "Backtracking",
+          "Array"
+        ]
+      },
+      {
+        "id": "09_Recursion/05-palindrome-partitioning",
+        "slug": "05-palindrome-partitioning",
+        "number": null,
+        "title": "Palindrome Partitioning",
+        "difficulty": "Medium",
+        "tags": [
+          "Recursion",
+          "Backtracking",
+          "String",
+          "Dynamic Programming"
+        ]
+      },
+      {
+        "id": "09_Recursion/06-permutation-sequence",
+        "slug": "06-permutation-sequence",
+        "number": null,
+        "title": "Permutation Sequence",
+        "difficulty": "Medium",
+        "tags": [
+          "Recursion",
+          "Math",
+          "Factorial"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "10_Recursion_and_Backtracking",
+    "index": 10,
+    "title": "Recursion and Backtracking",
+    "count": 6,
+    "problems": [
+      {
+        "id": "10_Recursion_and_Backtracking/01-permutations-of-a-string",
+        "slug": "01-permutations-of-a-string",
+        "number": 46,
+        "title": "Permutations",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Backtracking",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "10_Recursion_and_Backtracking/02-n-queen",
+        "slug": "02-n-queen",
+        "number": 51,
+        "title": "N-Queens",
+        "difficulty": "Hard",
+        "tags": [
+          "Backtracking",
+          "Recursion",
+          "Array"
+        ]
+      },
+      {
+        "id": "10_Recursion_and_Backtracking/03-sudoku-solver",
+        "slug": "03-sudoku-solver",
+        "number": 37,
+        "title": "Sudoku Solver",
+        "difficulty": "Hard",
+        "tags": [
+          "Backtracking",
+          "Array",
+          "Matrix"
+        ]
+      },
+      {
+        "id": "10_Recursion_and_Backtracking/04-m-coloring-problem",
+        "slug": "04-m-coloring-problem",
+        "number": null,
+        "title": "M-Coloring Problem",
+        "difficulty": "Hard",
+        "tags": [
+          "Backtracking",
+          "Graph",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "10_Recursion_and_Backtracking/05-rat-in-a-maze",
+        "slug": "05-rat-in-a-maze",
+        "number": null,
+        "title": "Rat in a Maze",
+        "difficulty": "Hard",
+        "tags": [
+          "Backtracking",
+          "Matrix",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "10_Recursion_and_Backtracking/06-word-break-print-all-ways",
+        "slug": "06-word-break-print-all-ways",
+        "number": null,
+        "title": "Word Break - Print All Possible Ways",
+        "difficulty": "Medium",
+        "tags": [
+          "Backtracking",
+          "Recursion",
+          "String"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "11_Binary_Search",
+    "index": 11,
+    "title": "Binary Search",
+    "count": 8,
+    "problems": [
+      {
+        "id": "11_Binary_Search/01-nth-root-of-an-integer",
+        "slug": "01-nth-root-of-an-integer",
+        "number": null,
+        "title": "Nth Root of an Integer",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Search",
+          "Mathematics",
+          "Exponentiation"
+        ]
+      },
+      {
+        "id": "11_Binary_Search/02-matrix-median",
+        "slug": "02-matrix-median",
+        "number": null,
+        "title": "Matrix Median",
+        "difficulty": "Hard",
+        "tags": [
+          "Binary Search",
+          "Matrix",
+          "Two Pointers"
+        ]
+      },
+      {
+        "id": "11_Binary_Search/03-single-element-in-sorted-array",
+        "slug": "03-single-element-in-sorted-array",
+        "number": null,
+        "title": "Single Element in Sorted Array",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Search",
+          "Array",
+          "Bit Manipulation"
+        ]
+      },
+      {
+        "id": "11_Binary_Search/04-search-in-sorted-rotated-array",
+        "slug": "04-search-in-sorted-rotated-array",
+        "number": null,
+        "title": "Search in Rotated Sorted Array",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Search",
+          "Array"
+        ]
+      },
+      {
+        "id": "11_Binary_Search/05-median-of-2-sorted-arrays",
+        "slug": "05-median-of-2-sorted-arrays",
+        "number": null,
+        "title": "Median of Two Sorted Arrays",
+        "difficulty": "Hard",
+        "tags": [
+          "Binary Search",
+          "Array",
+          "Divide and Conquer",
+          "Sorting"
+        ]
+      },
+      {
+        "id": "11_Binary_Search/06-kth-element-of-2-sorted-arrays",
+        "slug": "06-kth-element-of-2-sorted-arrays",
+        "number": null,
+        "title": "Kth Element of Two Sorted Arrays",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Search",
+          "Array",
+          "Two Pointers"
+        ]
+      },
+      {
+        "id": "11_Binary_Search/07-allocate-minimum-number-of-pages",
+        "slug": "07-allocate-minimum-number-of-pages",
+        "number": null,
+        "title": "Allocate Minimum Number of Pages",
+        "difficulty": "Hard",
+        "tags": [
+          "Binary Search",
+          "Greedy",
+          "Arrays"
+        ]
+      },
+      {
+        "id": "11_Binary_Search/08-aggressive-cows",
+        "slug": "08-aggressive-cows",
+        "number": null,
+        "title": "Aggressive Cows",
+        "difficulty": "Hard",
+        "tags": [
+          "Binary Search",
+          "Greedy",
+          "Sorting"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "12_Heaps",
+    "index": 12,
+    "title": "Heaps",
+    "count": 6,
+    "problems": [
+      {
+        "id": "12_Heaps/01-implement-max-heap",
+        "slug": "01-implement-max-heap",
+        "number": null,
+        "title": "Implement Max Heap",
+        "difficulty": "Medium",
+        "tags": [
+          "Heap",
+          "Data Structures",
+          "Tree"
+        ]
+      },
+      {
+        "id": "12_Heaps/02-kth-largest-element-in-an-array",
+        "slug": "02-kth-largest-element-in-an-array",
+        "number": 215,
+        "title": "Kth Largest Element in an Array",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Heap",
+          "Sorting",
+          "Divide and Conquer",
+          "Quickselect"
+        ]
+      },
+      {
+        "id": "12_Heaps/03-maximum-sum-combination",
+        "slug": "03-maximum-sum-combination",
+        "number": null,
+        "title": "Maximum Sum Combinations",
+        "difficulty": "Hard",
+        "tags": [
+          "Heap",
+          "Arrays",
+          "Sorting",
+          "Greedy",
+          "Priority Queue"
+        ]
+      },
+      {
+        "id": "12_Heaps/04-find-median-from-data-stream",
+        "slug": "04-find-median-from-data-stream",
+        "number": 295,
+        "title": "Find Median from Data Stream",
+        "difficulty": "Hard",
+        "tags": [
+          "Two Pointers",
+          "Heap",
+          "Design",
+          "Data Stream",
+          "Sorting"
+        ]
+      },
+      {
+        "id": "12_Heaps/05-merge-k-sorted-arrays",
+        "slug": "05-merge-k-sorted-arrays",
+        "number": null,
+        "title": "Merge K Sorted Arrays",
+        "difficulty": "Medium",
+        "tags": [
+          "Heap",
+          "Arrays",
+          "Divide and Conquer",
+          "Merge Sort",
+          "Priority Queue"
+        ]
+      },
+      {
+        "id": "12_Heaps/06-top-k-frequent-elements",
+        "slug": "06-top-k-frequent-elements",
+        "number": 347,
+        "title": "Top K Frequent Elements",
+        "difficulty": "Medium",
+        "tags": [
+          "Array",
+          "Heap",
+          "Hash Map",
+          "Bucket Sort",
+          "Sorting"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "13_Stack_and_Queue",
+    "index": 13,
+    "title": "Stack and Queue",
+    "count": 7,
+    "problems": [
+      {
+        "id": "13_Stack_and_Queue/01-implement-stack-using-arrays",
+        "slug": "01-implement-stack-using-arrays",
+        "number": null,
+        "title": "Implement Stack using Arrays",
+        "difficulty": "Easy",
+        "tags": [
+          "Stack",
+          "Data Structures",
+          "GeeksforGeeks"
+        ]
+      },
+      {
+        "id": "13_Stack_and_Queue/02-implement-queue-using-arrays",
+        "slug": "02-implement-queue-using-arrays",
+        "number": null,
+        "title": "Implement Queue using Arrays",
+        "difficulty": "Easy",
+        "tags": [
+          "Queue",
+          "Data Structures",
+          "GeeksforGeeks"
+        ]
+      },
+      {
+        "id": "13_Stack_and_Queue/03-implement-stack-using-queue",
+        "slug": "03-implement-stack-using-queue",
+        "number": 225,
+        "title": "Implement Stack using Queues",
+        "difficulty": "Easy",
+        "tags": [
+          "Stack",
+          "Queue",
+          "Design",
+          "Data Structures"
+        ]
+      },
+      {
+        "id": "13_Stack_and_Queue/04-implement-queue-using-stack",
+        "slug": "04-implement-queue-using-stack",
+        "number": 232,
+        "title": "Implement Queue using Stacks",
+        "difficulty": "Easy",
+        "tags": [
+          "Stack",
+          "Queue",
+          "Design",
+          "Data Structures"
+        ]
+      },
+      {
+        "id": "13_Stack_and_Queue/05-balanced-parenthesis",
+        "slug": "05-balanced-parenthesis",
+        "number": 20,
+        "title": "Valid Parentheses",
+        "difficulty": "Easy",
+        "tags": [
+          "Stack",
+          "String",
+          "Data Structures"
+        ]
+      },
+      {
+        "id": "13_Stack_and_Queue/06-next-greater-element",
+        "slug": "06-next-greater-element",
+        "number": 496,
+        "title": "Next Greater Element I",
+        "difficulty": "Medium",
+        "tags": [
+          "Stack",
+          "Array",
+          "Hash Map",
+          "Monotonic Stack"
+        ]
+      },
+      {
+        "id": "13_Stack_and_Queue/07-sort-a-stack",
+        "slug": "07-sort-a-stack",
+        "number": null,
+        "title": "Sort a Stack",
+        "difficulty": "Medium",
+        "tags": [
+          "Stack",
+          "Recursion",
+          "Sorting",
+          "GeeksforGeeks"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "14_Stack_and_Queue_Part_II",
+    "index": 14,
+    "title": "Stack and Queue Part 2",
+    "count": 10,
+    "problems": [
+      {
+        "id": "14_Stack_and_Queue_Part_II/01-next-smaller-element",
+        "slug": "01-next-smaller-element",
+        "number": null,
+        "title": "Next Smaller Element",
+        "difficulty": "Medium",
+        "tags": [
+          "Stack",
+          "Arrays"
+        ]
+      },
+      {
+        "id": "14_Stack_and_Queue_Part_II/02-lru-cache",
+        "slug": "02-lru-cache",
+        "number": null,
+        "title": "LRU Cache",
+        "difficulty": "Medium",
+        "tags": [
+          "Hash Map",
+          "Doubly Linked List",
+          "Design"
+        ]
+      },
+      {
+        "id": "14_Stack_and_Queue_Part_II/03-lfu-cache",
+        "slug": "03-lfu-cache",
+        "number": null,
+        "title": "LFU Cache",
+        "difficulty": "Hard",
+        "tags": [
+          "Hash Map",
+          "Doubly Linked List",
+          "Design"
+        ]
+      },
+      {
+        "id": "14_Stack_and_Queue_Part_II/04-largest-rectangle-in-histogram",
+        "slug": "04-largest-rectangle-in-histogram",
+        "number": null,
+        "title": "Largest Rectangle in Histogram",
+        "difficulty": "Hard",
+        "tags": [
+          "Stack",
+          "Array",
+          "Monotonic Stack"
+        ]
+      },
+      {
+        "id": "14_Stack_and_Queue_Part_II/05-sliding-window-maximum",
+        "slug": "05-sliding-window-maximum",
+        "number": null,
+        "title": "Sliding Window Maximum",
+        "difficulty": "Hard",
+        "tags": [
+          "Queue",
+          "Sliding Window",
+          "Monotonic Deque",
+          "Heap"
+        ]
+      },
+      {
+        "id": "14_Stack_and_Queue_Part_II/06-implement-min-stack",
+        "slug": "06-implement-min-stack",
+        "number": null,
+        "title": "Min Stack",
+        "difficulty": "Hard",
+        "tags": [
+          "Stack",
+          "Design"
+        ]
+      },
+      {
+        "id": "14_Stack_and_Queue_Part_II/07-rotten-oranges",
+        "slug": "07-rotten-oranges",
+        "number": null,
+        "title": "Rotten Oranges",
+        "difficulty": "Medium",
+        "tags": [
+          "BFS",
+          "Queue",
+          "Matrix"
+        ]
+      },
+      {
+        "id": "14_Stack_and_Queue_Part_II/08-stock-span-problem",
+        "slug": "08-stock-span-problem",
+        "number": null,
+        "title": "Online Stock Span",
+        "difficulty": "Hard",
+        "tags": [
+          "Stack",
+          "Monotonic Stack",
+          "Design"
+        ]
+      },
+      {
+        "id": "14_Stack_and_Queue_Part_II/09-maximum-of-minimums-for-every-window-size",
+        "slug": "09-maximum-of-minimums-for-every-window-size",
+        "number": null,
+        "title": "Maximum of Minimums for Every Window Size",
+        "difficulty": "Medium",
+        "tags": [
+          "Stack",
+          "Arrays"
+        ]
+      },
+      {
+        "id": "14_Stack_and_Queue_Part_II/10-celebrity-problem",
+        "slug": "10-celebrity-problem",
+        "number": null,
+        "title": "The Celebrity Problem",
+        "difficulty": "Hard",
+        "tags": [
+          "Stack",
+          "Two Pointers",
+          "Matrix"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "15_String",
+    "index": 15,
+    "title": "String",
+    "count": 6,
+    "problems": [
+      {
+        "id": "15_String/01-reverse-every-word-in-a-string",
+        "slug": "01-reverse-every-word-in-a-string",
+        "number": 151,
+        "title": "Reverse Words in a String",
+        "difficulty": "Medium",
+        "tags": [
+          "String",
+          "Two Pointers"
+        ]
+      },
+      {
+        "id": "15_String/02-longest-palindrome-in-a-string",
+        "slug": "02-longest-palindrome-in-a-string",
+        "number": 5,
+        "title": "Longest Palindromic Substring",
+        "difficulty": "Medium",
+        "tags": [
+          "String",
+          "Dynamic Programming"
+        ]
+      },
+      {
+        "id": "15_String/03-roman-to-integer",
+        "slug": "03-roman-to-integer",
+        "number": 13,
+        "title": "Roman to Integer",
+        "difficulty": "Medium",
+        "tags": [
+          "String",
+          "Math",
+          "Hash Table"
+        ]
+      },
+      {
+        "id": "15_String/04-implement-atoi-strstr",
+        "slug": "04-implement-atoi-strstr",
+        "number": 8,
+        "title": "String to Integer (atoi)",
+        "difficulty": "Medium",
+        "tags": [
+          "String",
+          "Math"
+        ]
+      },
+      {
+        "id": "15_String/05-longest-common-prefix",
+        "slug": "05-longest-common-prefix",
+        "number": 14,
+        "title": "Longest Common Prefix",
+        "difficulty": "Easy",
+        "tags": [
+          "String"
+        ]
+      },
+      {
+        "id": "15_String/06-rabin-karp-algorithm",
+        "slug": "06-rabin-karp-algorithm",
+        "number": null,
+        "title": "Rabin-Karp Algorithm (Pattern Searching)",
+        "difficulty": "Hard",
+        "tags": [
+          "String",
+          "Pattern Matching",
+          "Hashing",
+          "Rolling Hash"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "16_String_Part_II",
+    "index": 16,
+    "title": "String Part 2",
+    "count": 6,
+    "problems": [
+      {
+        "id": "16_String_Part_II/01-z-function",
+        "slug": "01-z-function",
+        "number": null,
+        "title": "Z-Function (GFG - Hard)",
+        "difficulty": "Hard",
+        "tags": [
+          "String",
+          "Z-Algorithm",
+          "Pattern-Matching"
+        ]
+      },
+      {
+        "id": "16_String_Part_II/02-kmp-algorithm-or-lps-array",
+        "slug": "02-kmp-algorithm-or-lps-array",
+        "number": 28,
+        "title": "Find the Index of the First Occurrence in a String",
+        "difficulty": "Hard",
+        "tags": [
+          "String",
+          "KMP-Algorithm",
+          "Pattern-Matching",
+          "LPS-Array"
+        ]
+      },
+      {
+        "id": "16_String_Part_II/03-minimum-insertions-to-make-string-palindrome",
+        "slug": "03-minimum-insertions-to-make-string-palindrome",
+        "number": 1312,
+        "title": "Minimum Insertions to Make String Palindrome",
+        "difficulty": "Hard",
+        "tags": [
+          "String",
+          "Dynamic-Programming",
+          "Palindrome"
+        ]
+      },
+      {
+        "id": "16_String_Part_II/04-valid-anagram",
+        "slug": "04-valid-anagram",
+        "number": 242,
+        "title": "Valid Anagram",
+        "difficulty": "Easy",
+        "tags": [
+          "String",
+          "Hash-Table",
+          "Sorting",
+          "Counting"
+        ]
+      },
+      {
+        "id": "16_String_Part_II/05-count-and-say",
+        "slug": "05-count-and-say",
+        "number": 38,
+        "title": "Count and Say",
+        "difficulty": "Hard",
+        "tags": [
+          "String",
+          "Simulation",
+          "Recursion",
+          "Iteration"
+        ]
+      },
+      {
+        "id": "16_String_Part_II/06-compare-version-numbers",
+        "slug": "06-compare-version-numbers",
+        "number": 165,
+        "title": "Compare Version Numbers",
+        "difficulty": "Medium",
+        "tags": [
+          "String",
+          "Two-Pointers",
+          "Simulation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "17_Binary_Tree",
+    "index": 17,
+    "title": "Binary Tree",
+    "count": 12,
+    "problems": [
+      {
+        "id": "17_Binary_Tree/01-inorder-traversal",
+        "slug": "01-inorder-traversal",
+        "number": 94,
+        "title": "Binary Tree Inorder Traversal",
+        "difficulty": "Easy",
+        "tags": [
+          "Stack",
+          "Tree",
+          "Depth-First Search",
+          "Binary Tree"
+        ]
+      },
+      {
+        "id": "17_Binary_Tree/02-preorder-traversal",
+        "slug": "02-preorder-traversal",
+        "number": 144,
+        "title": "Binary Tree Preorder Traversal",
+        "difficulty": "Easy",
+        "tags": [
+          "Stack",
+          "Tree",
+          "Depth-First Search",
+          "Binary Tree"
+        ]
+      },
+      {
+        "id": "17_Binary_Tree/03-postorder-traversal",
+        "slug": "03-postorder-traversal",
+        "number": 145,
+        "title": "Binary Tree Postorder Traversal",
+        "difficulty": "Easy",
+        "tags": [
+          "Stack",
+          "Tree",
+          "Depth-First Search",
+          "Binary Tree"
+        ]
+      },
+      {
+        "id": "17_Binary_Tree/04-morris-inorder-traversal",
+        "slug": "04-morris-inorder-traversal",
+        "number": 94,
+        "title": "Binary Tree Inorder Traversal (Morris Traversal)",
+        "difficulty": "Hard",
+        "tags": [
+          "Binary Tree",
+          "Morris Traversal",
+          "Inorder",
+          "O(1) Space"
+        ]
+      },
+      {
+        "id": "17_Binary_Tree/05-morris-preorder-traversal",
+        "slug": "05-morris-preorder-traversal",
+        "number": 144,
+        "title": "Binary Tree Preorder Traversal (Morris Traversal)",
+        "difficulty": "Hard",
+        "tags": [
+          "Binary Tree",
+          "Morris Traversal",
+          "Preorder",
+          "O(1) Space"
+        ]
+      },
+      {
+        "id": "17_Binary_Tree/06-right-left-view-of-bt",
+        "slug": "06-right-left-view-of-bt",
+        "number": 199,
+        "title": "Binary Tree Right Side View",
+        "difficulty": "Medium",
+        "tags": [
+          "Tree",
+          "Breadth-First Search",
+          "Depth-First Search",
+          "Binary Tree"
+        ]
+      },
+      {
+        "id": "17_Binary_Tree/07-bottom-view-of-bt",
+        "slug": "07-bottom-view-of-bt",
+        "number": null,
+        "title": "Bottom View of Binary Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "BFS",
+          "HashMap",
+          "Horizontal Distance"
+        ]
+      },
+      {
+        "id": "17_Binary_Tree/08-top-view-of-bt",
+        "slug": "08-top-view-of-bt",
+        "number": null,
+        "title": "Top View of Binary Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "BFS",
+          "HashMap",
+          "Horizontal Distance"
+        ]
+      },
+      {
+        "id": "17_Binary_Tree/09-pre-post-inorder-in-one-traversal",
+        "slug": "09-pre-post-inorder-in-one-traversal",
+        "number": null,
+        "title": "Preorder, Postorder and Inorder Traversal of Binary Tree",
+        "difficulty": "Easy",
+        "tags": [
+          "Binary Tree",
+          "DFS",
+          "Traversal",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "17_Binary_Tree/10-vertical-order-traversal",
+        "slug": "10-vertical-order-traversal",
+        "number": 987,
+        "title": "Vertical Order Traversal of a Binary Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "BFS",
+          "Sorting",
+          "Hash Map"
+        ]
+      },
+      {
+        "id": "17_Binary_Tree/11-print-root-to-leaf-path-in-bt",
+        "slug": "11-print-root-to-leaf-path-in-bt",
+        "number": null,
+        "title": "Print Root to Leaf Paths in Binary Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "DFS",
+          "Backtracking",
+          "Path"
+        ]
+      },
+      {
+        "id": "17_Binary_Tree/12-maximum-width-of-bt",
+        "slug": "12-maximum-width-of-bt",
+        "number": 662,
+        "title": "Maximum Width of Binary Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "BFS",
+          "DFS",
+          "Indexing"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "18_Binary_Tree_Part_II",
+    "index": 18,
+    "title": "Binary Tree Part 2",
+    "count": 8,
+    "problems": [
+      {
+        "id": "18_Binary_Tree_Part_II/01-level-order-traversal",
+        "slug": "01-level-order-traversal",
+        "number": 102,
+        "title": "Binary Tree Level Order Traversal",
+        "difficulty": "Easy",
+        "tags": [
+          "Tree",
+          "Breadth-First Search",
+          "Binary Tree"
+        ]
+      },
+      {
+        "id": "18_Binary_Tree_Part_II/02-maximum-depth-in-bt",
+        "slug": "02-maximum-depth-in-bt",
+        "number": 104,
+        "title": "Maximum Depth of Binary Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Tree",
+          "Depth-First Search",
+          "Breadth-First Search",
+          "Binary Tree"
+        ]
+      },
+      {
+        "id": "18_Binary_Tree_Part_II/03-diameter-of-binary-tree",
+        "slug": "03-diameter-of-binary-tree",
+        "number": 543,
+        "title": "Diameter of Binary Tree",
+        "difficulty": "Easy",
+        "tags": [
+          "Tree",
+          "Depth-First Search",
+          "Binary Tree"
+        ]
+      },
+      {
+        "id": "18_Binary_Tree_Part_II/04-check-for-balanced-binary-tree",
+        "slug": "04-check-for-balanced-binary-tree",
+        "number": 110,
+        "title": "Balanced Binary Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Tree",
+          "Depth-First Search",
+          "Binary Tree"
+        ]
+      },
+      {
+        "id": "18_Binary_Tree_Part_II/05-lca-in-bt",
+        "slug": "05-lca-in-bt",
+        "number": 236,
+        "title": "Lowest Common Ancestor of a Binary Tree",
+        "difficulty": "Hard",
+        "tags": [
+          "Tree",
+          "Depth-First Search",
+          "Binary Tree"
+        ]
+      },
+      {
+        "id": "18_Binary_Tree_Part_II/06-check-if-two-trees-are-identical-or-not",
+        "slug": "06-check-if-two-trees-are-identical-or-not",
+        "number": 100,
+        "title": "Same Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Tree",
+          "Depth-First Search",
+          "Breadth-First Search",
+          "Binary Tree"
+        ]
+      },
+      {
+        "id": "18_Binary_Tree_Part_II/07-zig-zag-or-spiral-traversal",
+        "slug": "07-zig-zag-or-spiral-traversal",
+        "number": 103,
+        "title": "Binary Tree Zigzag Level Order Traversal",
+        "difficulty": "Medium",
+        "tags": [
+          "Tree",
+          "Breadth-First Search",
+          "Binary Tree"
+        ]
+      },
+      {
+        "id": "18_Binary_Tree_Part_II/08-boundary-traversal",
+        "slug": "08-boundary-traversal",
+        "number": 545,
+        "title": "Boundary of Binary Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Tree",
+          "Depth-First Search",
+          "Binary Tree"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "19_Binary_Tree_Part_III",
+    "index": 19,
+    "title": "Binary Tree Part 3",
+    "count": 7,
+    "problems": [
+      {
+        "id": "19_Binary_Tree_Part_III/01-maximum-path-sum",
+        "slug": "01-maximum-path-sum",
+        "number": 124,
+        "title": "Binary Tree Maximum Path Sum",
+        "difficulty": "Hard",
+        "tags": [
+          "Binary Tree",
+          "Dynamic Programming",
+          "Depth-First Search"
+        ]
+      },
+      {
+        "id": "19_Binary_Tree_Part_III/02-construct-bt-from-preorder-and-inorder",
+        "slug": "02-construct-bt-from-preorder-and-inorder",
+        "number": 105,
+        "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "Array",
+          "Divide and Conquer",
+          "Hash Map"
+        ]
+      },
+      {
+        "id": "19_Binary_Tree_Part_III/03-construct-bt-from-postorder-and-inorder",
+        "slug": "03-construct-bt-from-postorder-and-inorder",
+        "number": 106,
+        "title": "Construct Binary Tree from Inorder and Postorder Traversal",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "Array",
+          "Divide and Conquer",
+          "Hash Map"
+        ]
+      },
+      {
+        "id": "19_Binary_Tree_Part_III/04-symmetric-binary-tree",
+        "slug": "04-symmetric-binary-tree",
+        "number": 101,
+        "title": "Symmetric Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "Breadth-First Search",
+          "Depth-First Search"
+        ]
+      },
+      {
+        "id": "19_Binary_Tree_Part_III/05-flatten-binary-tree-to-linked-list",
+        "slug": "05-flatten-binary-tree-to-linked-list",
+        "number": 114,
+        "title": "Flatten Binary Tree to Linked List",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "Linked List",
+          "Depth-First Search",
+          "Stack"
+        ]
+      },
+      {
+        "id": "19_Binary_Tree_Part_III/06-check-for-symmetrical-bts",
+        "slug": "06-check-for-symmetrical-bts",
+        "number": 101,
+        "title": "Symmetric Tree (Mirror Check)",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "Breadth-First Search",
+          "Iterative"
+        ]
+      },
+      {
+        "id": "19_Binary_Tree_Part_III/07-children-sum-property-in-binary-tree",
+        "slug": "07-children-sum-property-in-binary-tree",
+        "number": null,
+        "title": "Children Sum Property in Binary Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "DFS",
+          "Greedy"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "20_Binary_Search_Tree",
+    "index": 20,
+    "title": "Binary Search Tree",
+    "count": 7,
+    "problems": [
+      {
+        "id": "20_Binary_Search_Tree/01-populating-next-right-pointers-in-each-node",
+        "slug": "01-populating-next-right-pointers-in-each-node",
+        "number": 116,
+        "title": "Populating Next Right Pointers in Each Node",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "BFS",
+          "DFS",
+          "Level Order Traversal",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "20_Binary_Search_Tree/02-search-in-bst",
+        "slug": "02-search-in-bst",
+        "number": 700,
+        "title": "Search in a Binary Search Tree",
+        "difficulty": "Easy",
+        "tags": [
+          "Binary Search Tree",
+          "Tree",
+          "Recursion",
+          "Iterative"
+        ]
+      },
+      {
+        "id": "20_Binary_Search_Tree/03-construct-bst-from-given-keys",
+        "slug": "03-construct-bst-from-given-keys",
+        "number": null,
+        "title": "Construct BST from Given Keys",
+        "difficulty": "Easy",
+        "tags": [
+          "Binary Search Tree",
+          "Tree",
+          "Construction",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "20_Binary_Search_Tree/04-construct-a-bst-from-preorder-traversal",
+        "slug": "04-construct-a-bst-from-preorder-traversal",
+        "number": 1008,
+        "title": "Construct Binary Search Tree from Preorder Traversal",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Search Tree",
+          "Tree",
+          "Preorder Traversal",
+          "Recursion",
+          "Stack"
+        ]
+      },
+      {
+        "id": "20_Binary_Search_Tree/05-check-if-a-tree-is-a-bst-or-not",
+        "slug": "05-check-if-a-tree-is-a-bst-or-not",
+        "number": 98,
+        "title": "Validate Binary Search Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Search Tree",
+          "Tree",
+          "DFS",
+          "Recursion",
+          "BST Validation"
+        ]
+      },
+      {
+        "id": "20_Binary_Search_Tree/06-lca-in-bst",
+        "slug": "06-lca-in-bst",
+        "number": 235,
+        "title": "Lowest Common Ancestor of a Binary Search Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Search Tree",
+          "Tree",
+          "LCA",
+          "Recursion",
+          "Iterative"
+        ]
+      },
+      {
+        "id": "20_Binary_Search_Tree/07-inorder-successor-and-predecessor-in-bst",
+        "slug": "07-inorder-successor-and-predecessor-in-bst",
+        "number": 285,
+        "title": "Inorder Successor in BST",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Search Tree",
+          "Tree",
+          "Inorder Traversal",
+          "Successor",
+          "Predecessor"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "21_Binary_Search_Tree_Part_II",
+    "index": 21,
+    "title": "Binary Search Tree Part 2",
+    "count": 8,
+    "problems": [
+      {
+        "id": "21_Binary_Search_Tree_Part_II/01-floor-in-a-bst",
+        "slug": "01-floor-in-a-bst",
+        "number": null,
+        "title": "Floor in a BST",
+        "difficulty": "Easy",
+        "tags": [
+          "BST",
+          "Search",
+          "Binary Search Tree"
+        ]
+      },
+      {
+        "id": "21_Binary_Search_Tree_Part_II/02-ceil-in-a-bst",
+        "slug": "02-ceil-in-a-bst",
+        "number": null,
+        "title": "Ceil in a BST",
+        "difficulty": "Easy",
+        "tags": [
+          "BST",
+          "Search",
+          "Binary Search Tree"
+        ]
+      },
+      {
+        "id": "21_Binary_Search_Tree_Part_II/03-find-kth-smallest-element-in-bst",
+        "slug": "03-find-kth-smallest-element-in-bst",
+        "number": null,
+        "title": "Kth Smallest Element in a BST",
+        "difficulty": "Medium",
+        "tags": [
+          "BST",
+          "Tree",
+          "Binary Search Tree",
+          "DFS"
+        ]
+      },
+      {
+        "id": "21_Binary_Search_Tree_Part_II/04-kth-smallest-and-largest-element-in-bst",
+        "slug": "04-kth-smallest-and-largest-element-in-bst",
+        "number": null,
+        "title": "Kth Smallest and Largest Element in BST",
+        "difficulty": "Medium",
+        "tags": [
+          "BST",
+          "Tree",
+          "Binary Search Tree"
+        ]
+      },
+      {
+        "id": "21_Binary_Search_Tree_Part_II/05-two-sum-in-bst",
+        "slug": "05-two-sum-in-bst",
+        "number": null,
+        "title": "Two Sum IV - Input is a BST",
+        "difficulty": "Medium",
+        "tags": [
+          "BST",
+          "Tree",
+          "Two Pointers",
+          "Binary Search Tree"
+        ]
+      },
+      {
+        "id": "21_Binary_Search_Tree_Part_II/06-bst-iterator",
+        "slug": "06-bst-iterator",
+        "number": null,
+        "title": "Binary Search Tree Iterator",
+        "difficulty": "Medium",
+        "tags": [
+          "BST",
+          "Stack",
+          "Design",
+          "Iterator"
+        ]
+      },
+      {
+        "id": "21_Binary_Search_Tree_Part_II/07-size-of-the-largest-bst-in-a-binary-tree",
+        "slug": "07-size-of-the-largest-bst-in-a-binary-tree",
+        "number": null,
+        "title": "Largest BST",
+        "difficulty": "Hard",
+        "tags": [
+          "BST",
+          "Binary Tree",
+          "Recursion",
+          "Dynamic Programming"
+        ]
+      },
+      {
+        "id": "21_Binary_Search_Tree_Part_II/08-serialize-and-deserialize-bt",
+        "slug": "08-serialize-and-deserialize-bt",
+        "number": null,
+        "title": "Serialize and Deserialize Binary Tree",
+        "difficulty": "Hard",
+        "tags": [
+          "Tree",
+          "BFS",
+          "DFS",
+          "Design",
+          "Binary Tree"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "22_BT_Miscellaneous",
+    "index": 22,
+    "title": "Binary Trees Miscellaneous",
+    "count": 6,
+    "problems": [
+      {
+        "id": "22_BT_Miscellaneous/01-pair-sum-in-bst",
+        "slug": "01-pair-sum-in-bst",
+        "number": null,
+        "title": "Pair Sum in BST",
+        "difficulty": "Medium",
+        "tags": [
+          "BST",
+          "Two Pointers",
+          "Inorder Traversal"
+        ]
+      },
+      {
+        "id": "22_BT_Miscellaneous/02-binary-tree-to-bst",
+        "slug": "02-binary-tree-to-bst",
+        "number": null,
+        "title": "Binary Tree to BST",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "BST",
+          "Inorder Traversal"
+        ]
+      },
+      {
+        "id": "22_BT_Miscellaneous/03-bst-to-balanced-bst",
+        "slug": "03-bst-to-balanced-bst",
+        "number": null,
+        "title": "BST to Balanced BST",
+        "difficulty": "Medium",
+        "tags": [
+          "BST",
+          "Balanced BST",
+          "Inorder Traversal",
+          "Recursion"
+        ]
+      },
+      {
+        "id": "22_BT_Miscellaneous/04-kth-largest-element-in-bst",
+        "slug": "04-kth-largest-element-in-bst",
+        "number": null,
+        "title": "Kth Largest Element in BST",
+        "difficulty": "Medium",
+        "tags": [
+          "BST",
+          "Kth Largest",
+          "Inorder Traversal"
+        ]
+      },
+      {
+        "id": "22_BT_Miscellaneous/05-find-a-pair-with-a-given-sum-in-bst",
+        "slug": "05-find-a-pair-with-a-given-sum-in-bst",
+        "number": null,
+        "title": "Find a Pair with a Given Sum in BST",
+        "difficulty": "Medium",
+        "tags": [
+          "BST",
+          "Two Pointers",
+          "Inorder Traversal"
+        ]
+      },
+      {
+        "id": "22_BT_Miscellaneous/06-check-if-bt-is-balanced-or-not",
+        "slug": "06-check-if-bt-is-balanced-or-not",
+        "number": null,
+        "title": "Balanced Binary Tree",
+        "difficulty": "Medium",
+        "tags": [
+          "Binary Tree",
+          "Tree Height",
+          "DFS",
+          "Recursion"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "23_Graph",
+    "index": 23,
+    "title": "Graph",
+    "count": 12,
+    "problems": [
+      {
+        "id": "23_Graph/01-clone-graph",
+        "slug": "01-clone-graph",
+        "number": 133,
+        "title": "Clone Graph",
+        "difficulty": "Medium",
+        "tags": [
+          "Hash-Map",
+          "DFS",
+          "BFS",
+          "Graph"
+        ]
+      },
+      {
+        "id": "23_Graph/02-flood-fill",
+        "slug": "02-flood-fill",
+        "number": 733,
+        "title": "Flood Fill",
+        "difficulty": "Easy",
+        "tags": [
+          "DFS",
+          "BFS",
+          "Matrix"
+        ]
+      },
+      {
+        "id": "23_Graph/03-number-of-islands",
+        "slug": "03-number-of-islands",
+        "number": 200,
+        "title": "Number of Islands",
+        "difficulty": "Medium",
+        "tags": [
+          "DFS",
+          "BFS",
+          "Union-Find",
+          "Matrix"
+        ]
+      },
+      {
+        "id": "23_Graph/04-number-of-distinct-islands",
+        "slug": "04-number-of-distinct-islands",
+        "number": 694,
+        "title": "Number of Distinct Islands",
+        "difficulty": "Hard",
+        "tags": [
+          "DFS",
+          "BFS",
+          "Hashing",
+          "Matrix"
+        ]
+      },
+      {
+        "id": "23_Graph/05-bfs-of-graph",
+        "slug": "05-bfs-of-graph",
+        "number": 733,
+        "title": "BFS of Graph",
+        "difficulty": "Medium",
+        "tags": [
+          "BFS",
+          "Graph",
+          "Queue"
+        ]
+      },
+      {
+        "id": "23_Graph/06-detect-cycle-in-directed-graph",
+        "slug": "06-detect-cycle-in-directed-graph",
+        "number": null,
+        "title": "Detect Cycle in Directed Graph",
+        "difficulty": "Hard",
+        "tags": [
+          "DFS",
+          "BFS",
+          "Topological-Sort",
+          "Directed-Graph"
+        ]
+      },
+      {
+        "id": "23_Graph/07-detect-cycle-in-undirected-graph",
+        "slug": "07-detect-cycle-in-undirected-graph",
+        "number": null,
+        "title": "Detect Cycle in Undirected Graph",
+        "difficulty": "Medium",
+        "tags": [
+          "DFS",
+          "BFS",
+          "Union-Find",
+          "Undirected-Graph"
+        ]
+      },
+      {
+        "id": "23_Graph/08-topological-sort",
+        "slug": "08-topological-sort",
+        "number": null,
+        "title": "Topological Sort",
+        "difficulty": "Hard",
+        "tags": [
+          "DFS",
+          "BFS",
+          "Kahn-Algorithm",
+          "DAG"
+        ]
+      },
+      {
+        "id": "23_Graph/09-course-schedule",
+        "slug": "09-course-schedule",
+        "number": 207,
+        "title": "Course Schedule",
+        "difficulty": "Medium",
+        "tags": [
+          "DFS",
+          "BFS",
+          "Topological-Sort",
+          "Directed-Graph"
+        ]
+      },
+      {
+        "id": "23_Graph/10-shortest-path-in-undirected-graph",
+        "slug": "10-shortest-path-in-undirected-graph",
+        "number": null,
+        "title": "Shortest Path in Undirected Graph",
+        "difficulty": "Medium",
+        "tags": [
+          "BFS",
+          "Graph",
+          "Shortest-Path"
+        ]
+      },
+      {
+        "id": "23_Graph/11-word-ladder",
+        "slug": "11-word-ladder",
+        "number": 127,
+        "title": "Word Ladder",
+        "difficulty": "Hard",
+        "tags": [
+          "BFS",
+          "Graph",
+          "String"
+        ]
+      },
+      {
+        "id": "23_Graph/12-word-ladder-ii",
+        "slug": "12-word-ladder-ii",
+        "number": 126,
+        "title": "Word Ladder II",
+        "difficulty": "Hard",
+        "tags": [
+          "BFS",
+          "DFS",
+          "Graph",
+          "String"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "24_Graph_Part_II",
+    "index": 24,
+    "title": "Graph Part 2",
+    "count": 6,
+    "problems": [
+      {
+        "id": "24_Graph_Part_II/01-dijkstra-algorithm",
+        "slug": "01-dijkstra-algorithm",
+        "number": 743,
+        "title": "Network Delay Time (Dijkstra's Algorithm)",
+        "difficulty": "Hard",
+        "tags": [
+          "Graph",
+          "Shortest-Path",
+          "Dijkstra",
+          "Priority-Queue",
+          "Heap"
+        ]
+      },
+      {
+        "id": "24_Graph_Part_II/02-shortest-path-in-binary-maze",
+        "slug": "02-shortest-path-in-binary-maze",
+        "number": 1091,
+        "title": "Shortest Path in a Binary Matrix",
+        "difficulty": "Hard",
+        "tags": [
+          "BFS",
+          "Matrix",
+          "Graph",
+          "Shortest-Path"
+        ]
+      },
+      {
+        "id": "24_Graph_Part_II/03-path-with-minimum-effort",
+        "slug": "03-path-with-minimum-effort",
+        "number": 1631,
+        "title": "Path With Minimum Effort",
+        "difficulty": "Hard",
+        "tags": [
+          "Binary-Search",
+          "BFS",
+          "Dijkstra",
+          "Union-Find",
+          "Graph"
+        ]
+      },
+      {
+        "id": "24_Graph_Part_II/04-cheapest-flights-within-k-stops",
+        "slug": "04-cheapest-flights-within-k-stops",
+        "number": 787,
+        "title": "Cheapest Flights Within K Stops",
+        "difficulty": "Hard",
+        "tags": [
+          "BFS",
+          "Bellman-Ford",
+          "Dynamic-Programming",
+          "Graph",
+          "Shortest-Path"
+        ]
+      },
+      {
+        "id": "24_Graph_Part_II/05-network-delay-time",
+        "slug": "05-network-delay-time",
+        "number": 743,
+        "title": "Network Delay Time",
+        "difficulty": "Hard",
+        "tags": [
+          "Dijkstra",
+          "Graph",
+          "Shortest-Path",
+          "Priority-Queue",
+          "Heap"
+        ]
+      },
+      {
+        "id": "24_Graph_Part_II/06-bellman-ford-algorithm",
+        "slug": "06-bellman-ford-algorithm",
+        "number": null,
+        "title": "Bellman-Ford Algorithm",
+        "difficulty": "Medium",
+        "tags": [
+          "Bellman-Ford",
+          "Shortest-Path",
+          "Graph",
+          "Negative-Weights",
+          "Dynamic-Programming"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "25_DP",
+    "index": 25,
+    "title": "Dynamic Programming",
+    "count": 7,
+    "problems": [
+      {
+        "id": "25_DP/01-climbing-stairs",
+        "slug": "01-climbing-stairs",
+        "number": 70,
+        "title": "Climbing Stairs",
+        "difficulty": "Easy",
+        "tags": [
+          "Dynamic Programming",
+          "Math",
+          "Memoization"
+        ]
+      },
+      {
+        "id": "25_DP/02-house-robber",
+        "slug": "02-house-robber",
+        "number": 198,
+        "title": "House Robber",
+        "difficulty": "Medium",
+        "tags": [
+          "Dynamic Programming",
+          "Array"
+        ]
+      },
+      {
+        "id": "25_DP/03-0-1-knapsack",
+        "slug": "03-0-1-knapsack",
+        "number": null,
+        "title": "0/1 Knapsack Problem",
+        "difficulty": "Medium",
+        "tags": [
+          "Dynamic Programming",
+          "Knapsack",
+          "0/1"
+        ]
+      },
+      {
+        "id": "25_DP/04-longest-common-subsequence",
+        "slug": "04-longest-common-subsequence",
+        "number": 1143,
+        "title": "Longest Common Subsequence",
+        "difficulty": "Medium",
+        "tags": [
+          "Dynamic Programming",
+          "String",
+          "Subsequence"
+        ]
+      },
+      {
+        "id": "25_DP/05-longest-increasing-subsequence",
+        "slug": "05-longest-increasing-subsequence",
+        "number": 300,
+        "title": "Longest Increasing Subsequence",
+        "difficulty": "Hard",
+        "tags": [
+          "Dynamic Programming",
+          "Binary Search",
+          "Subsequence"
+        ]
+      },
+      {
+        "id": "25_DP/06-edit-distance",
+        "slug": "06-edit-distance",
+        "number": 72,
+        "title": "Edit Distance",
+        "difficulty": "Hard",
+        "tags": [
+          "Dynamic Programming",
+          "String",
+          "Edit Distance"
+        ]
+      },
+      {
+        "id": "25_DP/07-maximum-product-subarray",
+        "slug": "07-maximum-product-subarray",
+        "number": 152,
+        "title": "Maximum Product Subarray",
+        "difficulty": "Medium",
+        "tags": [
+          "Dynamic Programming",
+          "Array",
+          "Divide and Conquer"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "26_DP_Part_II",
+    "index": 26,
+    "title": "Dynamic Programming Part 2",
+    "count": 8,
+    "problems": [
+      {
+        "id": "26_DP_Part_II/01-matrix-chain-multiplication",
+        "slug": "01-matrix-chain-multiplication",
+        "number": null,
+        "title": "Matrix Chain Multiplication",
+        "difficulty": "Hard",
+        "tags": [
+          "Matrix",
+          "Dynamic Programming"
+        ]
+      },
+      {
+        "id": "26_DP_Part_II/02-palindrome-partitioning",
+        "slug": "02-palindrome-partitioning",
+        "number": 131,
+        "title": "Palindrome Partitioning",
+        "difficulty": "Hard",
+        "tags": [
+          "String",
+          "Dynamic Programming",
+          "Backtracking"
+        ]
+      },
+      {
+        "id": "26_DP_Part_II/03-rod-cutting",
+        "slug": "03-rod-cutting",
+        "number": null,
+        "title": "Rod Cutting",
+        "difficulty": "Medium",
+        "tags": [
+          "Dynamic Programming",
+          "Arrays"
+        ]
+      },
+      {
+        "id": "26_DP_Part_II/04-egg-dropping",
+        "slug": "04-egg-dropping",
+        "number": null,
+        "title": "Egg Dropping Problem",
+        "difficulty": "Hard",
+        "tags": [
+          "Dynamic Programming",
+          "Binary Search"
+        ]
+      },
+      {
+        "id": "26_DP_Part_II/05-word-break",
+        "slug": "05-word-break",
+        "number": 139,
+        "title": "Word Break",
+        "difficulty": "Medium",
+        "tags": [
+          "Hash Table",
+          "String",
+          "Dynamic Programming",
+          "Trie"
+        ]
+      },
+      {
+        "id": "26_DP_Part_II/06-longest-palindromic-subsequence",
+        "slug": "06-longest-palindromic-subsequence",
+        "number": 516,
+        "title": "Longest Palindromic Subsequence",
+        "difficulty": "Hard",
+        "tags": [
+          "String",
+          "Dynamic Programming"
+        ]
+      },
+      {
+        "id": "26_DP_Part_II/07-matrix-chain-multiplication",
+        "slug": "07-matrix-chain-multiplication",
+        "number": 312,
+        "title": "Burst Balloons",
+        "difficulty": "Hard",
+        "tags": [
+          "Array",
+          "Dynamic Programming"
+        ]
+      },
+      {
+        "id": "26_DP_Part_II/08-dungeon-game",
+        "slug": "08-dungeon-game",
+        "number": 174,
+        "title": "Dungeon Game",
+        "difficulty": "Hard",
+        "tags": [
+          "Array",
+          "Dynamic Programming",
+          "Matrix"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "27_Trie",
+    "index": 27,
+    "title": "Trie",
+    "count": 7,
+    "problems": [
+      {
+        "id": "27_Trie/01-implement-trie",
+        "slug": "01-implement-trie",
+        "number": 208,
+        "title": "Implement Trie (Prefix Tree)",
+        "difficulty": "Medium",
+        "tags": [
+          "Trie",
+          "String",
+          "Design"
+        ]
+      },
+      {
+        "id": "27_Trie/02-implement-trie-ii",
+        "slug": "02-implement-trie-ii",
+        "number": null,
+        "title": "Implement Trie II",
+        "difficulty": "Medium",
+        "tags": [
+          "Trie",
+          "Design",
+          "String"
+        ]
+      },
+      {
+        "id": "27_Trie/03-longest-common-prefix",
+        "slug": "03-longest-common-prefix",
+        "number": 14,
+        "title": "Longest Common Prefix",
+        "difficulty": "Easy",
+        "tags": [
+          "Trie",
+          "String"
+        ]
+      },
+      {
+        "id": "27_Trie/04-complete-string",
+        "slug": "04-complete-string",
+        "number": null,
+        "title": "Complete String",
+        "difficulty": "Medium",
+        "tags": [
+          "Trie",
+          "String"
+        ]
+      },
+      {
+        "id": "27_Trie/05-number-of-distinct-substrings-in-a-string",
+        "slug": "05-number-of-distinct-substrings-in-a-string",
+        "number": null,
+        "title": "Number of Distinct Substrings in a String",
+        "difficulty": "Medium",
+        "tags": [
+          "Trie",
+          "String"
+        ]
+      },
+      {
+        "id": "27_Trie/06-search-suggestions-system",
+        "slug": "06-search-suggestions-system",
+        "number": 1268,
+        "title": "Search Suggestions System",
+        "difficulty": "Medium",
+        "tags": [
+          "Trie",
+          "String",
+          "Sorting"
+        ]
+      },
+      {
+        "id": "27_Trie/07-palindrome-pairs",
+        "slug": "07-palindrome-pairs",
+        "number": 336,
+        "title": "Palindrome Pairs",
+        "difficulty": "Hard",
+        "tags": [
+          "Trie",
+          "String",
+          "Hash Table"
+        ]
+      }
+    ]
+  }
+]
