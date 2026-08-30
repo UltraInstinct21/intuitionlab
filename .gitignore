@@ -10,11 +10,9 @@ dist-ssr/
 backend/.env
 backend/.env.*
 
-# Deployment & Hosting Configurations
-vercel.json
-.vercel/
+# Local APIs & Cache
 api/
-backend/schema.sql
+.vercel/
 output/
 
 # OS & Editor
