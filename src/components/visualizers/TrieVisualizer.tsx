@@ -1,98 +1,150 @@
 import React, { useState } from 'react';
+import { Problem } from '@/types/problem';
 import { Button } from '@/components/ui/button';
-import { RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import { StepCard } from './StepCard';
 
-export const TrieVisualizer: React.FC = () => {
-  interface TrieNode { id: number; char: string; children: Record<string, number>; isEnd: boolean; }
-  const initialNodes: TrieNode[] = [
-    { id: 0, char: '*', children: { a: 1, b: 4, c: 7 }, isEnd: false },
-    { id: 1, char: 'a', children: { p: 2, n: 3 }, isEnd: false },
-    { id: 2, char: 'p', children: {}, isEnd: true },
-    { id: 3, char: 'n', children: {}, isEnd: true },
-    { id: 4, char: 'b', children: { a: 5 }, isEnd: false },
-    { id: 5, char: 'a', children: { d: 6 }, isEnd: false },
-    { id: 6, char: 'd', children: {}, isEnd: true },
-    { id: 7, char: 'c', children: { a: 8 }, isEnd: false },
-    { id: 8, char: 'a', children: { t: 9 }, isEnd: false },
-    { id: 9, char: 't', children: {}, isEnd: true },
+interface TrieStep {
+  title: string;
+  whatHappens: string;
+  whyRationale: string;
+  nodes: { char: string; isEnd?: boolean; count?: number; active?: boolean }[];
+  states: Record<string, string | number | boolean | undefined>;
+  codeSnippet: string;
+  impact?: string;
+}
+
+function buildTrieSteps(problem?: Problem): TrieStep[] {
+  const t = (problem?.title || '').toLowerCase();
+
+  // 1. Longest Common Prefix
+  if (t.includes('longest common prefix')) {
+    return [
+      {
+        title: 'Insert Words: ["flower", "flow", "flight"]',
+        whatHappens: 'Insert strings into Trie. Root branches on "f" -> "l".',
+        whyRationale: 'The common prefix is the unbranched path from the root before any node splits.',
+        nodes: [
+          { char: 'root', active: true },
+          { char: 'f', active: true, count: 3 },
+          { char: 'l', active: true, count: 3 },
+          { char: 'o / i (fork)', isEnd: false },
+        ],
+        states: { currentCommonPrefix: '"fl"', matchingWords: 3 },
+        codeSnippet: 'prefix = ""\nnode = root\nwhile len(node.children) == 1 and not node.is_end:\n    char = next(iter(node.children))\n    prefix += char\n    node = node.children[char]',
+        impact: 'Time: O(N × L) | Space: O(N × L)',
+      },
+      {
+        title: 'Detect Branching at "l" (splits into "o" and "i")',
+        whatHappens: 'Node "l" has 2 children: "o" (flower, flow) and "i" (flight). Stop traversal.',
+        whyRationale: 'Branching indicates characters differ across the input strings. Longest common prefix is "fl".',
+        nodes: [
+          { char: 'root' },
+          { char: 'f', active: true },
+          { char: 'l', active: true, isEnd: true },
+          { char: 'o', count: 2 },
+          { char: 'i', count: 1 },
+        ],
+        states: { branchFound: true, resultLCP: '"fl"' },
+        codeSnippet: 'return prefix # "fl"',
+      },
+    ];
+  }
+
+  // 2. Default: Trie Insert & Search
+  return [
+    {
+      title: 'Initialize Root TrieNode',
+      whatHappens: 'Create root with empty children map and isEnd = False.',
+      whyRationale: 'Trie root serves as anchor for all words starting with any character a-z.',
+      nodes: [{ char: 'root', active: true }],
+      states: { wordsInTrie: 0 },
+      codeSnippet: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False',
+      impact: 'Time: O(L) per operation | Space: O(N × L)',
+    },
+    {
+      title: 'Insert "apple"',
+      whatHappens: 'Create path root -> "a" -> "p" -> "p" -> "l" -> "e". Mark "e" as isEnd = True.',
+      whyRationale: 'Every character creates or follows an existing child pointer.',
+      nodes: [
+        { char: 'a' },
+        { char: 'p' },
+        { char: 'p' },
+        { char: 'l' },
+        { char: 'e', isEnd: true, active: true },
+      ],
+      states: { insertedWord: '"apple"', wordLength: 5 },
+      codeSnippet: 'for ch in word:\n    if ch not in node.children:\n        node.children[ch] = TrieNode()\n    node = node.children[ch]\nnode.is_end = True',
+    },
+    {
+      title: 'Search "app" vs "apple"',
+      whatHappens: 'search("apple") -> True (isEnd is True). search("app") -> False ("p" has isEnd=False). startsWith("app") -> True.',
+      whyRationale: 'isEnd flag differentiates complete words from mere prefixes.',
+      nodes: [
+        { char: 'a' },
+        { char: 'p' },
+        { char: 'p', isEnd: false, active: true },
+        { char: 'l' },
+        { char: 'e', isEnd: true },
+      ],
+      states: { 'search("app")': false, 'startsWith("app")': true, 'search("apple")': true },
+      codeSnippet: 'return node.is_end # for search()\nreturn True # for startsWith()',
+    },
   ];
+}
 
-  const [inputWord, setInputWord] = useState('bad');
-  const [searchResult, setSearchResult] = useState<'found' | 'not_found' | null>(null);
-  const [highlightPath, setHighlightPath] = useState<number[]>([]);
-  const [mode, setMode] = useState<'view' | 'search'>('view');
-
-  const search = () => {
-    let current = 0;
-    const path = [0];
-    for (const ch of inputWord) {
-      const node = initialNodes[current];
-      if (!(ch in node.children)) { setHighlightPath(path); setSearchResult('not_found'); setMode('search'); return; }
-      current = node.children[ch];
-      path.push(current);
-    }
-    setHighlightPath(path);
-    setSearchResult(initialNodes[current].isEnd ? 'found' : 'not_found');
-    setMode('search');
-  };
-
-  const reset = () => { setHighlightPath([]); setSearchResult(null); setMode('view'); };
+export const TrieVisualizer: React.FC<{ problem: Problem }> = ({ problem }) => {
+  const [step, setStep] = useState(0);
+  const steps = buildTrieSteps(problem);
+  const cur = steps[step] || steps[0];
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3 bg-dew-drop p-3.5 rounded-xl border border-outline/30">
-        <div className="flex items-center gap-2 flex-wrap">
-          <input type="text" value={inputWord} onChange={e => setInputWord(e.target.value.toLowerCase())}
-            placeholder="search word..."
-            className="w-32 h-8 px-3 text-xs font-mono rounded-lg border border-outline bg-surface text-charcoal placeholder:text-on-surface-variant" />
-          <Button size="sm" variant="primary" onClick={search} disabled={!inputWord} className="text-xs h-8 px-3">search</Button>
-          <Button size="sm" variant="ghost" onClick={reset} className="h-8"><RotateCcw className="w-4 h-4" /></Button>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="default" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0} className="h-8 px-2.5 text-xs">
+            <ChevronLeft className="w-4 h-4" /><span>prev</span>
+          </Button>
+          <Button size="sm" variant="primary" onClick={() => setStep(Math.min(steps.length - 1, step + 1))} disabled={step === steps.length - 1} className="h-8 px-3 text-xs">
+            <span>{step === steps.length - 1 ? 'completed!' : 'next step →'}</span><ChevronRight className="w-4 h-4" />
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setStep(0)} className="h-8"><RotateCcw className="w-3.5 h-3.5" /></Button>
         </div>
-        {mode === 'search' && (
-          <span className={`text-xs font-mono font-bold px-3 py-1 rounded-pill ${searchResult === 'found' ? 'bg-sprout-sticker text-white' : 'bg-[#ba1a1a] text-white'}`}>
-            {searchResult === 'found' ? `"${inputWord}" found` : `"${inputWord}" not found`}
-          </span>
-        )}
+        <div className="text-xs md:text-sm font-mono flex items-center gap-3">
+          <span className="text-marker-orange font-bold">step {step + 1} of {steps.length}</span>
+        </div>
       </div>
 
-      <div className="py-6 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-4 overflow-x-auto">
-        <div className="flex items-center gap-6">
-          {[0, 1, 4, 7].map(id => {
-            const node = initialNodes[id];
-            const isHighlighted = highlightPath.includes(id);
-            return (
-              <div key={id} className="flex flex-col items-center gap-2">
-                <div className="flex gap-1.5">
-                  {Object.entries(node.children).map(([ch, childId]) => {
-                    const childIsHighlighted = highlightPath.includes(childId) && highlightPath.indexOf(childId) === highlightPath.indexOf(id) + 1;
-                    return (
-                      <React.Fragment key={ch}>
-                        <div className="w-10 h-10 flex items-center justify-center font-mono font-bold text-sm rounded-full border-2 shadow-xs bg-surface-container text-on-surface-variant">{ch}</div>
-                        <div className="flex items-center px-0.5">
-                          <div className={`w-3 h-0.5 ${childIsHighlighted ? 'bg-sprout-sticker' : 'bg-charcoal'}`} />
-                          <span className="text-xs">→</span>
-                        </div>
-                        <div className={`w-10 h-10 flex items-center justify-center font-mono font-bold text-sm rounded-full border-2 ${
-                          childIsHighlighted ? 'border-sprout-sticker bg-[#22c55e]/15 shadow-sm' : 'border-charcoal bg-surface'
-                        }`}>{initialNodes[childId].char}{initialNodes[childId].isEnd ? ' *' : ''}</div>
-                      </React.Fragment>
-                    );
-                  })}
-                </div>
+      <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-4 overflow-x-auto">
+        <div className="flex items-center gap-2 flex-wrap justify-center">
+          {cur.nodes.map((n, i) => (
+            <React.Fragment key={i}>
+              <div
+                className={`px-3.5 py-2.5 rounded-xl border-2 shadow-hard font-mono font-bold text-sm flex items-center gap-1.5 transition-all duration-200 ${
+                  n.active
+                    ? 'bg-primary-container text-on-primary-container border-charcoal scale-105'
+                    : 'bg-surface text-charcoal border-outline/40'
+                }`}
+              >
+                <span>{n.char}</span>
+                {n.isEnd && <span className="text-xs font-bold text-sprout-sticker">* [END]</span>}
+                {n.count !== undefined && <span className="text-[10px] text-on-surface-variant">({n.count})</span>}
               </div>
-            );
-          })}
+              {i < cur.nodes.length - 1 && <span className="text-charcoal font-bold">→</span>}
+            </React.Fragment>
+          ))}
         </div>
       </div>
 
-      <StepCard stepNumber={highlightPath.length} totalSteps={inputWord.length + 1}
-        title={`Trie prefix search: "${inputWord}"`}
-        whatHappens={mode === 'search' ? (searchResult === 'found' ? `Word "${inputWord}" exists in trie.` : `Prefix not found at char '${inputWord[highlightPath.length - 1] || inputWord[0]}'.`) : 'Insert words: app, an, bad, cat.'}
-        whyRationale="Trie allows O(L) prefix search. Each node represents a character. Mark isEnd for complete words."
-        variableStates={{ word: inputWord, path_traversed: highlightPath.map(id => initialNodes[id].char).join(' → ') || 'none' }}
-        codeSnippet="node = root\nfor char in word:\n    if char not in node.children:\n        return False\n    node = node.children[char]\nreturn node.is_end"
-        timeSpaceImpact="Time: O(L) search/insert | Space: O(N × L) total"
+      <StepCard
+        stepNumber={step + 1}
+        totalSteps={steps.length}
+        title={cur.title}
+        whatHappens={cur.whatHappens}
+        whyRationale={cur.whyRationale}
+        variableStates={cur.states}
+        codeSnippet={cur.codeSnippet}
+        timeSpaceImpact={cur.impact || 'Time: O(L) | Space: O(N × L)'}
       />
     </div>
   );
