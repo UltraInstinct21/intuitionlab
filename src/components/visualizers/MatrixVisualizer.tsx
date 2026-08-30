@@ -1,10 +1,113 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, RotateCcw, Play, Pause } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import { StepCard } from './StepCard';
 import { Problem } from '@/types/problem';
 
-export const MatrixVisualizer: React.FC<{ problem: Problem }> = ({ problem }) => {
+interface MatrixStep {
+  title: string;
+  whatHappens: string;
+  whyRationale: string;
+  grid: (number | string)[][];
+  highlightCells?: [number, number][];
+  activeCell?: [number, number];
+  states: Record<string, string | number | boolean | undefined>;
+  codeSnippet: string;
+  impact?: string;
+}
+
+function buildMatrixSteps(problem: Problem): MatrixStep[] {
+  const t = (problem.title || '').toLowerCase();
+
+  // 1. Rotate Image
+  if (t.includes('rotate image') || t.includes('rotate')) {
+    const original = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ];
+    const transposed = [
+      [1, 4, 7],
+      [2, 5, 8],
+      [3, 6, 9],
+    ];
+    const rotated = [
+      [7, 4, 1],
+      [8, 5, 2],
+      [9, 6, 3],
+    ];
+
+    return [
+      {
+        title: 'Step 1: Original 3x3 Matrix',
+        whatHappens: 'Input matrix before 90° clockwise rotation: [[1, 2, 3], [4, 5, 6], [7, 8, 9]].',
+        whyRationale: 'A 90° clockwise rotation equals: Transpose the matrix, then Reverse each row.',
+        grid: original,
+        states: { state: 'Original', rows: 3, cols: 3 },
+        codeSnippet: '# Rotate in-place: Transpose + Reverse Rows',
+        impact: 'Time: O(N²) | Space: O(1)',
+      },
+      {
+        title: 'Step 2: Transpose Matrix (Swap across Diagonal)',
+        whatHappens: 'Swap matrix[i][j] with matrix[j][i]. (2 ↔ 4, 3 ↔ 7, 6 ↔ 8). Diagonal elements (1, 5, 9) remain in place.',
+        whyRationale: 'Transposition reflects elements across the main diagonal: columns become rows.',
+        grid: transposed,
+        highlightCells: [[0, 1], [1, 0], [0, 2], [2, 0], [1, 2], [2, 1]],
+        states: { step: 'Transposed', 'matrix[0][1]': 4, 'matrix[1][0]': 2 },
+        codeSnippet: 'for i in range(n):\n    for j in range(i + 1, n):\n        matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]',
+      },
+      {
+        title: 'Step 3: Reverse Each Row (Final 90° Rotation)',
+        whatHappens: 'Reverse row 0: [1, 4, 7] → [7, 4, 1]. Reverse row 1: [2, 5, 8] → [8, 5, 2]. Reverse row 2: [3, 6, 9] → [9, 6, 3].',
+        whyRationale: 'Horizontal reversal flips the transposed columns to the right side, completing exact 90° rotation.',
+        grid: rotated,
+        highlightCells: [[0, 0], [0, 2], [1, 0], [1, 2], [2, 0], [2, 2]],
+        states: { rotation: '90° Clockwise Complete', result: '[[7,4,1],[8,5,2],[9,6,3]]' },
+        codeSnippet: 'for row in matrix:\n    row.reverse()\nreturn matrix',
+      },
+    ];
+  }
+
+  // 2. Search a 2D Matrix
+  if (t.includes('search a 2d') || t.includes('search 2d')) {
+    const grid = [
+      [1, 3, 5, 7],
+      [10, 11, 16, 20],
+      [23, 30, 34, 60],
+    ];
+    return [
+      {
+        title: 'Step 1: Treat 2D Matrix as Flattened 1D Array',
+        whatHappens: 'Matrix 3x4 (12 elements). Treat as sorted array of length 12. Search for Target = 3.',
+        whyRationale: 'Row-major 1D index mid maps to row = mid // cols and col = mid % cols.',
+        grid: grid,
+        activeCell: [0, 0],
+        states: { low: 0, high: 11, target: 3 },
+        codeSnippet: 'm, n = len(matrix), len(matrix[0])\nlow, high = 0, m * n - 1',
+        impact: 'Time: O(log(M × N)) | Space: O(1)',
+      },
+      {
+        title: 'Step 2: Binary Search Mid = 5 (row 1, col 1 = 11)',
+        whatHappens: 'mid = (0 + 11) // 2 = 5 → matrix[1][1] = 11. Target 3 < 11 → Eliminate right half (high = mid - 1 = 4).',
+        whyRationale: 'Since matrix is sorted, all elements after mid are strictly greater than 11.',
+        grid: grid,
+        activeCell: [1, 1],
+        states: { mid: 5, value: 11, target: 3, comparison: '3 < 11 -> go left' },
+        codeSnippet: 'mid = (low + high) // 2\nval = matrix[mid // n][mid % n]\nif target < val: high = mid - 1',
+      },
+      {
+        title: 'Step 3: Mid = 1 (row 0, col 1 = 3) -> Found!',
+        whatHappens: 'mid = (0 + 4) // 2 = 2 → matrix[0][2] = 5. Target 3 < 5 → high = 1. Next mid = 1 → matrix[0][1] = 3. Match found!',
+        whyRationale: 'Binary search converges in O(log(M*N)) steps.',
+        grid: grid,
+        activeCell: [0, 1],
+        states: { found: true, row: 0, col: 1, target: 3 },
+        codeSnippet: 'if val == target: return True',
+      },
+    ];
+  }
+
+  // 3. Default: Set Matrix Zeroes
   const defaultMatrix = [
     [1, 1, 1, 1],
     [1, 0, 1, 1],
@@ -12,179 +115,120 @@ export const MatrixVisualizer: React.FC<{ problem: Problem }> = ({ problem }) =>
     [0, 1, 1, 1],
   ];
 
-  const exampleMatrix = (() => {
-    if (problem.examples?.[0]?.input) {
-      const match = problem.examples[0].input.match(/\[[\s\S]*\]/);
-      if (match) {
-        try {
-          const parsed = JSON.parse(match[0]);
-          if (Array.isArray(parsed) && Array.isArray(parsed[0])) return parsed;
-        } catch {}
-      }
-    }
-    return defaultMatrix;
-  })();
-
-  const [matrix, setMatrix] = useState<number[][]>(exampleMatrix.map(r => [...r]));
-  const [step, setStep] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const stepsData = [
+  return [
     {
-      title: "Inspect Matrix & Record Original Boundary Zeros",
-      whatHappens: "Scan row 0 and column 0 to check if they already contain any zeros. Store results in two boolean flags: firstRowZero and firstColZero.",
-      whyRationale: "Since we will overwrite row 0 and column 0 to store markers for inner cells, we must remember beforehand if row 0 and col 0 themselves needed zeroing out.",
-      variableStates: {
-        firstRowZero: matrix[0]?.some(v => v === 0) ? "true" : "false",
-        firstColZero: matrix.some(r => r[0] === 0) ? "true" : "false",
-        matrix_size: `${matrix.length} x ${matrix[0]?.length || 0}`,
-      },
-      codeSnippet: "first_row_zero = any(matrix[0][j] == 0 for j in range(n))\nfirst_col_zero = any(matrix[i][0] == 0 for i in range(m))",
-      timeSpaceImpact: "Time: O(m + n) | Space: O(1)",
+      title: 'Step 1: Check Boundary Flags',
+      whatHappens: 'Scan row 0 and column 0 for any existing zeros. firstColZero = True (since matrix[3][0] == 0), firstRowZero = False.',
+      whyRationale: 'We store inner cell markers in row 0 and col 0, so we must preserve their original zero status.',
+      grid: defaultMatrix,
+      highlightCells: [[3, 0]],
+      states: { firstColZero: true, firstRowZero: false },
+      codeSnippet: 'first_col_zero = any(matrix[i][0] == 0 for i in range(m))\nfirst_row_zero = any(matrix[0][j] == 0 for j in range(n))',
+      impact: 'Time: O(M × N) | Space: O(1)',
     },
     {
-      title: "Use First Row & First Column as In-Place Markers",
-      whatHappens: "Iterate through the inner matrix. Whenever matrix[r][c] == 0, mark matrix[r][0] = 0 and matrix[0][c] = 0.",
-      whyRationale: "Instead of allocating extra memory arrays, we reuse the matrix's own top row and left column as hash markers.",
-      variableStates: {
-        scan_range: "inner cells",
-        rule: "matrix[r][0]=0, matrix[0][c]=0 if matrix[r][c]==0",
-      },
-      codeSnippet: "for i in range(1, m):\n    for j in range(1, n):\n        if matrix[i][j] == 0:\n            matrix[i][0] = 0\n            matrix[0][j] = 0",
-      timeSpaceImpact: "Time: O(m × n) | Space: O(1)",
+      title: 'Step 2: Record Markers in Row 0 and Col 0',
+      whatHappens: 'matrix[1][1] == 0 → Mark matrix[1][0] = 0 and matrix[0][1] = 0.',
+      whyRationale: 'Top row and leftmost column act as an in-place hash set.',
+      grid: [
+        [1, '0*', 1, 1],
+        ['0*', 0, 1, 1],
+        [1, 1, 1, 1],
+        [0, 1, 1, 1],
+      ],
+      highlightCells: [[0, 1], [1, 0]],
+      states: { markedRow: 1, markedCol: 1 },
+      codeSnippet: 'if matrix[i][j] == 0:\n    matrix[i][0] = 0\n    matrix[0][j] = 0',
     },
     {
-      title: "Zero Out Inner Matrix Cells Using Recorded Markers",
-      whatHappens: "For each inner cell, if its row marker or column marker is 0, set it to 0.",
-      whyRationale: "Each inner cell consults its corresponding row and column markers. If either is 0, this cell belongs to a zeroed line.",
-      variableStates: {
-        rule: "matrix[r][c] = 0 if (matrix[r][0]==0 or matrix[0][c]==0)",
-      },
-      codeSnippet: "for i in range(1, m):\n    for j in range(1, n):\n        if matrix[i][0] == 0 or matrix[0][j] == 0:\n            matrix[i][j] = 0",
-      timeSpaceImpact: "Time: O(m × n) | Space: O(1)",
+      title: 'Step 3: Zero Out Inner Cells Using Markers',
+      whatHappens: 'Set all inner cells where matrix[i][0] == 0 or matrix[0][j] == 0 to 0.',
+      whyRationale: 'Consulting markers updates all inner elements in-place.',
+      grid: [
+        [1, 0, 1, 1],
+        [0, 0, 0, 0],
+        [1, 0, 1, 1],
+        [0, 0, 0, 0],
+      ],
+      highlightCells: [[1, 0], [1, 1], [1, 2], [1, 3], [3, 0], [3, 1], [3, 2], [3, 3]],
+      states: { innerZeroed: true },
+      codeSnippet: 'if matrix[i][0] == 0 or matrix[0][j] == 0:\n    matrix[i][j] = 0',
     },
     {
-      title: "Apply Boundary Flags to Row 0 and Col 0",
-      whatHappens: "If firstRowZero was true, zero out row 0. If firstColZero was true, zero out column 0.",
-      whyRationale: "We delayed updating the first row and column until the end so their marker information wouldn't be corrupted.",
-      variableStates: {
-        status: "In-place zeroing complete!",
-      },
-      codeSnippet: "if first_row_zero: matrix[0] = [0] * n\nif first_col_zero:\n    for i in range(m): matrix[i][0] = 0",
-      timeSpaceImpact: "Total Time: O(m × n) | Total Space: O(1)",
+      title: 'Step 4: Apply Boundary Flags',
+      whatHappens: 'firstColZero was True → Zero out column 0. Matrix completely zeroed.',
+      whyRationale: 'Finalizing boundary markers completes the algorithm.',
+      grid: [
+        [0, 0, 1, 1],
+        [0, 0, 0, 0],
+        [0, 0, 1, 1],
+        [0, 0, 0, 0],
+      ],
+      states: { complete: true },
+      codeSnippet: 'if first_col_zero:\n    for i in range(m): matrix[i][0] = 0',
     },
   ];
+}
 
-  const getSimulatedMatrix = (currentStep: number) => {
-    if (currentStep === 0) return matrix;
-    const m = matrix.length;
-    const n = matrix[0].length;
-    const copy = matrix.map(r => [...r]);
-    if (currentStep >= 1) {
-      for (let r = 1; r < m; r++)
-        for (let c = 1; c < n; c++)
-          if (matrix[r][c] === 0) { copy[r][0] = 0; copy[0][c] = 0; }
-    }
-    if (currentStep >= 2) {
-      for (let r = 1; r < m; r++)
-        for (let c = 1; c < n; c++)
-          if (copy[r][0] === 0 || copy[0][c] === 0) copy[r][c] = 0;
-    }
-    if (currentStep >= 3) {
-      if (matrix[0].some(v => v === 0)) for (let c = 0; c < n; c++) copy[0][c] = 0;
-      if (matrix.some(r => r[0] === 0)) for (let r = 0; r < m; r++) copy[r][0] = 0;
-    }
-    return copy;
-  };
-
-  const displayMatrix = getSimulatedMatrix(step);
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (isPlaying) {
-      timer = setInterval(() => {
-        setStep(prev => {
-          if (prev >= stepsData.length - 1) { setIsPlaying(false); return prev; }
-          return prev + 1;
-        });
-      }, 2500);
-    }
-    return () => clearInterval(timer);
-  }, [isPlaying]);
+export const MatrixVisualizer: React.FC<{ problem: Problem }> = ({ problem }) => {
+  const [step, setStep] = useState(0);
+  const steps = buildMatrixSteps(problem);
+  const cur = steps[step] || steps[0];
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3 bg-dew-drop p-3.5 rounded-xl border border-outline/30">
-        <div className="flex items-center gap-2 flex-wrap">
-          {stepsData.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => { setStep(idx); setIsPlaying(false); }}
-              className={`px-3 py-1.5 rounded-pill text-xs font-mono font-bold transition-all ${
-                step === idx
-                  ? 'bg-primary-container text-on-primary-container border-[1.5px] border-charcoal shadow-xs scale-105'
-                  : 'bg-surface text-on-surface-variant hover:bg-cream-paper border border-outline/30'
-              }`}
-            >
-              step {idx + 1}
-            </button>
-          ))}
-        </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="primary" onClick={() => setIsPlaying(!isPlaying)} className="flex items-center gap-1.5 text-xs h-8 px-3">
-            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-            <span>{isPlaying ? 'pause' : 'auto play'}</span>
+          <Button size="sm" variant="default" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0} className="h-8 px-2.5 text-xs">
+            <ChevronLeft className="w-4 h-4" /><span>prev</span>
           </Button>
-          <Button size="sm" variant="default" onClick={() => step > 0 && setStep(step - 1)} disabled={step === 0} className="h-8 px-2">
-            <ChevronLeft className="w-4 h-4" />
+          <Button size="sm" variant="primary" onClick={() => setStep(Math.min(steps.length - 1, step + 1))} disabled={step === steps.length - 1} className="h-8 px-3 text-xs">
+            <span>{step === steps.length - 1 ? 'completed!' : 'next step →'}</span><ChevronRight className="w-4 h-4" />
           </Button>
-          <Button size="sm" variant="default" onClick={() => step < stepsData.length - 1 && setStep(step + 1)} disabled={step === stepsData.length - 1} className="h-8 px-2">
-            <ChevronRight className="w-4 h-4" />
-          </Button>
-          <Button size="sm" variant="ghost" onClick={() => { setMatrix(exampleMatrix.map(r => [...r])); setStep(0); setIsPlaying(false); }} className="h-8">
-            <RotateCcw className="w-3.5 h-3.5" />
-          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setStep(0)} className="h-8"><RotateCcw className="w-3.5 h-3.5" /></Button>
+        </div>
+        <div className="text-xs md:text-sm font-mono flex items-center gap-3">
+          <span className="text-marker-orange font-bold">step {step + 1} of {steps.length}</span>
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-8 py-6 bg-cream-paper rounded-xl border border-dashed border-outline/40">
-        <div className="flex flex-col items-center gap-2.5">
-          <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider font-mono">
-            {step === 0 ? 'interactive matrix (click to toggle 0/1)' : `matrix state at step ${step + 1}`}
-          </span>
-          <div className={`grid gap-2 p-3 bg-surface-container-high rounded-xl border-[1.5px] border-charcoal shadow-hard`}
-            style={{ gridTemplateColumns: `repeat(${matrix[0]?.length || 4}, minmax(0, 1fr))` }}>
-            {displayMatrix.map((row, r) =>
-              row.map((val, c) => (
-                <button
+      <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-4 overflow-x-auto">
+        <div className="grid gap-1.5 p-3 bg-surface-container-high rounded-xl border border-charcoal shadow-hard" style={{ gridTemplateColumns: `repeat(${cur.grid[0]?.length || 3}, minmax(0, 1fr))` }}>
+          {cur.grid.map((row, r) =>
+            row.map((cell, c) => {
+              const isHighlight = cur.highlightCells?.some(([hr, hc]) => hr === r && hc === c);
+              const isActive = cur.activeCell?.[0] === r && cur.activeCell?.[1] === c;
+
+              return (
+                <div
                   key={`${r}-${c}`}
-                  onClick={() => step === 0 && setMatrix(m => m.map((row, ri) => row.map((v, ci) => (ri === r && ci === c ? (v === 0 ? 1 : 0) : v))))}
-                  disabled={step !== 0}
-                  className={`w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center font-mono font-bold text-sm sm:text-lg rounded-lg transition-all duration-300 ${
-                    val === 0
-                      ? 'bg-primary-container text-on-primary-container border-[1.5px] border-charcoal shadow-sm scale-95'
-                      : (r === 0 || c === 0) && step > 0
-                      ? 'bg-secondary-container text-on-secondary-container border border-outline'
-                      : 'bg-cream-paper text-charcoal border border-outline/50 hover:bg-dew-drop'
+                  className={`w-11 h-11 md:w-13 md:h-13 flex items-center justify-center font-mono font-bold text-sm md:text-base rounded-lg border transition-all duration-200 ${
+                    isActive
+                      ? 'border-2 border-marker-orange bg-primary-fixed scale-105 shadow-sm'
+                      : isHighlight
+                      ? 'border-2 border-sprout-sticker bg-[#22c55e]/15 text-charcoal'
+                      : cell === 0 || cell === '0*'
+                      ? 'border-charcoal bg-primary-container text-on-primary-container'
+                      : 'border-outline/40 bg-surface text-charcoal'
                   }`}
                 >
-                  {val}
-                </button>
-              ))
-            )}
-          </div>
+                  {cell}
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 
       <StepCard
         stepNumber={step + 1}
-        totalSteps={stepsData.length}
-        title={stepsData[step].title}
-        whatHappens={stepsData[step].whatHappens}
-        whyRationale={stepsData[step].whyRationale}
-        variableStates={stepsData[step].variableStates}
-        codeSnippet={stepsData[step].codeSnippet}
-        timeSpaceImpact={stepsData[step].timeSpaceImpact}
+        totalSteps={steps.length}
+        title={cur.title}
+        whatHappens={cur.whatHappens}
+        whyRationale={cur.whyRationale}
+        variableStates={cur.states}
+        codeSnippet={cur.codeSnippet}
+        timeSpaceImpact={cur.impact || 'Time: O(M × N) | Space: O(1)'}
       />
     </div>
   );

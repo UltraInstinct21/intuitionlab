@@ -151,7 +151,7 @@ export const DiagramVisualizer: React.FC<DiagramVisualizerProps> = ({ problem })
         </div>
         <Badge variant="medium" className="text-xs font-mono hidden sm:inline-flex">{LABELS[type] || 'visual model'}</Badge>
       </div>
-      <Viz problem={problem} />
+      <Viz key={problem.id} problem={problem} />
     </div>
   );
 };
