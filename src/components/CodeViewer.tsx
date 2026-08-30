@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Problem, ProblemApproach } from '@/types/problem';
 import { Button } from '@/components/ui/button';
 import { Check, Copy, Clock, HardDrive, Terminal } from 'lucide-react';
+import { renderInlineMarkdown } from '@/components/FormattedText';
 
 interface CodeViewerProps {
   problem: Problem;
@@ -145,7 +146,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({ problem }) => {
             💡 Approach Strategy:
           </span>
           <p className="font-sans leading-relaxed text-sm md:text-base text-[#e6ccb2]">
-            {currentApproach.description}
+            {renderInlineMarkdown(currentApproach.description)}
           </p>
         </div>
       )}

@@ -3,6 +3,8 @@ import { Problem } from '@/types/problem';
 import { Badge } from '@/components/ui/badge';
 import { Lightbulb, Clock, HardDrive, Compass, Sparkles } from 'lucide-react';
 
+import { FormattedText } from '@/components/FormattedText';
+
 interface ProblemHeroProps {
   problem: Problem;
 }
@@ -17,7 +19,7 @@ export const ProblemHero: React.FC<ProblemHeroProps> = ({ problem }) => {
         </Badge>
 
         {problem.number && (
-          <Badge variant="default" className="text-sm px-3 py-1 font-mono font-bold">
+          <Badge variant="default" className="text-sm px-3.5 py-1 font-mono font-bold">
             #{problem.number}
           </Badge>
         )}
@@ -63,9 +65,10 @@ export const ProblemHero: React.FC<ProblemHeroProps> = ({ problem }) => {
           </h3>
         </div>
 
-        <div className="font-sans text-base sm:text-lg leading-relaxed text-cocoa-ink whitespace-pre-line">
-          {problem.problemStatement}
-        </div>
+        <FormattedText
+          text={problem.problemStatement}
+          className="font-sans text-base sm:text-lg leading-relaxed text-cocoa-ink"
+        />
 
         {/* Expected Complexity Chips */}
         <div className="mt-6 pt-4 border-t border-outline/20 flex flex-wrap items-center gap-6 text-sm font-mono">
@@ -93,9 +96,10 @@ export const ProblemHero: React.FC<ProblemHeroProps> = ({ problem }) => {
                 intuition & core logic
               </span>
             </div>
-            <p className="font-sans text-sm sm:text-base leading-relaxed text-cocoa-ink font-medium">
-              {problem.intuition}
-            </p>
+            <FormattedText
+              text={problem.intuition}
+              className="font-sans text-sm sm:text-base leading-relaxed text-cocoa-ink font-medium"
+            />
           </div>
         )}
 
@@ -107,9 +111,10 @@ export const ProblemHero: React.FC<ProblemHeroProps> = ({ problem }) => {
                 key notebook insight
               </span>
             </div>
-            <p className="font-sans text-sm sm:text-base leading-relaxed text-cocoa-ink font-medium">
-              {problem.keyInsight}
-            </p>
+            <FormattedText
+              text={problem.keyInsight}
+              className="font-sans text-sm sm:text-base leading-relaxed text-cocoa-ink font-medium"
+            />
           </div>
         )}
       </div>

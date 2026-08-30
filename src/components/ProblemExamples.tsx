@@ -1,6 +1,7 @@
 import React from 'react';
 import { Problem } from '@/types/problem';
 import { ListChecks, AlertCircle, Layers } from 'lucide-react';
+import { FormattedText, renderInlineMarkdown } from '@/components/FormattedText';
 
 interface ProblemExamplesProps {
   problem: Problem;
@@ -54,7 +55,7 @@ export const ProblemExamples: React.FC<ProblemExamplesProps> = ({ problem }) => 
                 {ex.explanation && (
                   <div className="pt-1.5 text-on-surface-variant font-sans text-sm leading-relaxed">
                     <strong className="font-mono text-cocoa-ink font-bold">Explanation: </strong>
-                    {ex.explanation}
+                    <span className="text-cocoa-ink">{renderInlineMarkdown(ex.explanation)}</span>
                   </div>
                 )}
               </div>
@@ -76,7 +77,7 @@ export const ProblemExamples: React.FC<ProblemExamplesProps> = ({ problem }) => 
               <li key={idx} className="flex items-start gap-2.5">
                 <span className="text-marker-orange font-bold text-base mt-0.5">•</span>
                 <span className="bg-dew-drop px-3 py-1 rounded-md border border-outline/30">
-                  {c}
+                  {renderInlineMarkdown(c)}
                 </span>
               </li>
             ))}
@@ -92,8 +93,11 @@ export const ProblemExamples: React.FC<ProblemExamplesProps> = ({ problem }) => 
             <span>step-by-step algorithm approach</span>
           </h3>
 
-          <div className="font-sans text-sm sm:text-base leading-relaxed text-cocoa-ink whitespace-pre-line bg-dew-drop p-4 rounded-lg border border-outline/30">
-            {problem.approachOverview}
+          <div className="bg-dew-drop p-4 rounded-lg border border-outline/30">
+            <FormattedText
+              text={problem.approachOverview}
+              className="font-sans text-sm sm:text-base leading-relaxed text-cocoa-ink"
+            />
           </div>
         </div>
       )}

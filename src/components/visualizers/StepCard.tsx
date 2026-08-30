@@ -1,5 +1,6 @@
 import React from 'react';
 import { Info, Layers, Code } from 'lucide-react';
+import { renderInlineMarkdown } from '@/components/FormattedText';
 
 interface StepCardProps {
   stepNumber: number;
@@ -47,7 +48,7 @@ export const StepCard: React.FC<StepCardProps> = ({
             <span>action in this step:</span>
           </div>
           <p className="font-sans text-cocoa-ink leading-relaxed font-medium">
-            {whatHappens}
+            {renderInlineMarkdown(whatHappens)}
           </p>
         </div>
         <div className="space-y-1.5 bg-cream-paper p-3 rounded-lg border border-outline/30">
@@ -56,7 +57,7 @@ export const StepCard: React.FC<StepCardProps> = ({
             <span>algorithmic rationale:</span>
           </div>
           <p className="font-sans text-cocoa-ink leading-relaxed font-medium">
-            {whyRationale}
+            {renderInlineMarkdown(whyRationale)}
           </p>
         </div>
       </div>
