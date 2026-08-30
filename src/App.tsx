@@ -18,7 +18,7 @@ export const App: React.FC = () => {
 
   // Selected Problem ID
   const [currentProblemId, setCurrentProblemId] = useState<string>(() => {
-    const saved = localStorage.getItem('superr_current_problem');
+    const saved = localStorage.getItem('intuitionlab_current_problem') || localStorage.getItem('superr_current_problem');
     if (saved && problems.some(p => p.id === saved)) {
       return saved;
     }
@@ -31,7 +31,7 @@ export const App: React.FC = () => {
   // Solved & Bookmarked sets stored in localStorage
   const [solvedIds, setSolvedIds] = useState<string[]>(() => {
     try {
-      const saved = localStorage.getItem('superr_solved_problems');
+      const saved = localStorage.getItem('intuitionlab_solved_problems') || localStorage.getItem('superr_solved_problems');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -40,7 +40,7 @@ export const App: React.FC = () => {
 
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
     try {
-      const saved = localStorage.getItem('superr_bookmarked_problems');
+      const saved = localStorage.getItem('intuitionlab_bookmarked_problems') || localStorage.getItem('superr_bookmarked_problems');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -56,7 +56,7 @@ export const App: React.FC = () => {
   // Persist current problem
   useEffect(() => {
     if (currentProblemId) {
-      localStorage.setItem('superr_current_problem', currentProblemId);
+      localStorage.setItem('intuitionlab_current_problem', currentProblemId);
       const mainElem = document.getElementById('main-content-canvas');
       if (mainElem) mainElem.scrollTop = 0;
     }
@@ -88,7 +88,7 @@ export const App: React.FC = () => {
       const next = prev.includes(currentProblem.id)
         ? prev.filter(id => id !== currentProblem.id)
         : [...prev, currentProblem.id];
-      localStorage.setItem('superr_solved_problems', JSON.stringify(next));
+      localStorage.setItem('intuitionlab_solved_problems', JSON.stringify(next));
       return next;
     });
   }, [currentProblem.id]);
@@ -98,7 +98,7 @@ export const App: React.FC = () => {
       const next = prev.includes(currentProblem.id)
         ? prev.filter(id => id !== currentProblem.id)
         : [...prev, currentProblem.id];
-      localStorage.setItem('superr_bookmarked_problems', JSON.stringify(next));
+      localStorage.setItem('intuitionlab_bookmarked_problems', JSON.stringify(next));
       return next;
     });
   }, [currentProblem.id]);

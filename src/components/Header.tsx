@@ -84,10 +84,10 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
             <div className="flex flex-col">
               <span className="font-display text-lg font-extrabold lowercase leading-tight text-charcoal tracking-tight">
-                superr<span className="text-marker-orange">.</span>
+                intuition<span className="text-marker-orange">lab.</span>
               </span>
               <span className="text-[9px] font-mono text-on-surface-variant hidden sm:inline-block">
-                sde notebook ({currentIndex + 1}/{totalProblems})
+                sde sheet ({currentIndex + 1}/{totalProblems})
               </span>
             </div>
           </div>

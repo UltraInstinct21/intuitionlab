@@ -11,13 +11,13 @@ export const ProblemNotes: React.FC<ProblemNotesProps> = ({ problemId }) => {
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem(`superr_notes_${problemId}`);
+    const saved = localStorage.getItem(`intuitionlab_notes_${problemId}`) || localStorage.getItem(`superr_notes_${problemId}`);
     setNote(saved || '');
     setIsSaved(false);
   }, [problemId]);
 
   const handleSave = () => {
-    localStorage.setItem(`superr_notes_${problemId}`, note);
+    localStorage.setItem(`intuitionlab_notes_${problemId}`, note);
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 2000);
   };
