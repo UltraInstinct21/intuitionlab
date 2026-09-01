@@ -17,6 +17,8 @@ import { SettingsProvider } from '@/context/SettingsContext';
 import { AnnouncementBanner } from '@/components/AnnouncementBanner';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const MainApp: React.FC = () => {
   const problems: Problem[] = problemsData as Problem[];
@@ -213,6 +215,8 @@ const MainApp: React.FC = () => {
           isOpen={isAdminModalOpen}
           onClose={() => setIsAdminModalOpen(false)}
         />
+        <Analytics />
+        <SpeedInsights />
       </div>
     );
   }
@@ -316,6 +320,10 @@ const MainApp: React.FC = () => {
         isOpen={isAdminModalOpen}
         onClose={() => setIsAdminModalOpen(false)}
       />
+
+      {/* Vercel Analytics & Speed Insights */}
+      <Analytics />
+      <SpeedInsights />
     </div>
   );
 };
