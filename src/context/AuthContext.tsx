@@ -108,13 +108,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [isConfigured]);
 
   const signInWithPassword = async (email: string, password: string) => {
+    const cleanEmail = email.trim().toLowerCase();
+
     if (!isConfigured) {
-      const mockUser = { id: 'mock-user-id', email } as User;
+      const mockUser = { id: 'mock-user-id', email: cleanEmail } as User;
       setUser(mockUser);
       setProfile({
         id: 'mock-user-id',
-        email,
-        username: email.split('@')[0],
+        email: cleanEmail,
+        username: cleanEmail.split('@')[0],
         role: 'admin',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -122,9 +124,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error: null };
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
     if (error) {
-      // Check if the error is email not confirmed
       if (error.message.toLowerCase().includes('email not confirmed')) {
         return {
           error: 'Email not confirmed yet. In Supabase Dashboard ➔ Authentication ➔ Providers ➔ Email, disable "Confirm email" or confirm your account in the SQL Editor.',
@@ -142,13 +143,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signUpWithPassword = async (email: string, password: string, username?: string) => {
+    const cleanEmail = email.trim().toLowerCase();
+
     if (!isConfigured) {
-      const mockUser = { id: 'mock-user-id', email } as User;
+      const mockUser = { id: 'mock-user-id', email: cleanEmail } as User;
       setUser(mockUser);
       setProfile({
         id: 'mock-user-id',
-        email,
-        username: username || email.split('@')[0],
+        email: cleanEmail,
+        username: username || cleanEmail.split('@')[0],
         role: 'admin',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -156,18 +159,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error: null };
     }
 
+    // Step 1: Pre-check if an account with this email already exists in profiles
+    try {
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', cleanEmail)
+        .maybeSingle();
+
+      if (existingProfile) {
+        return {
+          error: 'An account with this email address already exists. Please sign in instead.',
+        };
+      }
+    } catch {
+      // Continue to Supabase Auth check if profiles query fails
+    }
+
+    // Step 2: Attempt Supabase Signup
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: cleanEmail,
       password,
       options: {
         data: {
-          username: username || email.split('@')[0],
+          username: username || cleanEmail.split('@')[0],
         },
       },
     });
 
     if (error) {
+      if (
+        error.message.toLowerCase().includes('already registered') ||
+        error.message.toLowerCase().includes('already in use')
+      ) {
+        return {
+          error: 'An account with this email address already exists. Please sign in instead.',
+        };
+      }
       return { error: error.message };
+    }
+
+    // Supabase identity detection: When user already exists, Supabase returns identities: []
+    if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      return {
+        error: 'An account with this email address already exists. Please sign in instead.',
+      };
     }
 
     // If session is present, user is logged in automatically (Confirm email is disabled)

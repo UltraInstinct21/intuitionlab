@@ -13,6 +13,8 @@ import { ProblemNotes } from '@/components/ProblemNotes';
 import { FooterNav } from '@/components/FooterNav';
 import { LandingPage } from '@/components/LandingPage';
 import { AuthProvider } from '@/context/AuthContext';
+import { SettingsProvider } from '@/context/SettingsContext';
+import { AnnouncementBanner } from '@/components/AnnouncementBanner';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 
@@ -194,6 +196,7 @@ const MainApp: React.FC = () => {
     return (
       <div className="relative min-h-screen bg-surface selection:bg-marker-orange selection:text-white">
         <PaperShaderBackground />
+        <AnnouncementBanner />
         <LandingPage
           problems={problems}
           topics={topics}
@@ -233,6 +236,9 @@ const MainApp: React.FC = () => {
 
       {/* Main App Canvas */}
       <div className="relative flex flex-1 flex-col overflow-hidden">
+        {/* Global Announcement Banner */}
+        <AnnouncementBanner />
+
         {/* Sticky Header */}
         <Header
           problem={currentProblem}
@@ -317,7 +323,9 @@ const MainApp: React.FC = () => {
 export const App: React.FC = () => {
   return (
     <AuthProvider>
-      <MainApp />
+      <SettingsProvider>
+        <MainApp />
+      </SettingsProvider>
     </AuthProvider>
   );
 };
