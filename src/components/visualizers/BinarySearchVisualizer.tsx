@@ -1,111 +1,132 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
-import { StepCard } from './StepCard';
+import React, { useState, useEffect } from 'react';
 import { Problem } from '@/types/problem';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight, RotateCcw, Play, Pause } from 'lucide-react';
+import { StepCard } from './StepCard';
+import { BinarySearchVisualizationData, BinarySearchStep } from '@/types/visualization';
 
-export const BinarySearchVisualizer: React.FC<{ problem: Problem }> = ({ problem }) => {
-  const defaultArr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+interface BinarySearchVisualizerProps {
+  problem: Problem;
+  customData?: BinarySearchVisualizationData;
+}
 
-  const arr = (() => {
-    if (problem.examples?.[0]?.input) {
-      const match = problem.examples[0].input.match(/\[(-?\d+(?:\s*,\s*-?\d+)*)\]/);
-      if (match) {
-        const parsed = match[1].split(',').map(Number).filter(n => !isNaN(n));
-        if (parsed.length >= 3 && parsed.every((v, i, a) => i === 0 || v >= a[i - 1])) return parsed;
-      }
+export const BinarySearchVisualizer: React.FC<BinarySearchVisualizerProps> = ({ problem, customData }) => {
+  const [step, setStep] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const defaultSteps: BinarySearchStep[] = [
+    {
+      title: 'Initialize Search Interval [Low..High]',
+      whatHappens: 'Initialize Low = 0, High = 9. Search interval encompasses entire sorted array.',
+      whyRationale: 'Binary search eliminates half the search space per iteration.',
+      array: [2, 5, 8, 12, 16, 23, 38, 56, 72, 91],
+      low: 0,
+      mid: 4,
+      high: 9,
+      condition: 'Check mid element array[4] = 16',
+      states: { low: 0, mid: 4, high: 9, target: 23 },
+      codeSnippet: 'low, high = 0, len(nums) - 1\nmid = (low + high) // 2',
+      impact: 'Time: O(log N) | Space: O(1)',
     }
-    return defaultArr;
-  })();
+  ];
 
-  const defaultTarget = 23;
-  const target = (() => {
-    if (problem.examples?.[0]?.input) {
-      const match = problem.examples[0].input.match(/target\s*=\s*(-?\d+)/i);
-      if (match) return parseInt(match[1]);
+  const steps: BinarySearchStep[] = customData?.steps && customData.steps.length > 0 ? customData.steps : defaultSteps;
+  const cur = steps[step] || steps[0];
+
+  useEffect(() => {
+    setStep(0);
+    setIsPlaying(false);
+  }, [problem.id, customData]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isPlaying) {
+      timer = setInterval(() => {
+        setStep(prev => {
+          if (prev >= steps.length - 1) {
+            setIsPlaying(false);
+            return prev;
+          }
+          return prev + 1;
+        });
+      }, 2500);
     }
-    return defaultTarget;
-  })();
-
-  const [left, setLeft] = useState(0);
-  const [right, setRight] = useState(arr.length - 1);
-  const [found, setFound] = useState(false);
-  const [done, setDone] = useState(false);
-
-  const mid = Math.floor((left + right) / 2);
-
-  const stepForward = () => {
-    if (done) return;
-    const m = Math.floor((left + right) / 2);
-    if (arr[m] === target) {
-      setFound(true);
-      setDone(true);
-    } else if (arr[m] < target) {
-      setLeft(m + 1);
-    } else {
-      setRight(m - 1);
-    }
-  };
-
-  const reset = () => { setLeft(0); setRight(arr.length - 1); setFound(false); setDone(false); };
-
-  const searchComplete = done && found;
-  const searchFailed = left > right && !found;
+    return () => clearInterval(timer);
+  }, [isPlaying, steps.length]);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3 bg-dew-drop p-3.5 rounded-xl border border-outline/30">
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="primary" onClick={reset} className="text-xs h-8 px-3">
-            <RotateCcw className="w-4 h-4 mr-1" />reset
+          <Button size="sm" variant="default" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0} className="h-8 px-2.5 text-xs">
+            <ChevronLeft className="w-4 h-4" /><span>prev</span>
           </Button>
-          <Button size="sm" variant="primary" onClick={stepForward} disabled={done} className="text-xs h-8 px-3">
-            step
+          <Button size="sm" variant="primary" onClick={() => setStep(Math.min(steps.length - 1, step + 1))} disabled={step === steps.length - 1} className="h-8 px-3 text-xs">
+            <span>{step === steps.length - 1 ? 'completed!' : 'next step →'}</span><ChevronRight className="w-4 h-4" />
           </Button>
+          <Button size="sm" variant="ghost" onClick={() => setIsPlaying(!isPlaying)} className="h-8 px-2.5 text-xs">
+            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => { setStep(0); setIsPlaying(false); }} className="h-8"><RotateCcw className="w-3.5 h-3.5" /></Button>
         </div>
-        <span className="text-xs md:text-sm font-mono font-bold text-marker-orange">
-          target: {target} | {searchComplete ? `found at index ${mid}` : searchFailed ? 'not found' : `searching...`}
-        </span>
+        <div className="text-xs md:text-sm font-mono flex items-center gap-3">
+          <span className="text-marker-orange font-bold">step {step + 1} of {steps.length}</span>
+          <span className="text-sky-sticker font-bold max-w-[320px] truncate">{cur.condition}</span>
+        </div>
       </div>
 
-      <div className="py-6 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-6">
-        <div className="flex items-center justify-center gap-1 md:gap-1.5 flex-wrap">
-          {arr.map((val, idx) => {
-            const inRange = idx >= left && idx <= right;
-            const isMid = idx === mid && inRange && !done;
-            const isFound = searchComplete && idx === mid;
-            const isEliminated = !inRange;
+      <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-6 overflow-x-auto select-none">
+        <div className="flex items-center justify-center gap-1.5 md:gap-2 flex-wrap min-w-max">
+          {cur.array.map((val, idx) => {
+            const isLow = idx === cur.low;
+            const isHigh = idx === cur.high;
+            const isMid = idx === cur.mid;
+            const isEliminated = cur.eliminatedRange && idx >= cur.eliminatedRange[0] && idx <= cur.eliminatedRange[1];
+            const isFound = cur.foundIndex === idx;
+
+            const valStr = String(val);
+            const isLong = valStr.length > 3;
+
             return (
-              <div key={idx} className="flex flex-col items-center gap-1">
-                <div className="h-5 text-xs font-mono font-bold">
-                  {isMid && !searchComplete && <span className="bg-sky-sticker text-white px-1.5 rounded-pill">mid</span>}
-                  {isFound && <span className="bg-sprout-sticker text-white px-1.5 rounded-pill">mid</span>}
+              <div key={idx} className="flex flex-col items-center gap-1 min-w-[48px]">
+                <div className="h-5 flex gap-1 items-center justify-center">
+                  {isLow && <span className="bg-sky-500 text-white px-1.5 py-0.2 rounded-pill text-[9px] font-mono font-bold">L</span>}
+                  {isMid && <span className="bg-orange-500 text-white px-1.5 py-0.2 rounded-pill text-[9px] font-mono font-bold">M</span>}
+                  {isHigh && <span className="bg-emerald-500 text-white px-1.5 py-0.2 rounded-pill text-[9px] font-mono font-bold">H</span>}
                 </div>
-                <div className={`w-11 h-13 md:w-13 md:h-15 flex items-center justify-center font-mono font-bold text-sm md:text-base rounded-lg border-2 transition-all duration-300 ${
-                  isFound ? 'border-sprout-sticker bg-[#22c55e]/15 shadow-md scale-110'
-                  : isMid ? 'border-sky-sticker bg-sky-100 shadow-sm'
-                  : isEliminated ? 'border-outline/30 bg-surface-container-high text-on-surface-variant opacity-50 line-through'
-                  : 'border-charcoal bg-surface text-charcoal'
-                }`}>{val}</div>
+                <div
+                  className={`min-w-[44px] px-1.5 h-13 md:h-15 flex items-center justify-center font-mono font-bold rounded-lg border-2 transition-all duration-300 overflow-hidden text-center ${
+                    isLong ? 'text-xs' : 'text-sm md:text-base'
+                  } ${
+                    isFound
+                      ? 'border-sprout-sticker bg-[#22c55e]/20 text-charcoal scale-110 shadow-md'
+                      : isMid
+                      ? 'border-marker-orange bg-primary-fixed text-charcoal scale-105 shadow-sm'
+                      : isLow || isHigh
+                      ? 'border-sky-500 bg-sky-50 text-charcoal'
+                      : isEliminated
+                      ? 'border-outline/30 bg-surface-container-high/40 text-on-surface-variant/40 line-through'
+                      : 'border-charcoal bg-surface text-charcoal'
+                  }`}
+                >
+                  <span className="truncate max-w-full">{val}</span>
+                </div>
                 <span className="text-[10px] font-mono text-on-surface-variant">[{idx}]</span>
               </div>
             );
           })}
         </div>
-        <div className="flex items-center gap-2 text-xs font-mono">
-          <span className="bg-sprout-sticker text-white px-2 py-0.5 rounded-pill">L={left}</span>
-          <span className="bg-sky-sticker text-white px-2 py-0.5 rounded-pill">R={right}</span>
-        </div>
       </div>
 
       <StepCard
-        stepNumber={left + 1} totalSteps={arr.length}
-        title={searchComplete ? `Found target ${target} at index ${mid}` : searchFailed ? 'Target not found' : `Checking mid=${mid}`}
-        whatHappens={searchComplete ? `arr[${mid}] == ${target}. Return mid.` : searchFailed ? 'left > right. Target absent.' : arr[mid] < target ? `arr[${mid}]=${arr[mid]} < ${target}. Discard left half.` : `arr[${mid}]=${arr[mid]} > ${target}. Discard right half.`}
-        whyRationale={searchComplete ? 'Binary search converges to exact match.' : 'Eliminate half the search space each step.'}
-        variableStates={{ L: left, R: right, M: mid, "arr[M]": arr[mid] ?? 'OOB', target }}
-        codeSnippet="while L <= R:\n    mid = (L + R) // 2\n    if arr[mid] == target: return mid\n    elif arr[mid] < target: L = mid + 1\n    else: R = mid - 1"
-        timeSpaceImpact="Time: O(log N) | Space: O(1)"
+        stepNumber={step + 1}
+        totalSteps={steps.length}
+        title={cur.title}
+        whatHappens={cur.whatHappens}
+        whyRationale={cur.whyRationale}
+        variableStates={cur.states || {}}
+        codeSnippet={cur.codeSnippet}
+        timeSpaceImpact={cur.impact || 'Time: O(log N) | Space: O(1)'}
       />
     </div>
   );

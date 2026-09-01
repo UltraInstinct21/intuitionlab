@@ -1,113 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Problem } from '@/types/problem';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCcw, Play, Pause } from 'lucide-react';
 import { StepCard } from './StepCard';
+import { HeapVisualizationData, HeapStep } from '@/types/visualization';
 
-interface HeapStep {
-  title: string;
-  whatHappens: string;
-  whyRationale: string;
-  heapNodes: number[];
-  extraElements?: { label: string; val: number | string }[];
-  states: Record<string, string | number | boolean | undefined>;
-  codeSnippet: string;
-  impact?: string;
+interface HeapVisualizerProps {
+  problem: Problem;
+  customData?: HeapVisualizationData;
 }
 
-function buildHeapSteps(problem?: Problem): HeapStep[] {
-  const t = (problem?.title || '').toLowerCase();
-
-  // 1. Kth Largest Element in an Array
-  if (t.includes('kth largest')) {
-    return [
-      {
-        title: 'Maintain Min-Heap of Size K=3',
-        whatHappens: 'Input: [3, 2, 1, 5, 6, 4], k=3. Push first 3 elements [3, 2, 1] into min-heap → heap becomes [1, 2, 3].',
-        whyRationale: 'A min-heap of size k always keeps the top k largest elements seen so far at the root (smallest of the top k).',
-        heapNodes: [1, 2, 3],
-        states: { heap: '[1, 2, 3]', k: 3, rootSmallest: 1 },
-        codeSnippet: 'heap = []\nfor num in nums:\n    heappush(heap, num)\n    if len(heap) > k: heappop(heap)',
-        impact: 'Time: O(N log K) | Space: O(K)',
-      },
-      {
-        title: 'Push 5: Size > K → Pop Min (1)',
-        whatHappens: 'Push 5 into heap: [1, 2, 3, 5]. Size is 4 > 3 → Pop min (1). Heap becomes [2, 5, 3].',
-        whyRationale: 'Discarding the smallest element ensures heap holds the 3 largest elements: [2, 3, 5].',
-        heapNodes: [2, 5, 3],
-        states: { popped: 1, heap: '[2, 5, 3]', root: 2 },
-        codeSnippet: 'heappush(heap, 5) # [1, 2, 3, 5]\nheappop(heap) # 1 popped -> [2, 5, 3]',
-      },
-      {
-        title: 'Push 6 & 4: Final Heap [4, 5, 6]',
-        whatHappens: 'Push 6, pop 2. Push 4, pop 3. Final min-heap contains [4, 5, 6].',
-        whyRationale: 'The root of the min-heap (4) is the 3rd largest element overall!',
-        heapNodes: [4, 5, 6],
-        states: { heap: '[4, 5, 6]', kthLargest: 4 },
-        codeSnippet: 'return heap[0] # Returns 4 (3rd largest)',
-      },
-    ];
-  }
-
-  // 2. Find Median from Data Stream
-  if (t.includes('median')) {
-    return [
-      {
-        title: 'Two Heaps: Max-Heap (Left) & Min-Heap (Right)',
-        whatHappens: 'Max-heap `left` stores smaller half. Min-heap `right` stores larger half.',
-        whyRationale: 'Median is either root of `left` (odd count) or average of both roots (even count).',
-        heapNodes: [2, 1],
-        extraElements: [{ label: 'Left Max-Heap', val: 'root: 2' }, { label: 'Right Min-Heap', val: 'root: 5' }],
-        states: { leftMax: '[2, 1]', rightMin: '[5, 8]', count: 4, median: '(2 + 5) / 2 = 3.5' },
-        codeSnippet: 'heappush(self.small, -num)\n# Balance sizes\nif len(self.small) > len(self.large) + 1:\n    val = -heappop(self.small)\n    heappush(self.large, val)',
-        impact: 'Time: O(log N) insert, O(1) median | Space: O(N)',
-      },
-      {
-        title: 'Add Number 3 into Stream',
-        whatHappens: '3 is <= right.root(5) → Push into left max-heap. Balance heaps.',
-        whyRationale: 'Left heap now has size 3, right has size 2 (odd total 5).',
-        heapNodes: [3, 2, 1],
-        extraElements: [{ label: 'Left Max-Heap (Size 3)', val: 'root: 3' }, { label: 'Right Min-Heap (Size 2)', val: 'root: 5' }],
-        states: { leftRoot: 3, rightRoot: 5, totalElements: 5, currentMedian: 3 },
-        codeSnippet: 'if len(self.small) > len(self.large):\n    return -self.small[0] # 3',
-      },
-    ];
-  }
-
-  // 3. Default: Max-Heap / Extract Min
-  return [
-    {
-      title: 'Initialize Min-Heap [1, 3, 5, 7, 9, 8, 6]',
-      whatHappens: 'Complete binary tree where parent <= children at every node.',
-      whyRationale: 'Root always contains the minimum element in O(1) lookup time.',
-      heapNodes: [1, 3, 5, 7, 9, 8, 6],
-      states: { rootMin: 1, size: 7 },
-      codeSnippet: 'min_val = heap[0]',
-      impact: 'Time: O(log N) | Space: O(1)',
-    },
-    {
-      title: 'Extract-Min: Pop 1 & Replace with Last (6)',
-      whatHappens: 'Remove root 1. Move last leaf (6) to root: [6, 3, 5, 7, 9, 8]. Heap property temporarily violated.',
-      whyRationale: 'Moving last element preserves complete binary tree shape.',
-      heapNodes: [6, 3, 5, 7, 9, 8],
-      states: { extracted: 1, tempRoot: 6 },
-      codeSnippet: 'min_val = heap[0]\nheap[0] = heap.pop()\nsift_down(0)',
-    },
-    {
-      title: 'Sift Down: Swap 6 with Smallest Child (3)',
-      whatHappens: '6 > children(3, 5). Swap 6 with 3. Then swap 6 with 7. Final valid heap: [3, 6, 5, 7, 9, 8].',
-      whyRationale: 'Sifting down restores the min-heap invariant in O(log N) operations.',
-      heapNodes: [3, 6, 5, 7, 9, 8],
-      states: { newRoot: 3, restored: true },
-      codeSnippet: 'return min_val # 1 extracted',
-    },
-  ];
-}
-
-export const HeapVisualizer: React.FC<{ problem: Problem }> = ({ problem }) => {
+export const HeapVisualizer: React.FC<HeapVisualizerProps> = ({ problem, customData }) => {
   const [step, setStep] = useState(0);
-  const steps = buildHeapSteps(problem);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const defaultSteps: HeapStep[] = [
+    {
+      title: 'Initialize Binary Heap',
+      whatHappens: 'Heap structure with root at index 0.',
+      whyRationale: 'Complete binary tree satisfies heap-order property.',
+      heapArray: [10, 8, 6, 7, 3, 2],
+      action: 'idle',
+      states: { size: 6, root: 10 },
+      codeSnippet: 'heapq.heapify(heap)',
+      impact: 'Time: O(N) | Space: O(1)',
+    }
+  ];
+
+  const steps: HeapStep[] = customData?.steps && customData.steps.length > 0 ? customData.steps : defaultSteps;
   const cur = steps[step] || steps[0];
+
+  useEffect(() => {
+    setStep(0);
+    setIsPlaying(false);
+  }, [problem.id, customData]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isPlaying) {
+      timer = setInterval(() => {
+        setStep(prev => {
+          if (prev >= steps.length - 1) {
+            setIsPlaying(false);
+            return prev;
+          }
+          return prev + 1;
+        });
+      }, 2500);
+    }
+    return () => clearInterval(timer);
+  }, [isPlaying, steps.length]);
 
   return (
     <div className="space-y-6">
@@ -119,38 +61,52 @@ export const HeapVisualizer: React.FC<{ problem: Problem }> = ({ problem }) => {
           <Button size="sm" variant="primary" onClick={() => setStep(Math.min(steps.length - 1, step + 1))} disabled={step === steps.length - 1} className="h-8 px-3 text-xs">
             <span>{step === steps.length - 1 ? 'completed!' : 'next step →'}</span><ChevronRight className="w-4 h-4" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => setStep(0)} className="h-8"><RotateCcw className="w-3.5 h-3.5" /></Button>
+          <Button size="sm" variant="ghost" onClick={() => setIsPlaying(!isPlaying)} className="h-8 px-2.5 text-xs">
+            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => { setStep(0); setIsPlaying(false); }} className="h-8"><RotateCcw className="w-3.5 h-3.5" /></Button>
         </div>
         <div className="text-xs md:text-sm font-mono flex items-center gap-3">
           <span className="text-marker-orange font-bold">step {step + 1} of {steps.length}</span>
+          <span className="text-sky-sticker font-bold uppercase">{cur.action}</span>
         </div>
       </div>
 
-      <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-4">
-        {cur.extraElements && (
-          <div className="flex items-center gap-3 flex-wrap justify-center mb-2">
-            {cur.extraElements.map((el, i) => (
-              <span key={i} className="px-3 py-1 bg-dew-drop border border-charcoal/40 rounded-pill text-xs font-mono font-bold text-charcoal shadow-xs">
-                {el.label}: <strong>{el.val}</strong>
-              </span>
-            ))}
-          </div>
-        )}
+      <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-6 overflow-x-auto select-none">
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-xs font-mono font-bold text-on-surface-variant">Heap Array Representation:</span>
+          <div className="flex items-center gap-1.5 md:gap-2 flex-wrap justify-center min-w-max">
+            {cur.heapArray.map((val, idx) => {
+              const isActive = cur.activeIndices?.includes(idx);
+              const isRoot = idx === 0;
 
-        <div className="flex items-center gap-2 flex-wrap justify-center">
-          {cur.heapNodes.map((val, idx) => (
-            <div
-              key={idx}
-              className={`w-12 h-14 md:w-14 md:h-16 flex flex-col items-center justify-center rounded-xl border-2 shadow-hard font-mono font-bold transition-all duration-200 ${
-                idx === 0
-                  ? 'bg-primary-container text-on-primary-container border-charcoal scale-105'
-                  : 'bg-surface text-charcoal border-outline/40'
-              }`}
-            >
-              <span className="text-xs text-on-surface-variant font-medium">#{idx}</span>
-              <span className="text-base md:text-lg">{val}</span>
-            </div>
-          ))}
+              const valStr = String(val);
+              const isLong = valStr.length > 3;
+
+              return (
+                <div key={idx} className="flex flex-col items-center gap-1 min-w-[50px]">
+                  <div className="h-5 text-[10px] font-mono font-bold">
+                    {isRoot && <span className="bg-sky-500 text-white px-1.5 py-0.2 rounded-pill">root</span>}
+                    {isActive && !isRoot && <span className="bg-orange-500 text-white px-1.5 py-0.2 rounded-pill">swap</span>}
+                  </div>
+                  <div
+                    className={`min-w-[48px] px-2 h-14 md:h-16 flex items-center justify-center font-mono font-bold rounded-xl border-2 shadow-hard transition-all duration-200 overflow-hidden text-center ${
+                      isLong ? 'text-xs' : 'text-sm md:text-base'
+                    } ${
+                      isActive
+                        ? 'border-marker-orange bg-primary-fixed scale-105 shadow-md text-charcoal'
+                        : isRoot
+                        ? 'border-sprout-sticker bg-[#22c55e]/15 text-charcoal'
+                        : 'border-charcoal bg-surface text-charcoal'
+                    }`}
+                  >
+                    <span className="truncate max-w-full">{val}</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-on-surface-variant">[{idx}]</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -160,9 +116,9 @@ export const HeapVisualizer: React.FC<{ problem: Problem }> = ({ problem }) => {
         title={cur.title}
         whatHappens={cur.whatHappens}
         whyRationale={cur.whyRationale}
-        variableStates={cur.states}
+        variableStates={cur.states || {}}
         codeSnippet={cur.codeSnippet}
-        timeSpaceImpact={cur.impact || 'Time: O(log N) | Space: O(1)'}
+        timeSpaceImpact={cur.impact || 'Time: O(N) | Space: O(1)'}
       />
     </div>
   );

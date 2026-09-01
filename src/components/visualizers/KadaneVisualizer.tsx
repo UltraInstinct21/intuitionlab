@@ -98,55 +98,57 @@ function buildKadaneSteps(problem: Problem): KadaneStep[] {
       },
       {
         title: 'Step 4: Final Max Product Subarray = 6',
-        whatHappens: 'Process 4: max_prod = max(4, -2*4, -12*4) = 4. Global max product is 6 (subarray [2, 3]).',
-        whyRationale: 'All elements processed in O(N) time and O(1) space.',
+        whatHappens: 'nums[3] = 4. max_prod becomes max(4, -2*4, -12*4) = 4. Global max product is 6 from [2, 3].',
+        whyRationale: 'Tracking both min and max handles any number of sign inversions in O(N).',
         arrayState: nums,
+        activeIdx: 3,
         highlightRange: [0, 1],
-        states: { finalMaxProduct: 6, subarray: '[2, 3]' },
+        states: { result: 6 },
         codeSnippet: 'return res # 6',
       },
     ];
   }
 
-  // 3. Default: Maximum Subarray (Kadane's Algorithm)
-  const nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+  // 3. Default Kadane: Maximum Subarray
+  const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
   return [
     {
-      title: 'Step 1: Start at Index 0 (-2)',
-      whatHappens: 'Initialize current_sum = -2, max_sum = -2.',
-      whyRationale: 'First element initializes the running subarray sum.',
-      arrayState: nums,
+      title: 'Step 1: Start at Index 0 (val = -2)',
+      whatHappens: 'curr_sum = -2. max_sum = -2. Since curr_sum < 0, reset curr_sum = 0.',
+      whyRationale: 'A negative prefix will only reduce the sum of any subsequent subarray. Drop it immediately.',
+      arrayState: arr,
       activeIdx: 0,
-      states: { i: 0, val: -2, current_sum: -2, max_sum: -2 },
-      codeSnippet: 'current_sum = max_sum = nums[0]',
+      states: { curr_sum: -2, max_sum: -2, reset: 'true' },
+      codeSnippet: 'curr_sum += num\nmax_sum = max(max_sum, curr_sum)\nif curr_sum < 0: curr_sum = 0',
       impact: 'Time: O(N) | Space: O(1)',
     },
     {
-      title: 'Step 2: Reset on Negative Sum at Index 1 (1)',
-      whatHappens: 'Previous sum (-2) + 1 = -1 < 1. Discard previous sum, start fresh at 1! max_sum = 1.',
-      whyRationale: 'A negative prefix sum degrades any subsequent subarray. Always restart when prefix < 0.',
-      arrayState: nums,
-      activeIdx: 1,
-      states: { i: 1, val: 1, current_sum: 1, max_sum: 1 },
-      codeSnippet: 'current_sum = max(nums[i], current_sum + nums[i])',
+      title: 'Step 2: Start Optimal Subarray at Index 3 (val = 4)',
+      whatHappens: 'curr_sum becomes 4. max_sum updated to 4. New candidate window begins.',
+      whyRationale: 'Element 4 starts a fresh positive accumulation window.',
+      arrayState: arr,
+      activeIdx: 3,
+      highlightRange: [3, 3],
+      states: { curr_sum: 4, max_sum: 4, window_start: 3 },
+      codeSnippet: 'curr_sum = 4 # Starting window',
     },
     {
-      title: 'Step 3: Accumulate Subarray [4, -1, 2, 1]',
-      whatHappens: 'At index 3: start new streak with 4. Add -1 (sum=3), add 2 (sum=5), add 1 (sum=6). max_sum reaches 6!',
-      whyRationale: 'Subarray [4, -1, 2, 1] achieves the maximum possible sum in the array.',
-      arrayState: nums,
+      title: 'Step 3: Accumulate through Index 6 [4, -1, 2, 1]',
+      whatHappens: 'curr_sum reaches 4 + (-1) + 2 + 1 = 6. Global max_sum updated to 6!',
+      whyRationale: 'Peak sum of 6 achieved spanning subarray [4, -1, 2, 1] (indices 3 to 6).',
+      arrayState: arr,
       activeIdx: 6,
       highlightRange: [3, 6],
-      states: { streak: '[4, -1, 2, 1]', current_sum: 6, max_sum: 6 },
-      codeSnippet: 'max_sum = max(max_sum, current_sum) # 6',
+      states: { curr_sum: 6, max_sum: 6, best_window: '[3..6]' },
+      codeSnippet: 'max_sum = max(max_sum, curr_sum) # max_sum = 6',
     },
     {
-      title: 'Step 4: Kadane Algorithm Complete (Max Sum = 6)',
-      whatHappens: 'Remaining elements processed. Global max_sum is 6.',
-      whyRationale: 'Linear O(N) scan identifies maximum contiguous subarray without quadratic brute force.',
-      arrayState: nums,
+      title: 'Step 4: Complete Scan with Global Maximum = 6',
+      whatHappens: 'Scanned remaining elements. Global maximum subarray sum is 6.',
+      whyRationale: 'Kadane algorithm guarantees finding optimal continuous subarray in single linear pass.',
+      arrayState: arr,
       highlightRange: [3, 6],
-      states: { result: 6, maxSubarray: '[4, -1, 2, 1]' },
+      states: { max_subarray_sum: 6 },
       codeSnippet: 'return max_sum # 6',
     },
   ];
@@ -174,24 +176,29 @@ export const KadaneVisualizer: React.FC<{ problem: Problem }> = ({ problem }) =>
         </div>
       </div>
 
-      <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-6 overflow-x-auto">
+      <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-6 overflow-x-auto select-none">
         <div className="flex flex-wrap items-center justify-center gap-2.5 min-w-max">
           {cur.arrayState.map((val, idx) => {
             const isCurrent = cur.activeIdx === idx;
             const inHighlight = cur.highlightRange && idx >= cur.highlightRange[0] && idx <= cur.highlightRange[1];
 
+            const valStr = String(val);
+            const isLong = valStr.length > 3;
+
             return (
-              <div key={idx} className="flex flex-col items-center gap-1">
+              <div key={idx} className="flex flex-col items-center gap-1 min-w-[48px]">
                 <div
-                  className={`w-12 h-14 md:w-14 md:h-16 flex items-center justify-center font-mono font-bold text-base md:text-lg rounded-xl border-2 transition-all duration-200 ${
+                  className={`min-w-[48px] px-2 h-14 md:h-16 flex items-center justify-center font-mono font-bold rounded-xl border-2 transition-all duration-200 overflow-hidden text-center ${
+                    isLong ? 'text-xs md:text-sm' : 'text-base md:text-lg'
+                  } ${
                     isCurrent
-                      ? 'border-marker-orange bg-primary-fixed scale-110 shadow-hard'
+                      ? 'border-marker-orange bg-primary-fixed scale-110 shadow-hard text-charcoal'
                       : inHighlight
                       ? 'border-sprout-sticker bg-[#22c55e]/15 text-charcoal shadow-sm'
                       : 'border-charcoal bg-surface text-charcoal'
                   }`}
                 >
-                  {val}
+                  <span className="truncate max-w-full">{val}</span>
                 </div>
                 <span className="text-[10px] md:text-xs font-mono text-on-surface-variant font-medium">[{idx}]</span>
               </div>

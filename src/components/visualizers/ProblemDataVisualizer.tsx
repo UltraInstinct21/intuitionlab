@@ -280,14 +280,14 @@ export const ProblemDataVisualizer: React.FC<Props> = ({ problem }) => {
 
           {/* Code block */}
           <div className="rounded-xl border-[1.5px] border-charcoal bg-inverse-surface p-4 shadow-hard overflow-x-auto">
-            <pre className="text-xs font-mono text-inverse-on-surface leading-relaxed whitespace-pre">
-              <code>{codeLines.map((cl, i) => (
-                <div key={i} className={`flex ${codeHighlights.includes(i) ? 'bg-[#ff6f1e]/20 -mx-4 px-4 border-l-2 border-[#ff6f1e]' : ''}`}>
+            <div className="flex flex-col min-w-full font-mono text-xs text-inverse-on-surface leading-relaxed">
+              {codeLines.map((cl, i) => (
+                <div key={i} className={`flex items-start ${codeHighlights.includes(i) ? 'bg-[#ff6f1e]/20 -mx-4 px-4 border-l-2 border-[#ff6f1e]' : ''}`}>
                   <span className="text-inverse-on-surface/30 w-8 text-right mr-3 select-none flex-shrink-0">{i + 1}</span>
-                  <span>{'  '.repeat(cl.indent)}{cl.line}</span>
+                  <span className="whitespace-pre">{ '  '.repeat(cl.indent) + cl.line }</span>
                 </div>
-              ))}</code>
-            </pre>
+              ))}
+            </div>
           </div>
         </div>
       )}

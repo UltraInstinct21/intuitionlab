@@ -1,194 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Problem } from '@/types/problem';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCcw, Play, Pause } from 'lucide-react';
 import { StepCard } from './StepCard';
+import { BacktrackingVisualizationData, BacktrackingStep } from '@/types/visualization';
 
-interface BacktrackStep {
-  title: string;
-  whatHappens: string;
-  whyRationale: string;
-  grid?: (string | number)[][];
-  activeCell?: [number, number];
-  treePath?: string[];
-  states: Record<string, string | number | boolean | undefined>;
-  codeSnippet: string;
-  impact?: string;
+interface BacktrackingVisualizerProps {
+  problem: Problem;
+  customData?: BacktrackingVisualizationData;
 }
 
-function buildBacktrackingSteps(problem?: Problem): BacktrackStep[] {
-  const t = (problem?.title || '').toLowerCase();
-
-  // 1. Sudoku Solver
-  if (t.includes('sudoku')) {
-    const initialGrid = [
-      ['5', '3', '.', '.'],
-      ['6', '.', '.', '1'],
-      ['.', '9', '8', '.'],
-      ['.', '.', '.', '6'],
-    ];
-    return [
-      {
-        title: 'Scan for Empty Cell',
-        whatHappens: 'Find first empty cell at row=0, col=2. Test numbers 1 through 4.',
-        whyRationale: 'Sudoku solver scans for empty "." cells and tries valid digits 1..N.',
-        grid: initialGrid,
-        activeCell: [0, 2],
-        states: { cell: '(0, 2)', tryingDigit: 1 },
-        codeSnippet: 'for r in range(9):\n    for c in range(9):\n        if board[r][c] == ".":\n            for digit in "123456789":',
-        impact: 'Time: O(9^(empty_cells)) | Space: O(1)',
-      },
-      {
-        title: 'Validate Row, Column, and Subgrid',
-        whatHappens: 'Digit "1" is valid in row 0, col 2, and 2x2 box. Place "1" and recurse.',
-        whyRationale: 'isSafe checks: no duplicate in row, col, or 2x2 subgrid.',
-        grid: [
-          ['5', '3', '1', '.'],
-          ['6', '.', '.', '1'],
-          ['.', '9', '8', '.'],
-          ['.', '.', '.', '6'],
-        ],
-        activeCell: [0, 2],
-        states: { placed: '1 at (0,2)', valid: true },
-        codeSnippet: 'if isValid(board, r, c, digit):\n    board[r][c] = digit\n    if solve(board): return True',
-      },
-      {
-        title: 'Backtrack on Conflict',
-        whatHappens: 'At (0, 3), digits 1,2,3,4 all create conflicts! Reset (0, 2) back to "." and try next digit.',
-        whyRationale: 'Backtracking undoes the choice when a dead end is reached.',
-        grid: initialGrid,
-        activeCell: [0, 2],
-        states: { backtrack: true, resetCell: '(0, 2) -> "."' },
-        codeSnippet: 'board[r][c] = "." # Backtrack',
-      },
-      {
-        title: 'Solve Successfully',
-        whatHappens: 'All cells filled satisfying all Sudoku constraints.',
-        whyRationale: 'Recursion returns True once the final cell is solved.',
-        grid: [
-          ['5', '3', '4', '2'],
-          ['6', '2', '3', '1'],
-          ['1', '9', '8', '4'],
-          ['4', '8', '2', '6'],
-        ],
-        states: { solved: true, result: 'Board Complete' },
-        codeSnippet: 'return True # Entire puzzle solved',
-      },
-    ];
-  }
-
-  // 2. Subsets / Combination Sum / Permutations
-  if (t.includes('subset') || t.includes('combination') || t.includes('permutation')) {
-    return [
-      {
-        title: 'Start at Root: Empty Subset []',
-        whatHappens: 'Input: [1, 2, 3]. Start with current subset = []. Add [] to result.',
-        whyRationale: 'Every node in the state-space decision tree represents a valid subset.',
-        treePath: ['[]'],
-        states: { currentSubset: '[]', resultCount: 1, index: 0 },
-        codeSnippet: 'result.append(list(current))\nfor i in range(start, len(nums)):',
-        impact: 'Time: O(2^N) | Space: O(N)',
-      },
-      {
-        title: 'Branch 1: Include 1 → [1]',
-        whatHappens: 'Choose 1: subset becomes [1]. Recurse with start = 1.',
-        whyRationale: 'Generate all subsets starting with 1.',
-        treePath: ['[]', '[1]'],
-        states: { currentSubset: '[1]', choosing: 1 },
-        codeSnippet: 'current.append(nums[i])\nbacktrack(i + 1, current)',
-      },
-      {
-        title: 'Branch 1.1: Include 2 → [1, 2]',
-        whatHappens: 'Choose 2: subset becomes [1, 2]. Add to result.',
-        whyRationale: 'Explore deeper along the decision path.',
-        treePath: ['[]', '[1]', '[1, 2]'],
-        states: { currentSubset: '[1, 2]', choosing: 2 },
-        codeSnippet: 'current.append(nums[i])',
-      },
-      {
-        title: 'Backtrack & Pop: [1, 2] → [1] → [1, 3]',
-        whatHappens: 'Pop 2 to backtrack to [1]. Next iteration picks 3 → [1, 3].',
-        whyRationale: 'Pop restores state so sibling branches receive clean subset list.',
-        treePath: ['[]', '[1]', '[1, 3]'],
-        states: { currentSubset: '[1, 3]', popped: 2, appended: 3 },
-        codeSnippet: 'current.pop() # Backtrack',
-      },
-      {
-        title: 'All Subsets Generated',
-        whatHappens: 'Total 2^3 = 8 subsets generated: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3].',
-        whyRationale: 'Binary inclusion tree fully explored.',
-        treePath: ['[]', '[1]', '[2]', '[3]'],
-        states: { totalSubsets: 8, result: '[[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]' },
-        codeSnippet: 'return result',
-      },
-    ];
-  }
-
-  // 3. Default: N-Queens (4x4)
-  return [
-    {
-      title: 'Initialize 4x4 Board',
-      whatHappens: 'Start with 4x4 empty board. Try placing Queen 0 in row 0.',
-      whyRationale: 'Place 1 queen per row. No two queens can share row, column, or diagonal.',
-      grid: [
-        ['.', '.', '.', '.'],
-        ['.', '.', '.', '.'],
-        ['.', '.', '.', '.'],
-        ['.', '.', '.', '.'],
-      ],
-      activeCell: [0, 1],
-      states: { row: 0, queensPlaced: 0 },
-      codeSnippet: 'def solve(row):\n    if row == N: return True',
-      impact: 'Time: O(N!) | Space: O(N²)',
-    },
-    {
-      title: 'Place Queen at (0, 1)',
-      whatHappens: 'Place Q at row 0, col 1. Col 1 and diagonals now restricted for next rows.',
-      whyRationale: 'Fast O(1) conflict checking via column and diagonal boolean arrays.',
-      grid: [
-        ['.', 'Q', '.', '.'],
-        ['.', '.', '.', '.'],
-        ['.', '.', '.', '.'],
-        ['.', '.', '.', '.'],
-      ],
-      activeCell: [0, 1],
-      states: { placed: 'Q at (0, 1)', queensPlaced: 1 },
-      codeSnippet: 'board[row][col] = "Q"\nif solve(row + 1): return True',
-    },
-    {
-      title: 'Place Queen at (1, 3)',
-      whatHappens: 'Row 1: cols 0, 1, 2 are under attack by Q(0,1). Col 3 is safe! Place Q at (1, 3).',
-      whyRationale: 'Diagonal (0,1)->(1,2) and col 1 are blocked.',
-      grid: [
-        ['.', 'Q', '.', '.'],
-        ['.', '.', '.', 'Q'],
-        ['.', '.', '.', '.'],
-        ['.', '.', '.', '.'],
-      ],
-      activeCell: [1, 3],
-      states: { placed: 'Q at (1, 3)', queensPlaced: 2 },
-      codeSnippet: 'if is_safe(1, 3): board[1][3] = "Q"',
-    },
-    {
-      title: 'Place Queen at (2, 0) & (3, 2)',
-      whatHappens: 'Row 2: col 0 is safe. Row 3: col 2 is safe. All 4 queens successfully placed!',
-      whyRationale: 'Valid N-Queens configuration: [. Q . .], [. . . Q], [Q . . .], [. . Q .].',
-      grid: [
-        ['.', 'Q', '.', '.'],
-        ['.', '.', '.', 'Q'],
-        ['Q', '.', '.', '.'],
-        ['.', '.', 'Q', '.'],
-      ],
-      states: { solutionFound: true, totalQueens: 4 },
-      codeSnippet: 'solutions.append(construct(board))\nreturn',
-    },
-  ];
-}
-
-export const BacktrackingVisualizer: React.FC<{ problem: Problem }> = ({ problem }) => {
+export const BacktrackingVisualizer: React.FC<BacktrackingVisualizerProps> = ({ problem, customData }) => {
   const [step, setStep] = useState(0);
-  const steps = buildBacktrackingSteps(problem);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const defaultSteps: BacktrackingStep[] = [
+    {
+      title: 'Initialize Recursive Search',
+      whatHappens: 'Start exploration at root state.',
+      whyRationale: 'Backtracking explores decision tree with depth-first search.',
+      choicePath: [],
+      status: 'explore',
+      states: { depth: 0 },
+      codeSnippet: 'def backtrack(path, choices):\n    if is_solution(path): res.append(path)',
+      impact: 'Time: O(2^N) | Space: O(N)',
+    }
+  ];
+
+  const steps: BacktrackingStep[] = customData?.steps && customData.steps.length > 0 ? customData.steps : defaultSteps;
   const cur = steps[step] || steps[0];
+
+  useEffect(() => {
+    setStep(0);
+    setIsPlaying(false);
+  }, [problem.id, customData]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isPlaying) {
+      timer = setInterval(() => {
+        setStep(prev => {
+          if (prev >= steps.length - 1) {
+            setIsPlaying(false);
+            return prev;
+          }
+          return prev + 1;
+        });
+      }, 2500);
+    }
+    return () => clearInterval(timer);
+  }, [isPlaying, steps.length]);
 
   return (
     <div className="space-y-6">
@@ -200,52 +61,95 @@ export const BacktrackingVisualizer: React.FC<{ problem: Problem }> = ({ problem
           <Button size="sm" variant="primary" onClick={() => setStep(Math.min(steps.length - 1, step + 1))} disabled={step === steps.length - 1} className="h-8 px-3 text-xs">
             <span>{step === steps.length - 1 ? 'completed!' : 'next step →'}</span><ChevronRight className="w-4 h-4" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => setStep(0)} className="h-8"><RotateCcw className="w-3.5 h-3.5" /></Button>
+          <Button size="sm" variant="ghost" onClick={() => setIsPlaying(!isPlaying)} className="h-8 px-2.5 text-xs">
+            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => { setStep(0); setIsPlaying(false); }} className="h-8"><RotateCcw className="w-3.5 h-3.5" /></Button>
         </div>
         <div className="text-xs md:text-sm font-mono flex items-center gap-3">
           <span className="text-marker-orange font-bold">step {step + 1} of {steps.length}</span>
+          <span className={`px-2.5 py-0.5 rounded-pill font-bold uppercase text-[11px] ${
+            cur.status === 'solution' ? 'bg-sprout-sticker/20 text-emerald-700 border border-sprout-sticker'
+            : cur.status === 'backtrack' ? 'bg-destructive/20 text-destructive border border-destructive'
+            : cur.status === 'prune' ? 'bg-amber-100 text-amber-800 border border-amber-300'
+            : 'bg-primary-container text-on-primary-container border border-charcoal'
+          }`}>
+            {cur.status}
+          </span>
         </div>
       </div>
 
-      <div className="py-6 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-4">
-        {cur.grid ? (
-          <div className="grid grid-cols-4 gap-1.5 p-3 bg-surface-container-high rounded-xl border border-charcoal shadow-hard">
-            {cur.grid.map((row, r) =>
+      <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-6 overflow-x-auto select-none">
+        {/* If grid / board state exists (Sudoku, N-Queens, Maze) */}
+        {cur.boardState && (
+          <div
+            className="grid gap-1.5 p-3 bg-surface-container-high rounded-xl border border-charcoal shadow-hard"
+            style={{ gridTemplateColumns: `repeat(${cur.boardState[0]?.length || 4}, minmax(0, 1fr))` }}
+          >
+            {cur.boardState.map((row, r) =>
               row.map((cell, c) => {
-                const isActive = cur.activeCell?.[0] === r && cur.activeCell?.[1] === c;
-                const isQueen = cell === 'Q';
+                const isQueen = cell === 'Q' || cell === '👑';
+                const isVisited = cell === 'X' || cell === '1' || cell === '✓';
+                const cellStr = String(cell);
+                const isLong = cellStr.length > 2;
 
                 return (
                   <div
                     key={`${r}-${c}`}
-                    className={`w-12 h-12 md:w-14 md:h-14 flex items-center justify-center font-mono font-bold text-lg rounded-md transition-all duration-200 ${
+                    className={`min-w-[44px] min-h-[44px] md:min-w-[48px] md:min-h-[48px] p-1 flex items-center justify-center font-mono font-bold rounded-lg border transition-all duration-200 overflow-hidden text-center ${
+                      isLong ? 'text-xs' : 'text-sm md:text-base'
+                    } ${
                       isQueen
-                        ? 'bg-primary-container text-on-primary-container border-2 border-charcoal shadow-sm'
-                        : isActive
-                        ? 'bg-primary-fixed border-2 border-marker-orange'
-                        : (r + c) % 2 === 0
-                        ? 'bg-cream-paper border border-outline/40 text-charcoal'
-                        : 'bg-secondary-container border border-outline/30 text-charcoal'
+                        ? 'border-2 border-marker-orange bg-primary-fixed scale-105 shadow-sm text-charcoal'
+                        : isVisited
+                        ? 'border-2 border-sprout-sticker bg-[#22c55e]/15 text-charcoal'
+                        : cell === '.' || cell === 0
+                        ? 'border-outline/30 bg-surface text-on-surface-variant'
+                        : 'border-charcoal bg-surface text-charcoal'
                     }`}
                   >
-                    {cell === '.' ? '' : String(cell)}
+                    <span className="truncate max-w-full">{cell}</span>
                   </div>
                 );
               })
             )}
           </div>
-        ) : cur.treePath ? (
-          <div className="flex items-center gap-2 flex-wrap justify-center font-mono text-sm py-4">
-            {cur.treePath.map((node, i) => (
-              <React.Fragment key={i}>
-                <span className="px-3 py-1.5 rounded-lg bg-primary-container border border-charcoal font-bold text-charcoal shadow-xs">
-                  {node}
-                </span>
-                {i < cur.treePath!.length - 1 && <span className="text-marker-orange font-bold">→</span>}
-              </React.Fragment>
+        )}
+
+        {/* Choice Path & Decision Chain */}
+        {cur.choicePath && cur.choicePath.length > 0 && (
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-xs font-mono font-bold text-on-surface-variant">Current Decision Path:</span>
+            <div className="flex items-center gap-2 flex-wrap justify-center">
+              {cur.choicePath.map((choice, idx) => (
+                <React.Fragment key={idx}>
+                  <span className="px-3 py-1 bg-surface rounded-lg border border-charcoal font-mono text-xs font-bold shadow-xs max-w-[200px] truncate">
+                    {choice}
+                  </span>
+                  {idx < cur.choicePath!.length - 1 && <span className="text-marker-orange font-bold">→</span>}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {cur.currentChoices && cur.currentChoices.length > 0 && (
+          <div className="flex items-center gap-2 text-xs font-mono flex-wrap justify-center">
+            <span className="text-on-surface-variant font-bold">Branching Choices:</span>
+            {cur.currentChoices.map((ch, idx) => (
+              <span
+                key={idx}
+                className={`px-2.5 py-0.5 rounded border max-w-[150px] truncate ${
+                  ch === cur.activeChoice
+                    ? 'bg-primary-fixed border-marker-orange font-bold text-charcoal'
+                    : 'bg-surface border-outline/30'
+                }`}
+              >
+                {ch}
+              </span>
             ))}
           </div>
-        ) : null}
+        )}
       </div>
 
       <StepCard
@@ -254,9 +158,9 @@ export const BacktrackingVisualizer: React.FC<{ problem: Problem }> = ({ problem
         title={cur.title}
         whatHappens={cur.whatHappens}
         whyRationale={cur.whyRationale}
-        variableStates={cur.states}
+        variableStates={cur.states || {}}
         codeSnippet={cur.codeSnippet}
-        timeSpaceImpact={cur.impact || 'Time: O(N!) | Space: O(N)'}
+        timeSpaceImpact={cur.impact || 'Time: O(2^N) | Space: O(N)'}
       />
     </div>
   );

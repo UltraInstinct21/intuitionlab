@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Problem } from '@/types/problem';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import confetti from 'canvas-confetti';
+import { useAuth } from '@/context/AuthContext';
 import {
   Menu,
   Shuffle,
@@ -10,11 +10,13 @@ import {
   CheckCircle2,
   ExternalLink,
   Keyboard,
-  Share2,
   Sparkles,
   ChevronLeft,
   ChevronRight,
   Lightbulb,
+  Shield,
+  User,
+  LogOut,
 } from 'lucide-react';
 import {
   Dialog,
@@ -31,6 +33,8 @@ interface HeaderProps {
   onNextProblem: () => void;
   onRandomProblem: () => void;
   onNavigateHome?: () => void;
+  onOpenAuthModal?: () => void;
+  onOpenAdminModal?: () => void;
   isSolved: boolean;
   isBookmarked: boolean;
   onToggleSolved: () => void;
@@ -46,6 +50,8 @@ export const Header: React.FC<HeaderProps> = ({
   onNextProblem,
   onRandomProblem,
   onNavigateHome,
+  onOpenAuthModal,
+  onOpenAdminModal,
   isSolved,
   isBookmarked,
   onToggleSolved,
@@ -54,11 +60,11 @@ export const Header: React.FC<HeaderProps> = ({
   totalProblems,
 }) => {
   const [showShortcuts, setShowShortcuts] = useState<boolean>(false);
+  const { user, profile, isAdmin, signOut } = useAuth();
 
   const handleSolvedClick = () => {
     onToggleSolved();
     if (!isSolved) {
-      // Fire celebratory confetti!
       confetti({
         particleCount: 80,
         spread: 60,
@@ -110,8 +116,22 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Right Side: Quick Action Toolbar */}
+        {/* Right Side: Quick Action Toolbar & Auth */}
         <div className="flex items-center gap-2">
+          {/* Admin Panel Button (Exclusive to Admin Users) */}
+          {isAdmin && (
+            <Button
+              size="sm"
+              variant="default"
+              onClick={onOpenAdminModal}
+              className="h-8 px-2.5 bg-dew-drop border-2 border-marker-orange text-marker-orange hover:bg-primary-fixed-dim font-mono font-bold text-xs flex items-center gap-1.5 shadow-xs"
+              title="Open Superadmin Panel"
+            >
+              <Shield className="w-3.5 h-3.5 fill-marker-orange/20" />
+              <span className="hidden sm:inline">admin panel</span>
+            </Button>
+          )}
+
           {/* Quick Prev / Next Buttons */}
           <div className="hidden sm:flex items-center border border-charcoal/40 rounded-pill bg-dew-drop p-0.5">
             <button
@@ -180,6 +200,32 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="hidden sm:inline">leetcode</span>
             <ExternalLink className="w-3 h-3 text-marker-orange" />
           </a>
+
+          {/* Auth Button: Profile or Sign In */}
+          {user ? (
+            <div className="flex items-center gap-1.5 bg-dew-drop p-0.5 rounded-pill border border-charcoal">
+              <span className="text-[11px] font-mono font-bold px-2 py-0.5 text-charcoal truncate max-w-[100px]">
+                {profile?.username || user.email?.split('@')[0]}
+              </span>
+              <button
+                onClick={signOut}
+                className="p-1 text-on-surface-variant hover:text-red-600 rounded-full transition-colors"
+                title="Sign Out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <Button
+              size="sm"
+              variant="default"
+              onClick={onOpenAuthModal}
+              className="h-8 px-2.5 text-xs font-mono font-bold flex items-center gap-1 bg-surface border border-charcoal text-charcoal hover:bg-dew-drop"
+            >
+              <User className="w-3.5 h-3.5 text-marker-orange" />
+              <span>sign in</span>
+            </Button>
+          )}
 
           {/* Shortcuts Info Dialog Trigger */}
           <button

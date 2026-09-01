@@ -171,12 +171,12 @@ export const BSTStepVisualizer: React.FC<{ problem: Problem }> = ({ problem }) =
         </div>
       </div>
 
-      <div className="py-6 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-4">
-        <svg viewBox="0 0 500 200" className="w-[500px] h-52">
+      <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center justify-center overflow-hidden w-full">
+        <svg viewBox="0 0 500 200" className="w-full max-w-[500px] h-auto max-h-[220px]" preserveAspectRatio="xMidYMid meet">
           <BSTSvg node={tree} x={250} y={30} dx={110} highlight={s.highlightNodes} path={s.pathNodes} current={s.currentNode} />
         </svg>
         {s.result && (
-          <div className="px-4 py-2 rounded-pill bg-sprout-sticker text-white font-mono font-bold text-sm border-2 border-charcoal shadow-md">
+          <div className="px-4 py-2 rounded-pill bg-sprout-sticker text-white font-mono font-bold text-sm border-2 border-charcoal shadow-md mt-2">
             {s.result}
           </div>
         )}

@@ -12,8 +12,11 @@ import { ProblemExamples } from '@/components/ProblemExamples';
 import { ProblemNotes } from '@/components/ProblemNotes';
 import { FooterNav } from '@/components/FooterNav';
 import { LandingPage } from '@/components/LandingPage';
+import { AuthProvider } from '@/context/AuthContext';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { AdminDashboard } from '@/components/admin/AdminDashboard';
 
-export const App: React.FC = () => {
+const MainApp: React.FC = () => {
   const problems: Problem[] = problemsData as Problem[];
   const topics: Topic[] = topicsData as Topic[];
 
@@ -32,8 +35,15 @@ export const App: React.FC = () => {
     return problems[0]?.id || '';
   });
 
+  // Selected Approach Index (synced across diagrams & code viewer)
+  const [selectedApproachIndex, setSelectedApproachIndex] = useState<number>(0);
+
   // Mobile sidebar open state
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
+
+  // Modals state
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState<boolean>(false);
 
   // Solved & Bookmarked sets stored in localStorage
   const [solvedIds, setSolvedIds] = useState<string[]>(() => {
@@ -59,6 +69,15 @@ export const App: React.FC = () => {
   const currentProblem = problems[currentIndex] || problems[0];
   const prevProblem = currentIndex > 0 ? problems[currentIndex - 1] : undefined;
   const nextProblem = currentIndex < problems.length - 1 ? problems[currentIndex + 1] : undefined;
+
+  // When problem changes, auto-select optimal approach
+  useEffect(() => {
+    if (currentProblem?.approaches && currentProblem.approaches.length > 0) {
+      setSelectedApproachIndex(currentProblem.approaches.length - 1);
+    } else {
+      setSelectedApproachIndex(0);
+    }
+  }, [currentProblem?.id, currentProblem?.approaches?.length]);
 
   // Persist current problem & view mode
   useEffect(() => {
@@ -90,159 +109,211 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handlePrev = useCallback(() => {
+  const handlePrevProblem = useCallback(() => {
     if (prevProblem) {
       setCurrentProblemId(prevProblem.id);
     }
   }, [prevProblem]);
 
-  const handleNext = useCallback(() => {
+  const handleNextProblem = useCallback(() => {
     if (nextProblem) {
       setCurrentProblemId(nextProblem.id);
     }
   }, [nextProblem]);
 
-  const handleRandom = useCallback(() => {
-    const randomIdx = Math.floor(Math.random() * problems.length);
-    setCurrentProblemId(problems[randomIdx].id);
+  const handleRandomProblem = useCallback(() => {
+    const randomIndex = Math.floor(Math.random() * problems.length);
+    const randomProblem = problems[randomIndex];
+    if (randomProblem) {
+      setCurrentProblemId(randomProblem.id);
+    }
   }, [problems]);
 
   const handleToggleSolved = useCallback(() => {
     setSolvedIds(prev => {
-      const next = prev.includes(currentProblem.id)
+      const isCurrentlySolved = prev.includes(currentProblem.id);
+      const updated = isCurrentlySolved
         ? prev.filter(id => id !== currentProblem.id)
         : [...prev, currentProblem.id];
-      localStorage.setItem('intuitionlab_solved_problems', JSON.stringify(next));
-      return next;
+      localStorage.setItem('intuitionlab_solved_problems', JSON.stringify(updated));
+      return updated;
     });
-  }, [currentProblem.id]);
+  }, [currentProblem?.id]);
 
   const handleToggleBookmarked = useCallback(() => {
     setBookmarkedIds(prev => {
-      const next = prev.includes(currentProblem.id)
+      const isCurrentlyBookmarked = prev.includes(currentProblem.id);
+      const updated = isCurrentlyBookmarked
         ? prev.filter(id => id !== currentProblem.id)
         : [...prev, currentProblem.id];
-      localStorage.setItem('intuitionlab_bookmarked_problems', JSON.stringify(next));
-      return next;
+      localStorage.setItem('intuitionlab_bookmarked_problems', JSON.stringify(updated));
+      return updated;
     });
-  }, [currentProblem.id]);
+  }, [currentProblem?.id]);
 
-  // Keyboard Shortcuts Listener (active in notebook view)
+  // Global Keyboard Shortcuts
   useEffect(() => {
     if (currentView !== 'notebook') return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
+      // Don't trigger when inside inputs or textareas
+      if (
+        document.activeElement?.tagName === 'INPUT' ||
+        document.activeElement?.tagName === 'TEXTAREA' ||
+        (document.activeElement as HTMLElement)?.isContentEditable
+      ) {
         return;
       }
 
       if (e.key === 'ArrowRight') {
         e.preventDefault();
-        handleNext();
+        handleNextProblem();
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        handlePrev();
-      } else if (e.key.toLowerCase() === 's') {
+        handlePrevProblem();
+      } else if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
         handleToggleSolved();
-      } else if (e.key.toLowerCase() === 'b') {
+      } else if (e.key === 'b' || e.key === 'B') {
         e.preventDefault();
         handleToggleBookmarked();
-      } else if (e.key.toLowerCase() === 'r') {
+      } else if (e.key === 'r' || e.key === 'R') {
         e.preventDefault();
-        handleRandom();
+        handleRandomProblem();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentView, handlePrev, handleNext, handleToggleSolved, handleToggleBookmarked, handleRandom]);
+  }, [currentView, handleNextProblem, handlePrevProblem, handleToggleSolved, handleToggleBookmarked, handleRandomProblem]);
+
+  const isCurrentSolved = solvedIds.includes(currentProblem?.id);
+  const isCurrentBookmarked = bookmarkedIds.includes(currentProblem?.id);
+
+  if (currentView === 'landing') {
+    return (
+      <div className="relative min-h-screen bg-surface selection:bg-marker-orange selection:text-white">
+        <PaperShaderBackground />
+        <LandingPage
+          problems={problems}
+          topics={topics}
+          solvedCount={solvedIds.length}
+          onOpenNotebook={handleOpenNotebook}
+        />
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+        />
+        <AdminDashboard
+          isOpen={isAdminModalOpen}
+          onClose={() => setIsAdminModalOpen(false)}
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen w-full bg-surface text-on-surface relative">
-      {/* Dynamic Tactile Paper WebGL Shader Background */}
+    <div className="relative flex h-screen overflow-hidden bg-surface selection:bg-marker-orange selection:text-white">
+      {/* 3D Paper Shader Background */}
       <PaperShaderBackground />
 
-      {/* Render Landing Page View */}
-      {currentView === 'landing' ? (
-        <LandingPage
-          topics={topics}
-          problems={problems}
-          onOpenNotebook={handleOpenNotebook}
-          solvedCount={solvedIds.length}
+      {/* Desktop & Mobile Sidebar Navigation */}
+      <TopicSidebar
+        topics={topics}
+        problems={problems}
+        currentProblemId={currentProblemId}
+        onSelectProblem={handleSelectProblem}
+        isOpenMobile={isMobileSidebarOpen}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
+        solvedProblemIds={solvedIds}
+        bookmarkedProblemIds={bookmarkedIds}
+      />
+
+      {/* Main App Canvas */}
+      <div className="relative flex flex-1 flex-col overflow-hidden">
+        {/* Sticky Header */}
+        <Header
+          problem={currentProblem}
+          onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
+          onPrevProblem={handlePrevProblem}
+          onNextProblem={handleNextProblem}
+          onRandomProblem={handleRandomProblem}
+          onNavigateHome={handleNavigateHome}
+          onOpenAuthModal={() => setIsAuthModalOpen(true)}
+          onOpenAdminModal={() => setIsAdminModalOpen(true)}
+          isSolved={isCurrentSolved}
+          isBookmarked={isCurrentBookmarked}
+          onToggleSolved={handleToggleSolved}
+          onToggleBookmarked={handleToggleBookmarked}
+          currentIndex={currentIndex}
+          totalProblems={problems.length}
         />
-      ) : (
-        /* Render Notebook Workspace View */
-        <div className="flex h-screen w-screen overflow-hidden">
-          {/* Topic Browser Sidebar */}
-          <TopicSidebar
-            topics={topics}
-            problems={problems}
-            currentProblemId={currentProblemId}
-            onSelectProblem={handleSelectProblem}
-            solvedProblemIds={solvedIds}
-            bookmarkedProblemIds={bookmarkedIds}
-            isOpenMobile={isMobileSidebarOpen}
-            onCloseMobile={() => setIsMobileSidebarOpen(false)}
-          />
 
-          {/* Main Content Canvas */}
-          <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-            {/* Header Bar */}
-            <Header
-              problem={currentProblem}
-              onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
-              onPrevProblem={handlePrev}
-              onNextProblem={handleNext}
-              onRandomProblem={handleRandom}
-              onNavigateHome={handleNavigateHome}
-              isSolved={solvedIds.includes(currentProblem.id)}
-              isBookmarked={bookmarkedIds.includes(currentProblem.id)}
-              onToggleSolved={handleToggleSolved}
-              onToggleBookmarked={handleToggleBookmarked}
-              currentIndex={currentIndex}
-              totalProblems={problems.length}
-            />
+        {/* Scrollable Notebook Workspace */}
+        <main
+          id="main-content-canvas"
+          className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 lg:p-10 space-y-8 scroll-smooth"
+        >
+          {/* Problem Hero & Metadata */}
+          <ProblemHero problem={currentProblem} />
 
-            {/* Scrollable Problem Content (Max Available Width) */}
-            <main
-              id="main-content-canvas"
-              className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 lg:p-10 space-y-8 w-full max-w-[1800px] mx-auto"
-            >
-              {/* Hero Section */}
-              <ProblemHero problem={currentProblem} />
+          {/* Dual Column Layout: Interactive Visualizer & Code Viewer */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            {/* Left: Step-by-Step Visualizer */}
+            <div className="w-full">
+              <DiagramVisualizer
+                problem={currentProblem}
+                selectedApproachIndex={selectedApproachIndex}
+                onSelectApproach={setSelectedApproachIndex}
+              />
+            </div>
 
-              {/* Interactive Diagrams Section */}
-              <DiagramVisualizer problem={currentProblem} />
-
-              {/* Two-Column Grid: Code Editor on Right, Examples & Notes on Left */}
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
-                {/* Left Column: Examples, Constraints & Notes */}
-                <div className="xl:col-span-6 2xl:col-span-6 space-y-8">
-                  <ProblemExamples problem={currentProblem} />
-                  <ProblemNotes problemId={currentProblem.id} />
-                </div>
-
-                {/* Right Column: Code Viewer & Language Switcher */}
-                <div className="xl:col-span-6 2xl:col-span-6 sticky top-4">
-                  <CodeViewer problem={currentProblem} />
-                </div>
-              </div>
-            </main>
-
-            {/* Sticky Bottom Navigation Footer */}
-            <FooterNav
-              prevProblem={prevProblem}
-              nextProblem={nextProblem}
-              onPrev={handlePrev}
-              onNext={handleNext}
-              currentIndex={currentIndex}
-              totalProblems={problems.length}
-            />
+            {/* Right: Code Viewer */}
+            <div className="w-full">
+              <CodeViewer
+                problem={currentProblem}
+                selectedApproachIndex={selectedApproachIndex}
+                onSelectApproach={setSelectedApproachIndex}
+              />
+            </div>
           </div>
-        </div>
-      )}
+
+          {/* Test Cases & Constraints */}
+          <ProblemExamples problem={currentProblem} />
+
+          {/* Personal Scratchpad & Notes (250-char max & Supabase Cloud Sync) */}
+          <ProblemNotes problemId={currentProblem.id} />
+
+          {/* Bottom Footer Navigation */}
+          <FooterNav
+            prevProblem={prevProblem}
+            nextProblem={nextProblem}
+            onPrev={handlePrevProblem}
+            onNext={handleNextProblem}
+            currentIndex={currentIndex}
+            totalProblems={problems.length}
+          />
+        </main>
+      </div>
+
+      {/* Modals */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
+      <AdminDashboard
+        isOpen={isAdminModalOpen}
+        onClose={() => setIsAdminModalOpen(false)}
+      />
     </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <MainApp />
+    </AuthProvider>
   );
 };
 

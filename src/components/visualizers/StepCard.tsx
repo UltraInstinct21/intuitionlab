@@ -82,9 +82,11 @@ export const StepCard: React.FC<StepCardProps> = ({
             <Code className="w-3 h-3 text-marker-orange" />
             <span>Executing Code Line:</span>
           </div>
-          <pre className="p-2.5 rounded bg-inverse-surface text-inverse-on-surface font-mono text-xs overflow-x-auto border border-charcoal">
-            <code>{codeSnippet}</code>
-          </pre>
+          <div className="p-2.5 rounded-lg bg-inverse-surface text-inverse-on-surface font-mono text-xs overflow-x-auto border border-charcoal">
+            <pre className="whitespace-pre leading-relaxed font-mono block">
+              <code>{codeSnippet.replace(/\r\n/g, '\n').replace(/\r/g, '\n')}</code>
+            </pre>
+          </div>
         </div>
       )}
     </div>

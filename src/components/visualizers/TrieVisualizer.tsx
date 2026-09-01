@@ -1,102 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Problem } from '@/types/problem';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCcw, Play, Pause } from 'lucide-react';
 import { StepCard } from './StepCard';
+import { TrieVisualizationData, TrieStep } from '@/types/visualization';
 
-interface TrieStep {
-  title: string;
-  whatHappens: string;
-  whyRationale: string;
-  nodes: { char: string; isEnd?: boolean; count?: number; active?: boolean }[];
-  states: Record<string, string | number | boolean | undefined>;
-  codeSnippet: string;
-  impact?: string;
+interface TrieVisualizerProps {
+  problem: Problem;
+  customData?: TrieVisualizationData;
 }
 
-function buildTrieSteps(problem?: Problem): TrieStep[] {
-  const t = (problem?.title || '').toLowerCase();
+export const TrieVisualizer: React.FC<TrieVisualizerProps> = ({ problem, customData }) => {
+  const [step, setStep] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  // 1. Longest Common Prefix
-  if (t.includes('longest common prefix')) {
-    return [
-      {
-        title: 'Insert Words: ["flower", "flow", "flight"]',
-        whatHappens: 'Insert strings into Trie. Root branches on "f" -> "l".',
-        whyRationale: 'The common prefix is the unbranched path from the root before any node splits.',
-        nodes: [
-          { char: 'root', active: true },
-          { char: 'f', active: true, count: 3 },
-          { char: 'l', active: true, count: 3 },
-          { char: 'o / i (fork)', isEnd: false },
-        ],
-        states: { currentCommonPrefix: '"fl"', matchingWords: 3 },
-        codeSnippet: 'prefix = ""\nnode = root\nwhile len(node.children) == 1 and not node.is_end:\n    char = next(iter(node.children))\n    prefix += char\n    node = node.children[char]',
-        impact: 'Time: O(N × L) | Space: O(N × L)',
-      },
-      {
-        title: 'Detect Branching at "l" (splits into "o" and "i")',
-        whatHappens: 'Node "l" has 2 children: "o" (flower, flow) and "i" (flight). Stop traversal.',
-        whyRationale: 'Branching indicates characters differ across the input strings. Longest common prefix is "fl".',
-        nodes: [
-          { char: 'root' },
-          { char: 'f', active: true },
-          { char: 'l', active: true, isEnd: true },
-          { char: 'o', count: 2 },
-          { char: 'i', count: 1 },
-        ],
-        states: { branchFound: true, resultLCP: '"fl"' },
-        codeSnippet: 'return prefix # "fl"',
-      },
-    ];
-  }
-
-  // 2. Default: Trie Insert & Search
-  return [
+  const defaultSteps: TrieStep[] = [
     {
       title: 'Initialize Root TrieNode',
-      whatHappens: 'Create root with empty children map and isEnd = False.',
-      whyRationale: 'Trie root serves as anchor for all words starting with any character a-z.',
-      nodes: [{ char: 'root', active: true }],
-      states: { wordsInTrie: 0 },
-      codeSnippet: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False',
-      impact: 'Time: O(L) per operation | Space: O(N × L)',
-    },
-    {
-      title: 'Insert "apple"',
-      whatHappens: 'Create path root -> "a" -> "p" -> "p" -> "l" -> "e". Mark "e" as isEnd = True.',
-      whyRationale: 'Every character creates or follows an existing child pointer.',
-      nodes: [
-        { char: 'a' },
-        { char: 'p' },
-        { char: 'p' },
-        { char: 'l' },
-        { char: 'e', isEnd: true, active: true },
-      ],
-      states: { insertedWord: '"apple"', wordLength: 5 },
-      codeSnippet: 'for ch in word:\n    if ch not in node.children:\n        node.children[ch] = TrieNode()\n    node = node.children[ch]\nnode.is_end = True',
-    },
-    {
-      title: 'Search "app" vs "apple"',
-      whatHappens: 'search("apple") -> True (isEnd is True). search("app") -> False ("p" has isEnd=False). startsWith("app") -> True.',
-      whyRationale: 'isEnd flag differentiates complete words from mere prefixes.',
-      nodes: [
-        { char: 'a' },
-        { char: 'p' },
-        { char: 'p', isEnd: false, active: true },
-        { char: 'l' },
-        { char: 'e', isEnd: true },
-      ],
-      states: { 'search("app")': false, 'startsWith("app")': true, 'search("apple")': true },
-      codeSnippet: 'return node.is_end # for search()\nreturn True # for startsWith()',
-    },
+      whatHappens: 'Create root with empty children dictionary.',
+      whyRationale: 'Trie stores common prefixes efficiently.',
+      nodes: {
+        root: { id: 'root', char: 'ROOT', isEnd: false, children: { a: 'node_a' } },
+        node_a: { id: 'node_a', char: 'a', isEnd: true, children: {} }
+      },
+      activeNodeId: 'root',
+      states: { root: 'created' },
+      codeSnippet: 'self.root = TrieNode()',
+      impact: 'Time: O(L) | Space: O(N × L)',
+    }
   ];
-}
 
-export const TrieVisualizer: React.FC<{ problem: Problem }> = ({ problem }) => {
-  const [step, setStep] = useState(0);
-  const steps = buildTrieSteps(problem);
+  const steps: TrieStep[] = customData?.steps && customData.steps.length > 0 ? customData.steps : defaultSteps;
   const cur = steps[step] || steps[0];
+
+  useEffect(() => {
+    setStep(0);
+    setIsPlaying(false);
+  }, [problem.id, customData]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isPlaying) {
+      timer = setInterval(() => {
+        setStep(prev => {
+          if (prev >= steps.length - 1) {
+            setIsPlaying(false);
+            return prev;
+          }
+          return prev + 1;
+        });
+      }, 2500);
+    }
+    return () => clearInterval(timer);
+  }, [isPlaying, steps.length]);
+
+  const nodesList = Object.values(cur.nodes || {});
 
   return (
     <div className="space-y-6">
@@ -108,31 +66,57 @@ export const TrieVisualizer: React.FC<{ problem: Problem }> = ({ problem }) => {
           <Button size="sm" variant="primary" onClick={() => setStep(Math.min(steps.length - 1, step + 1))} disabled={step === steps.length - 1} className="h-8 px-3 text-xs">
             <span>{step === steps.length - 1 ? 'completed!' : 'next step →'}</span><ChevronRight className="w-4 h-4" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => setStep(0)} className="h-8"><RotateCcw className="w-3.5 h-3.5" /></Button>
+          <Button size="sm" variant="ghost" onClick={() => setIsPlaying(!isPlaying)} className="h-8 px-2.5 text-xs">
+            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => { setStep(0); setIsPlaying(false); }} className="h-8"><RotateCcw className="w-3.5 h-3.5" /></Button>
         </div>
         <div className="text-xs md:text-sm font-mono flex items-center gap-3">
           <span className="text-marker-orange font-bold">step {step + 1} of {steps.length}</span>
+          {cur.currentWord && <span className="text-sky-sticker font-bold max-w-[200px] truncate">word: "{cur.currentWord}"</span>}
+          {cur.result !== undefined && <span className="text-sprout-sticker font-bold max-w-[200px] truncate">result: {String(cur.result)}</span>}
         </div>
       </div>
 
-      <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-4 overflow-x-auto">
-        <div className="flex items-center gap-2 flex-wrap justify-center">
-          {cur.nodes.map((n, i) => (
-            <React.Fragment key={i}>
+      <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-6 overflow-x-auto select-none">
+        <div className="flex items-center gap-3 flex-wrap justify-center min-w-max">
+          {nodesList.map(node => {
+            const isActive = cur.activeNodeId === node.id;
+            const isMatched = node.status === 'matched';
+            const isInserted = node.status === 'inserted';
+
+            const charStr = String(node.char);
+            const isLong = charStr.length > 2;
+
+            return (
               <div
-                className={`px-3.5 py-2.5 rounded-xl border-2 shadow-hard font-mono font-bold text-sm flex items-center gap-1.5 transition-all duration-200 ${
-                  n.active
-                    ? 'bg-primary-container text-on-primary-container border-charcoal scale-105'
-                    : 'bg-surface text-charcoal border-outline/40'
+                key={node.id}
+                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 shadow-hard transition-all duration-200 min-w-[70px] max-w-[140px] overflow-hidden ${
+                  isActive
+                    ? 'border-marker-orange bg-primary-fixed scale-105 shadow-md text-charcoal'
+                    : isMatched
+                    ? 'border-sprout-sticker bg-[#22c55e]/15 text-charcoal'
+                    : isInserted
+                    ? 'border-sky-500 bg-sky-50 text-charcoal'
+                    : 'border-charcoal bg-surface text-charcoal'
                 }`}
               >
-                <span>{n.char}</span>
-                {n.isEnd && <span className="text-xs font-bold text-sprout-sticker">* [END]</span>}
-                {n.count !== undefined && <span className="text-[10px] text-on-surface-variant">({n.count})</span>}
+                <span className={`font-mono font-bold truncate max-w-full ${isLong ? 'text-xs md:text-sm' : 'text-base md:text-lg'}`}>
+                  {node.char}
+                </span>
+                <div className="flex gap-1 items-center flex-wrap justify-center">
+                  {node.isEnd && (
+                    <span className="bg-sprout-sticker text-white text-[9px] font-mono px-1 rounded-pill">END</span>
+                  )}
+                  {node.count !== undefined && (
+                    <span className="bg-surface-container-high text-on-surface-variant text-[9px] font-mono px-1 rounded">
+                      cnt:{node.count}
+                    </span>
+                  )}
+                </div>
               </div>
-              {i < cur.nodes.length - 1 && <span className="text-charcoal font-bold">→</span>}
-            </React.Fragment>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -142,7 +126,7 @@ export const TrieVisualizer: React.FC<{ problem: Problem }> = ({ problem }) => {
         title={cur.title}
         whatHappens={cur.whatHappens}
         whyRationale={cur.whyRationale}
-        variableStates={cur.states}
+        variableStates={cur.states || {}}
         codeSnippet={cur.codeSnippet}
         timeSpaceImpact={cur.impact || 'Time: O(L) | Space: O(N × L)'}
       />

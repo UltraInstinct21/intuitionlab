@@ -7,6 +7,9 @@ dist-ssr/
 # Environment & Secrets
 .env
 .env.*
+server/.env
+server/.env.*
+server/dist/
 backend/.env
 backend/.env.*
 
