@@ -70,7 +70,7 @@ const MainApp: React.FC = () => {
 
   // Current problem index
   const currentIndex = problems.findIndex(p => p.id === currentProblemId);
-  const currentProblem = problems[currentIndex] || problems[0];
+  const currentProblem = (currentIndex >= 0 ? problems[currentIndex] : problems[0]) || problems[0];
   const prevProblem = currentIndex > 0 ? problems[currentIndex - 1] : undefined;
   const nextProblem = currentIndex < problems.length - 1 ? problems[currentIndex + 1] : undefined;
 
@@ -100,9 +100,24 @@ const MainApp: React.FC = () => {
     setCurrentProblemId(id);
   };
 
-  const handleOpenNotebook = (problemId?: string) => {
-    if (problemId && problems.some(p => p.id === problemId)) {
-      setCurrentProblemId(problemId);
+  const handleOpenNotebook = (targetId?: string) => {
+    if (targetId) {
+      // 1. Direct Problem ID or Slug Match
+      const direct = problems.find(p => p.id === targetId || p.slug === targetId);
+      if (direct) {
+        setCurrentProblemId(direct.id);
+      } else {
+        // 2. Match by Topic ID / Topic Folder / Topic Title
+        const topicProblem = problems.find(
+          p =>
+            p.topicFolder === targetId ||
+            p.topicTitle.toLowerCase() === targetId.toLowerCase() ||
+            targetId.startsWith(p.topicFolder)
+        );
+        if (topicProblem) {
+          setCurrentProblemId(topicProblem.id);
+        }
+      }
     }
     setCurrentView('notebook');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -257,7 +272,7 @@ const MainApp: React.FC = () => {
           isBookmarked={isCurrentBookmarked}
           onToggleSolved={handleToggleSolved}
           onToggleBookmarked={handleToggleBookmarked}
-          currentIndex={currentIndex}
+          currentIndex={currentIndex >= 0 ? currentIndex : 0}
           totalProblems={problems.length}
         />
 
@@ -305,7 +320,7 @@ const MainApp: React.FC = () => {
             nextProblem={nextProblem}
             onPrev={handlePrevProblem}
             onNext={handleNextProblem}
-            currentIndex={currentIndex}
+            currentIndex={currentIndex >= 0 ? currentIndex : 0}
             totalProblems={problems.length}
           />
         </main>

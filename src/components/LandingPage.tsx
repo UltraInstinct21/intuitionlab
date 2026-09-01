@@ -347,22 +347,36 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {topics.map(topic => (
-            <div
-              key={topic.id}
-              onClick={() => onOpenNotebook(topic.problems[0]?.id)}
-              className="p-4 rounded-xl border border-charcoal bg-surface hover:bg-dew-drop transition-all cursor-pointer shadow-xs group"
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-display text-base font-bold lowercase text-charcoal group-hover:text-marker-orange transition-colors">
-                  {topic.title}
-                </span>
-                <span className="text-xs font-mono font-bold bg-primary-container px-2 py-0.5 rounded-pill border border-charcoal">
-                  {topic.count} problems
-                </span>
+          {topics.map(topic => {
+            const firstProblem =
+              problems.find(p => p.topicFolder === topic.id || p.topicTitle.toLowerCase() === topic.title.toLowerCase()) ||
+              topic.problems?.[0];
+            const targetProblemId = firstProblem?.id || topic.problems?.[0]?.id || topic.id;
+
+            return (
+              <div
+                key={topic.id}
+                onClick={() => onOpenNotebook(targetProblemId)}
+                className="p-4 rounded-xl border border-charcoal bg-surface hover:bg-dew-drop hover:border-marker-orange transition-all cursor-pointer shadow-xs group"
+                title={`Explore ${topic.title} in Interactive Notebook`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-display text-base font-bold lowercase text-charcoal group-hover:text-marker-orange transition-colors">
+                    {topic.title}
+                  </span>
+                  <span className="text-xs font-mono font-bold bg-primary-container px-2 py-0.5 rounded-pill border border-charcoal">
+                    {topic.count} problems
+                  </span>
+                </div>
+                {firstProblem && (
+                  <div className="mt-2 text-[11px] font-mono text-on-surface-variant group-hover:text-charcoal transition-colors flex items-center gap-1.5 truncate">
+                    <span className="text-marker-orange font-bold">1st:</span>
+                    <span className="truncate">{firstProblem.title}</span>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
