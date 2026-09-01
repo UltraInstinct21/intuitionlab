@@ -199,6 +199,8 @@ const MainApp: React.FC = () => {
           topics={topics}
           solvedCount={solvedIds.length}
           onOpenNotebook={handleOpenNotebook}
+          onOpenAuthModal={() => setIsAuthModalOpen(true)}
+          onOpenAdminModal={() => setIsAdminModalOpen(true)}
         />
         <AuthModal
           isOpen={isAuthModalOpen}
@@ -281,8 +283,11 @@ const MainApp: React.FC = () => {
           {/* Test Cases & Constraints */}
           <ProblemExamples problem={currentProblem} />
 
-          {/* Personal Scratchpad & Notes (250-char max & Supabase Cloud Sync) */}
-          <ProblemNotes problemId={currentProblem.id} />
+          {/* Personal Scratchpad & Notes (Strict 250-char max & Supabase Cloud Sync) */}
+          <ProblemNotes
+            problemId={currentProblem.id}
+            onOpenAuthModal={() => setIsAuthModalOpen(true)}
+          />
 
           {/* Bottom Footer Navigation */}
           <FooterNav

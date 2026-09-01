@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { X, Lock, Mail, User as UserIcon, Sparkles, AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { X, Lock, Mail, User as UserIcon, Sparkles, AlertCircle, ArrowRight, CheckCircle2, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface AuthModalProps {
@@ -22,6 +22,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [emailHelpNeeded, setEmailHelpNeeded] = useState(false);
 
   if (!isOpen) return null;
 
@@ -29,6 +30,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     e.preventDefault();
     setError(null);
     setSuccessMessage(null);
+    setEmailHelpNeeded(false);
     setLoading(true);
 
     try {
@@ -36,6 +38,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         const res = await signInWithPassword(email, password);
         if (res.error) {
           setError(res.error);
+          if (res.error.toLowerCase().includes('email not confirmed')) {
+            setEmailHelpNeeded(true);
+          }
         } else {
           onClose();
         }
@@ -43,15 +48,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         const res = await signUpWithPassword(email, password, username);
         if (res.error) {
           setError(res.error);
+        } else if (res.needsEmailConfirmation) {
+          setSuccessMessage('Account created! Email verification is required by your Supabase settings.');
+          setEmailHelpNeeded(true);
         } else {
-          setSuccessMessage(
-            isConfigured
-              ? 'Account created! Please check your email to confirm your account (or sign in directly).'
-              : 'Signed in as Dev User!'
-          );
+          setSuccessMessage('Account created and signed in successfully!');
           setTimeout(() => {
             onClose();
-          }, 1500);
+          }, 1200);
         }
       }
     } catch (err: any) {
@@ -90,7 +94,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* Tab Switcher */}
         <div className="flex border-b border-charcoal/30 bg-surface-container-high/30">
           <button
-            onClick={() => { setTab('signin'); setError(null); }}
+            onClick={() => { setTab('signin'); setError(null); setEmailHelpNeeded(false); }}
             className={`flex-1 py-2.5 text-xs font-mono font-bold transition-all text-center ${
               tab === 'signin'
                 ? 'bg-cream-paper border-b-2 border-marker-orange text-marker-orange'
@@ -100,7 +104,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             sign in
           </button>
           <button
-            onClick={() => { setTab('signup'); setError(null); }}
+            onClick={() => { setTab('signup'); setError(null); setEmailHelpNeeded(false); }}
             className={`flex-1 py-2.5 text-xs font-mono font-bold transition-all text-center ${
               tab === 'signup'
                 ? 'bg-cream-paper border-b-2 border-marker-orange text-marker-orange'
@@ -125,7 +129,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {error && (
             <div className="bg-red-50 border border-red-300 rounded-lg p-2.5 text-xs text-red-700 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
-              <span>{error}</span>
+              <span className="leading-tight">{error}</span>
             </div>
           )}
 
@@ -133,6 +137,25 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <div className="bg-emerald-50 border border-emerald-300 rounded-lg p-2.5 text-xs text-emerald-700 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
               <span>{successMessage}</span>
+            </div>
+          )}
+
+          {emailHelpNeeded && (
+            <div className="bg-dew-drop border border-charcoal/30 rounded-xl p-3 text-xs font-mono text-charcoal space-y-2">
+              <div className="flex items-center gap-1.5 font-bold text-marker-orange">
+                <HelpCircle className="w-4 h-4" />
+                <span>Not receiving confirmation email?</span>
+              </div>
+              <p className="text-[11px] text-cocoa-ink leading-relaxed">
+                By default, Supabase requires email verification before login. To sign in immediately:
+              </p>
+              <div className="bg-cream-paper p-2 rounded border border-outline/30 text-[10px] text-cocoa-ink space-y-1">
+                <div>1. In <strong>Supabase Dashboard</strong> ➔ <strong>Authentication</strong> ➔ <strong>Providers</strong> ➔ <strong>Email</strong>:</div>
+                <div className="text-marker-orange font-bold font-mono">Toggle OFF "Confirm email" ➔ Click Save</div>
+              </div>
+              <p className="text-[10px] text-on-surface-variant">
+                Or run in Supabase SQL Editor: <code className="bg-surface px-1 py-0.5 rounded text-marker-orange">UPDATE auth.users SET email_confirmed_at = now();</code>
+              </p>
             </div>
           )}
 

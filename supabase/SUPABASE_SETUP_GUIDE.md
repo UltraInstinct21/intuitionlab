@@ -7,10 +7,10 @@ This guide walks you through setting up your **Supabase** backend for authentica
 ## 📋 Table of Contents
 1. [Create Supabase Project](#1-create-supabase-project)
 2. [Run Database Schema Migrations](#2-run-database-schema-migrations)
-3. [Retrieve API Keys](#3-retrieve-api-keys)
-4. [Configure Environment Variables](#4-configure-environment-variables)
-5. [Promoting Your First User to Admin](#5-promoting-your-first-user-to-admin)
-6. [Authentication Settings](#6-authentication-settings)
+3. [Disable Email Confirmation (Allow Instant Login)](#3-disable-email-confirmation-allow-instant-login)
+4. [Retrieve API Keys](#4-retrieve-api-keys)
+5. [Configure Environment Variables](#5-configure-environment-variables)
+6. [Promoting Your First User to Admin](#6-promoting-your-first-user-to-admin)
 7. [Testing the Setup](#7-testing-the-setup)
 
 ---
@@ -20,7 +20,7 @@ This guide walks you through setting up your **Supabase** backend for authentica
 1. Go to [https://supabase.com](https://supabase.com) and sign in.
 2. Click **"New project"** and select your organization.
 3. Fill in the details:
-   - **Name:** `intuitionlab` (or your preferred name)
+   - **Name:** `intuitionlab`
    - **Database Password:** Generate a secure password and save it.
    - **Region:** Choose the region closest to your users.
 4. Click **"Create new project"** and wait ~1 minute for provisioning.
@@ -29,7 +29,7 @@ This guide walks you through setting up your **Supabase** backend for authentica
 
 ## 2. Run Database Schema Migrations
 
-1. In the Supabase Dashboard, click on **"SQL Editor"** (terminal icon in the left sidebar).
+1. In the Supabase Dashboard, click on **"SQL Editor"** (terminal icon `>_` in the left sidebar).
 2. Click **"New query"**.
 3. Open [`supabase/migrations/01_initial_schema.sql`](file:///D:/coding/New%20folder/supabase/migrations/01_initial_schema.sql) from this repository.
 4. Copy the entire contents and paste them into the SQL Editor.
@@ -46,9 +46,31 @@ This guide walks you through setting up your **Supabase** backend for authentica
 
 ---
 
-## 3. Retrieve API Keys
+## 3. Disable Email Confirmation (Allow Instant Login)
 
-1. In your Supabase Dashboard, navigate to **Project Settings** (gear icon) -> **API**.
+> [!IMPORTANT]
+> **Why you are not receiving emails:**  
+> Supabase's default shared email service has strict rate limits. To let users sign up and log in **instantly** without waiting for confirmation emails:
+
+1. In Supabase Dashboard, click **Authentication** (the user icon in the left sidebar).
+2. Click **Providers** ➔ Click on **Email** to expand it.
+3. Scroll down and **Toggle OFF "Confirm email"**.
+4. Click **"Save"**.
+
+### ⚡ To confirm any existing accounts that are already stuck:
+Go to **SQL Editor** and run:
+```sql
+UPDATE auth.users
+SET email_confirmed_at = now()
+WHERE email_confirmed_at IS NULL;
+```
+Now all existing users can sign in immediately with their password!
+
+---
+
+## 4. Retrieve API Keys
+
+1. In your Supabase Dashboard, navigate to **Project Settings** (gear icon ⚙️) -> **API**.
 2. Locate the following keys:
    - **Project URL:** `https://your-project-id.supabase.co`
    - **Project API Keys:**
@@ -57,9 +79,9 @@ This guide walks you through setting up your **Supabase** backend for authentica
 
 ---
 
-## 4. Configure Environment Variables
+## 5. Configure Environment Variables
 
-Create or update `.env` in the root directory (and `server/.env` if running backend independently):
+Create or update `.env` in the root directory (and add to Vercel Environment Variables):
 
 ```env
 # ==========================================
@@ -82,11 +104,11 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ---
 
-## 5. Promoting Your First User to Admin
+## 6. Promoting Your First User to Admin
 
 To unlock the **Admin Dashboard** (`[✦ Admin Panel]` button in the top navigation):
 
-1. Launch IntuitionLab and create an account via the **Sign In / Sign Up** modal in the top right.
+1. Create an account in your app via the **Sign In / Create Account** modal.
 2. In Supabase Dashboard, go to **SQL Editor** and run:
 
 ```sql
@@ -96,16 +118,6 @@ WHERE email = 'your-email@example.com';
 ```
 
 3. Refresh your app. You will see the **[✦ Admin Panel]** button appear in the top header.
-
----
-
-## 6. Authentication Settings
-
-In the Supabase Dashboard, go to **Authentication** -> **Providers**:
-
-- **Email:** Enabled by default.
-- *(Optional)* **Confirm email:** If testing locally, you can disable **"Confirm email"** in **Authentication -> Email Auth** to allow instant sign-in without waiting for email verification links.
-- *(Optional)* **Google / GitHub OAuth:** Follow the Supabase OAuth guide to enable 1-click social logins.
 
 ---
 
@@ -126,12 +138,4 @@ Server runs on [http://localhost:5000/](http://localhost:5000/)
 ### Verify Health Endpoint:
 ```bash
 curl http://localhost:5000/api/v1/health
-```
-Response:
-```json
-{
-  "status": "healthy",
-  "supabaseConnected": true,
-  "uptime": 12.4
-}
 ```

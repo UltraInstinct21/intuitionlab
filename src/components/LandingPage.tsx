@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Problem, Topic } from '@/types/problem';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
 import {
   Sparkles,
   BookOpen,
@@ -13,12 +14,17 @@ import {
   CheckCircle2,
   Activity,
   Info,
+  User,
+  Shield,
+  LogOut,
 } from 'lucide-react';
 
 interface LandingPageProps {
   topics: Topic[];
   problems: Problem[];
   onOpenNotebook: (problemId?: string) => void;
+  onOpenAuthModal?: () => void;
+  onOpenAdminModal?: () => void;
   solvedCount: number;
 }
 
@@ -26,8 +32,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   topics,
   problems,
   onOpenNotebook,
+  onOpenAuthModal,
+  onOpenAdminModal,
   solvedCount,
 }) => {
+  const { user, profile, isAdmin, signOut } = useAuth();
+
   // Interactive mini demo state on landing page (Dutch National Flag 3-pointer)
   const initialArr = [2, 0, 2, 1, 1, 0];
   const [demoArr, setDemoArr] = useState<number[]>([...initialArr]);
@@ -110,19 +120,53 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <a href="#curriculum" className="hover:text-charcoal transition-colors">
             27 topics ({problems.length} problems)
           </a>
-          <a href="#philosophy" className="hover:text-charcoal transition-colors">
-            why intuition
-          </a>
         </nav>
 
-        {/* Right CTA */}
-        <div className="flex items-center gap-3">
+        {/* Right Auth & CTA Actions */}
+        <div className="flex items-center gap-2.5">
+          {isAdmin && (
+            <Button
+              size="sm"
+              variant="default"
+              onClick={onOpenAdminModal}
+              className="h-9 px-3 bg-dew-drop border-2 border-marker-orange text-marker-orange hover:bg-primary-fixed-dim font-mono font-bold text-xs flex items-center gap-1.5 shadow-xs"
+            >
+              <Shield className="w-3.5 h-3.5 fill-marker-orange/20" />
+              <span>admin panel</span>
+            </Button>
+          )}
+
+          {user ? (
+            <div className="flex items-center gap-1.5 bg-dew-drop p-1 rounded-pill border border-charcoal">
+              <span className="text-xs font-mono font-bold px-2 py-0.5 text-charcoal truncate max-w-[120px]">
+                {profile?.username || user.email?.split('@')[0]}
+              </span>
+              <button
+                onClick={signOut}
+                className="p-1 text-on-surface-variant hover:text-red-600 rounded-full transition-colors"
+                title="Sign Out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <Button
+              size="sm"
+              variant="default"
+              onClick={onOpenAuthModal}
+              className="h-9 px-3.5 rounded-pill border-[1.5px] border-charcoal bg-surface text-charcoal hover:bg-dew-drop text-xs md:text-sm font-mono font-bold shadow-xs transition-all flex items-center gap-1.5"
+            >
+              <User className="w-4 h-4 text-marker-orange" />
+              <span>sign in</span>
+            </Button>
+          )}
+
           <Button
             onClick={() => onOpenNotebook()}
             className="h-9 px-4 rounded-pill border-[1.5px] border-charcoal bg-primary-container text-on-primary-container hover:bg-primary-container/90 text-xs md:text-sm font-bold shadow-hard transition-all duration-200 active:translate-x-0.5 active:translate-y-0.5 flex items-center gap-1.5"
           >
             <BookOpen className="w-4 h-4" />
-            <span>open notebook</span>
+            <span className="hidden sm:inline">open notebook</span>
             <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
           </Button>
         </div>
@@ -148,363 +192,193 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             stop memorizing lines of boilerplate. step through data structure transitions, trace pointer mechanics, and understand the core invariant behind every optimal leap.
           </p>
 
-          {/* Action Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Button
-              size="lg"
               onClick={() => onOpenNotebook()}
-              className="h-12 px-6 rounded-pill border-2 border-charcoal bg-primary-container text-on-primary-container hover:bg-primary-container/90 text-sm sm:text-base font-bold shadow-hard-lg transition-all duration-200 active:translate-x-0.5 active:translate-y-0.5 flex items-center gap-2"
+              className="h-12 sm:h-14 px-8 rounded-pill border-2 border-charcoal bg-primary-container text-on-primary-container hover:bg-primary-container/90 text-base sm:text-lg font-bold shadow-hard transition-all duration-200 active:translate-x-1 active:translate-y-1 flex items-center gap-2"
             >
-              <span>launch interactive notebook</span>
-              <ArrowRight className="w-4 h-4" />
+              <BookOpen className="w-5 h-5" />
+              <span>start learning (191 problems)</span>
+              <ArrowRight className="w-5 h-5 ml-1" />
             </Button>
 
-            <a
-              href="#curriculum"
-              className="h-12 px-6 rounded-pill border-2 border-charcoal bg-cream-paper text-charcoal hover:bg-dew-drop text-sm sm:text-base font-bold shadow-hard flex items-center gap-2 transition-all"
-            >
-              <BookOpen className="w-4 h-4 text-marker-orange" />
-              <span>browse 27 topics</span>
-            </a>
-          </div>
-
-          {/* Quick Stats Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 max-w-3xl mx-auto">
-            <div className="p-3 bg-cream-paper rounded-xl border border-charcoal/40 shadow-xs text-center">
-              <div className="font-display font-black text-2xl sm:text-3xl text-charcoal">191</div>
-              <div className="text-xs font-mono text-on-surface-variant">curated problems</div>
-            </div>
-            <div className="p-3 bg-cream-paper rounded-xl border border-charcoal/40 shadow-xs text-center">
-              <div className="font-display font-black text-2xl sm:text-3xl text-marker-orange">27</div>
-              <div className="text-xs font-mono text-on-surface-variant">topic categories</div>
-            </div>
-            <div className="p-3 bg-cream-paper rounded-xl border border-charcoal/40 shadow-xs text-center">
-              <div className="font-display font-black text-2xl sm:text-3xl text-sky-sticker">2</div>
-              <div className="text-xs font-mono text-on-surface-variant">python 3 & c++20</div>
-            </div>
-            <div className="p-3 bg-cream-paper rounded-xl border border-charcoal/40 shadow-xs text-center">
-              <div className="font-display font-black text-2xl sm:text-3xl text-sprout-sticker">100%</div>
-              <div className="text-xs font-mono text-on-surface-variant">free & open source</div>
-            </div>
+            {!user && (
+              <Button
+                variant="outline"
+                onClick={onOpenAuthModal}
+                className="h-12 sm:h-14 px-6 rounded-pill border-2 border-charcoal bg-surface text-charcoal hover:bg-dew-drop text-base font-mono font-bold shadow-hard transition-all flex items-center gap-2"
+              >
+                <User className="w-4 h-4 text-marker-orange" />
+                <span>sign in / create account</span>
+              </Button>
+            )}
           </div>
         </div>
 
-        {/* 3. HERO INTERACTIVE PLAYGROUND WIDGET */}
-        <div id="demo" className="rounded-2xl border-2 border-charcoal bg-surface p-5 sm:p-8 shadow-hard-lg space-y-6 max-w-5xl mx-auto">
+        {/* 3. INTERACTIVE HERO DEMO ENGINE */}
+        <div id="demo" className="max-w-4xl mx-auto rounded-2xl border-2 border-charcoal bg-surface p-6 sm:p-8 shadow-hard space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline/30 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-container text-on-primary-container font-bold text-sm border border-charcoal">
-                <Activity className="w-4 h-4 text-on-primary-container" />
-              </span>
-              <div>
-                <h2 className="font-display text-lg sm:text-2xl font-bold lowercase text-charcoal">
-                  interactive visualizer demo: dutch national flag (sort colors)
-                </h2>
-                <p className="text-xs sm:text-sm text-on-surface-variant font-sans">
-                  test-drive the 3-pointer partition algorithm right here.
-                </p>
-              </div>
-            </div>
-
             <div className="flex items-center gap-2">
+              <span className="p-1.5 rounded-lg bg-primary-container text-on-primary-container font-mono text-xs font-bold border border-charcoal">
+                live engine
+              </span>
+              <h3 className="font-display text-lg sm:text-xl font-bold lowercase text-charcoal">
+                sort colors (dutch national flag)
+              </h3>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button size="sm" variant="default" onClick={resetDemo} className="h-8 px-2.5 text-xs font-mono">
+                <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                <span>reset</span>
+              </Button>
               <Button
                 size="sm"
                 variant="primary"
                 onClick={stepDemo}
                 disabled={isDemoFinished}
-                className="h-8 px-3.5 text-xs font-bold"
+                className="h-8 px-3 text-xs font-mono font-bold"
               >
-                <span>{isDemoFinished ? 'finished' : 'next step →'}</span>
-              </Button>
-              <Button size="sm" variant="ghost" onClick={resetDemo} className="h-8 px-2.5">
-                <RotateCcw className="w-3.5 h-3.5" />
+                <span>{isDemoFinished ? 'partition complete!' : `step ${demoStep + 1} →`}</span>
               </Button>
             </div>
           </div>
 
-          {/* Array Visual Display */}
-          <div className="py-8 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-6">
-            <div className="flex items-end gap-3 sm:gap-4 flex-wrap justify-center">
+          {/* Interactive Array Elements */}
+          <div className="py-6 px-4 bg-dew-drop rounded-xl border border-charcoal flex flex-col items-center gap-4 overflow-x-auto">
+            <div className="flex items-end justify-center gap-2 sm:gap-3 flex-wrap min-w-max">
               {demoArr.map((val, idx) => {
                 const isLow = idx === demoLow;
                 const isMid = idx === demoMid;
                 const isHigh = idx === demoHigh;
 
-                const colorClass =
-                  val === 0
-                    ? 'bg-[#ffdad6] text-[#93000a] border-[#ba1a1a]'
-                    : val === 1
-                    ? 'bg-cream-paper text-charcoal border-charcoal'
-                    : 'bg-primary-fixed text-burnt-sienna border-marker-orange';
-
                 return (
-                  <div key={idx} className="flex flex-col items-center gap-1.5">
-                    <div className="h-6 flex items-center justify-center gap-0.5 font-mono text-xs font-bold">
-                      {isLow && <span className="bg-[#ba1a1a] text-white px-1.5 rounded-xs text-[10px]">L</span>}
-                      {isMid && <span className="bg-sky-sticker text-white px-1.5 rounded-xs text-[10px]">M</span>}
-                      {isHigh && <span className="bg-sprout-sticker text-white px-1.5 rounded-xs text-[10px]">H</span>}
+                  <div key={idx} className="flex flex-col items-center gap-1.5 min-w-[50px]">
+                    <div className="h-5 flex items-center justify-center gap-1 text-[10px] font-mono font-bold">
+                      {isLow && <span className="bg-[#ba1a1a] text-white px-1.5 rounded-pill">low</span>}
+                      {isMid && <span className="bg-marker-orange text-white px-1.5 rounded-pill">mid</span>}
+                      {isHigh && <span className="bg-sprout-sticker text-white px-1.5 rounded-pill">high</span>}
                     </div>
-
                     <div
-                      className={`w-12 h-14 sm:w-16 sm:h-18 flex items-center justify-center font-mono font-bold text-lg sm:text-2xl rounded-lg border-2 shadow-hard transition-all duration-300 ${colorClass} ${
-                        isMid ? 'ring-2 ring-marker-orange scale-105' : ''
-                      }`}
+                      className={`w-12 h-14 sm:w-14 sm:h-16 flex items-center justify-center font-mono font-bold text-lg sm:text-xl rounded-xl border-2 shadow-hard transition-all duration-300 ${
+                        val === 0
+                          ? 'border-[#ba1a1a] bg-[#ffdad6] text-[#93000a]'
+                          : val === 1
+                          ? 'border-charcoal bg-surface text-charcoal'
+                          : 'border-marker-orange bg-primary-fixed text-burnt-sienna'
+                      } ${isMid ? 'ring-2 ring-marker-orange scale-105' : ''}`}
                     >
                       {val}
                     </div>
-
-                    <span className="text-[11px] font-mono text-on-surface-variant font-medium">idx {idx}</span>
+                    <span className="text-[10px] font-mono text-on-surface-variant">[{idx}]</span>
                   </div>
                 );
               })}
             </div>
-
-            {/* Pointers State Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-mono font-bold">
-              <span className="bg-dew-drop px-3 py-1 rounded-pill border border-charcoal/40 text-charcoal">
-                low: <strong className="text-[#ba1a1a]">{demoLow}</strong>
-              </span>
-              <span className="bg-dew-drop px-3 py-1 rounded-pill border border-charcoal/40 text-charcoal">
-                mid: <strong className="text-sky-sticker">{demoMid}</strong>
-              </span>
-              <span className="bg-dew-drop px-3 py-1 rounded-pill border border-charcoal/40 text-charcoal">
-                high: <strong className="text-burnt-sienna">{demoHigh}</strong>
-              </span>
-            </div>
           </div>
 
-          {/* Action Callout */}
-          <div className="p-4 bg-dew-drop rounded-xl border border-charcoal/30 text-xs sm:text-sm font-mono text-cocoa-ink flex items-start gap-2.5">
-            <Info className="w-4 h-4 text-marker-orange shrink-0 mt-0.5" />
-            <p className="leading-relaxed">
-              <strong>Step {demoStep}:</strong> {demoAction}
-            </p>
+          {/* Step Explanation */}
+          <div className="p-4 rounded-xl bg-cream-paper border border-outline/30 text-xs sm:text-sm font-mono text-cocoa-ink flex items-start gap-2.5">
+            <Info className="w-4 h-4 text-marker-orange flex-shrink-0 mt-0.5" />
+            <p className="leading-relaxed">{demoAction}</p>
           </div>
         </div>
       </section>
 
-      {/* 4. KEY FEATURES SECTION */}
-      <section id="features" className="py-16 px-4 sm:px-6 md:px-10 border-t border-charcoal/20 bg-dew-drop/50">
-        <div className="max-w-[1600px] mx-auto space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-xs font-mono font-bold uppercase tracking-widest text-marker-orange">
-              built for deep understanding
-            </span>
-            <h2 className="font-display text-3xl sm:text-5xl font-extrabold lowercase text-charcoal">
-              everything you need to crack coding interviews
+      {/* 4. FEATURE GRID */}
+      <section id="features" className="px-4 sm:px-6 md:px-10 py-16 bg-dew-drop/50 border-t border-charcoal/30">
+        <div className="max-w-6xl mx-auto space-y-12">
+          <div className="text-center space-y-2">
+            <h2 className="font-display text-3xl sm:text-5xl font-black lowercase text-charcoal">
+              built for first-principles mastery
             </h2>
-            <p className="text-sm sm:text-lg text-cocoa-ink font-sans">
-              a notebook engineered from the ground up for clarity, spatial thinking, and active recall.
+            <p className="text-sm sm:text-base font-mono text-on-surface-variant">
+              everything you need to crack top tier technical interviews
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Feature 1 */}
-            <div className="p-6 rounded-2xl bg-surface border-2 border-charcoal shadow-hard space-y-4 hover:-translate-y-1 transition-transform">
-              <div className="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center border-[1.5px] border-charcoal shadow-xs">
-                <Layers className="w-6 h-6 text-on-primary-container" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 rounded-2xl border-2 border-charcoal bg-surface shadow-hard space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-primary-container border border-charcoal flex items-center justify-center text-on-primary-container">
+                <Layers className="w-5 h-5" />
               </div>
-              <h3 className="font-display text-xl font-bold lowercase text-charcoal">
-                step-by-step visualizers
-              </h3>
-              <p className="text-xs sm:text-sm text-cocoa-ink font-sans leading-relaxed">
-                interactive models for matrices, 3-way partition, Kadane&apos;s sum, linked list pointer flips, tree traversals, and 2D DP grids.
+              <h3 className="font-display text-lg font-bold lowercase text-charcoal">191 interactive visualizers</h3>
+              <p className="text-xs sm:text-sm font-sans text-cocoa-ink leading-relaxed">
+                Step through every data structure transition with live pointer tracking, dynamic node scaling, and zero clipping.
               </p>
-              <div className="text-xs font-mono text-marker-orange font-bold pt-2">
-                • play, step, and reset controls
-              </div>
             </div>
 
-            {/* Feature 2 */}
-            <div className="p-6 rounded-2xl bg-surface border-2 border-charcoal shadow-hard space-y-4 hover:-translate-y-1 transition-transform">
-              <div className="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center border-[1.5px] border-charcoal shadow-xs">
-                <Code2 className="w-6 h-6 text-on-secondary-container" />
+            <div className="p-6 rounded-2xl border-2 border-charcoal bg-surface shadow-hard space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-primary-container border border-charcoal flex items-center justify-center text-on-primary-container">
+                <Code2 className="w-5 h-5" />
               </div>
-              <h3 className="font-display text-xl font-bold lowercase text-charcoal">
-                canonical class Solution code
-              </h3>
-              <p className="text-xs sm:text-sm text-cocoa-ink font-sans leading-relaxed">
-                standard LeetCode & GFG structure with separate helper member functions, Python 3 and C++20 tabs, and copy feedback.
+              <h3 className="font-display text-lg font-bold lowercase text-charcoal">dual-language code viewers</h3>
+              <p className="text-xs sm:text-sm font-sans text-cocoa-ink leading-relaxed">
+                Canonical Python 3 and modern C++ implementations formatted vertically with clean line gutters and complexity tags.
               </p>
-              <div className="text-xs font-mono text-sky-sticker font-bold pt-2">
-                • brute force, better, & optimal tabs
-              </div>
             </div>
 
-            {/* Feature 3 */}
-            <div className="p-6 rounded-2xl bg-surface border-2 border-charcoal shadow-hard space-y-4 hover:-translate-y-1 transition-transform">
-              <div className="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center border-[1.5px] border-charcoal shadow-xs">
-                <Lightbulb className="w-6 h-6 text-burnt-sienna" />
+            <div className="p-6 rounded-2xl border-2 border-charcoal bg-surface shadow-hard space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-primary-container border border-charcoal flex items-center justify-center text-on-primary-container">
+                <PenTool className="w-5 h-5" />
               </div>
-              <h3 className="font-display text-xl font-bold lowercase text-charcoal">
-                intuition & key insights
-              </h3>
-              <p className="text-xs sm:text-sm text-cocoa-ink font-sans leading-relaxed">
-                hand-drawn marker callouts extracting the central mathematical or pointer trick that makes the optimal solution click.
+              <h3 className="font-display text-lg font-bold lowercase text-charcoal">cloud notes & admin controls</h3>
+              <p className="text-xs sm:text-sm font-sans text-cocoa-ink leading-relaxed">
+                Save concise 250-character insights per problem synced to Supabase Cloud, with role management and admin tools.
               </p>
-              <div className="text-xs font-mono text-burnt-sienna font-bold pt-2">
-                • time & space complexity badges
-              </div>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="p-6 rounded-2xl bg-surface border-2 border-charcoal shadow-hard space-y-4 hover:-translate-y-1 transition-transform">
-              <div className="w-12 h-12 rounded-xl bg-dew-drop flex items-center justify-center border-[1.5px] border-charcoal shadow-xs">
-                <PenTool className="w-6 h-6 text-sprout-sticker" />
-              </div>
-              <h3 className="font-display text-xl font-bold lowercase text-charcoal">
-                scratchpad & progress
-              </h3>
-              <p className="text-xs sm:text-sm text-cocoa-ink font-sans leading-relaxed">
-                track solved problems with confetti bursts, bookmark difficult patterns, and save custom notes locally per problem.
-              </p>
-              <div className="text-xs font-mono text-sprout-sticker font-bold pt-2">
-                • full keyboard shortcuts (←, →, S, B)
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. TOPICS CURRICULUM GRID */}
-      <section id="curriculum" className="py-16 px-4 sm:px-6 md:px-10 border-t border-charcoal/20">
-        <div className="max-w-[1600px] mx-auto space-y-10">
-          <div className="flex flex-wrap items-end justify-between gap-4 border-b border-charcoal/20 pb-4">
-            <div>
-              <span className="text-xs font-mono font-bold uppercase tracking-widest text-marker-orange">
-                complete 27-topic roadmap
-              </span>
-              <h2 className="font-display text-3xl sm:text-5xl font-extrabold lowercase text-charcoal">
-                explore the 191 sde sheet problems
-              </h2>
-            </div>
-
-            <Button
-              onClick={() => onOpenNotebook()}
-              className="h-9 px-4 rounded-pill border-[1.5px] border-charcoal bg-primary-container text-on-primary-container font-bold text-xs md:text-sm shadow-sm"
-            >
-              <span>open full syllabus →</span>
-            </Button>
+      {/* 5. TOPIC CURRICULUM */}
+      <section id="curriculum" className="px-4 sm:px-6 md:px-10 py-16 max-w-6xl mx-auto space-y-8">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-charcoal/30 pb-4">
+          <div>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold lowercase text-charcoal">
+              complete curriculum breakdown
+            </h2>
+            <p className="text-xs sm:text-sm font-mono text-on-surface-variant">
+              27 topics spanning 191 interview-critical problems
+            </p>
           </div>
+          <Button onClick={() => onOpenNotebook()} className="h-9 font-mono text-xs font-bold">
+            <span>explore all in notebook →</span>
+          </Button>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {topics.map(topic => (
-              <div
-                key={topic.id}
-                onClick={() => onOpenNotebook(topic.problems[0]?.id)}
-                className="p-4 rounded-xl border-[1.5px] border-charcoal bg-cream-paper hover:bg-dew-drop cursor-pointer shadow-hard transition-all duration-200 hover:-translate-y-0.5 group space-y-2.5"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-bold bg-primary-fixed px-2 py-0.5 rounded border border-charcoal/40 text-charcoal">
-                    #{topic.index}
-                  </span>
-                  <span className="text-xs font-mono text-on-surface-variant font-medium">
-                    {topic.count} problems
-                  </span>
-                </div>
-
-                <h3 className="font-display text-base sm:text-lg font-bold lowercase text-charcoal group-hover:text-marker-orange transition-colors">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {topics.map(topic => (
+            <div
+              key={topic.id}
+              onClick={() => onOpenNotebook(topic.problems[0]?.id)}
+              className="p-4 rounded-xl border border-charcoal bg-surface hover:bg-dew-drop transition-all cursor-pointer shadow-xs group"
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-display text-base font-bold lowercase text-charcoal group-hover:text-marker-orange transition-colors">
                   {topic.title}
-                </h3>
-
-                <div className="text-[11px] font-mono text-on-surface-variant truncate">
-                  e.g. {topic.problems[0]?.title || 'Standard patterns'}
-                </div>
+                </span>
+                <span className="text-xs font-mono font-bold bg-primary-container px-2 py-0.5 rounded-pill border border-charcoal">
+                  {topic.count} problems
+                </span>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* 6. LEARNING PHILOSOPHY COMPARISON */}
-      <section id="philosophy" className="py-16 px-4 sm:px-6 md:px-10 border-t border-charcoal/20 bg-dew-drop/40">
-        <div className="max-w-5xl mx-auto space-y-10">
-          <div className="text-center space-y-3">
-            <span className="text-xs font-mono font-bold uppercase tracking-widest text-marker-orange">
-              the intuition advantage
-            </span>
-            <h2 className="font-display text-3xl sm:text-5xl font-extrabold lowercase text-charcoal">
-              why visual mental models beat rote memorization
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* The Old Way */}
-            <div className="p-6 rounded-2xl bg-cream-paper border-2 border-outline/50 shadow-sm space-y-4">
-              <div className="flex items-center gap-2 font-display text-lg font-bold text-on-surface-variant">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#ba1a1a]" />
-                <span>The Traditional Way</span>
-              </div>
-              <ul className="space-y-2.5 text-xs sm:text-sm font-sans text-on-surface-variant">
-                <li>• Staring at static text and memorizing loop counters</li>
-                <li>• Getting stuck when the interviewer tweaks array constraints</li>
-                <li>• Re-reading long blog posts to remember boundary base cases</li>
-                <li>• Copying boilerplate without seeing the pointer shifts</li>
-              </ul>
-            </div>
-
-            {/* The IntuitionLab Way */}
-            <div className="p-6 rounded-2xl bg-surface border-2 border-charcoal shadow-hard-lg space-y-4">
-              <div className="flex items-center gap-2 font-display text-lg font-bold text-charcoal">
-                <span className="w-2.5 h-2.5 rounded-full bg-sprout-sticker" />
-                <span>The IntuitionLab Way</span>
-              </div>
-              <ul className="space-y-2.5 text-xs sm:text-sm font-sans text-cocoa-ink font-medium">
-                <li>• <strong>Watch state transitions live</strong>: pointers, partitions, and DP tables</li>
-                <li>• <strong>Understand invariants</strong>: know exactly why a pointer moves</li>
-                <li>• <strong>Canonical class Solution</strong>: ready for live whiteboard & online IDEs</li>
-                <li>• <strong>Active Recall</strong>: test your intuition before writing the code</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. FINAL CALL TO ACTION BANNER */}
-      <section className="py-20 px-4 sm:px-6 md:px-10 border-t border-charcoal/20">
-        <div className="max-w-4xl mx-auto p-8 sm:p-12 rounded-3xl bg-primary-container border-2 border-charcoal shadow-hard-lg text-center space-y-6">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white mx-auto border-[1.5px] border-charcoal shadow-xs">
-            <Sparkles className="w-6 h-6 text-marker-orange" />
+      {/* 6. BOTTOM CTA & FOOTER */}
+      <footer className="border-t border-charcoal/30 bg-dew-drop py-12 px-4 text-center space-y-4">
+        <div className="flex items-center justify-center gap-2">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-container text-on-primary-container font-extrabold text-xs border border-charcoal shadow-xs">
+            <Lightbulb className="w-3.5 h-3.5 text-on-primary-container" />
           </span>
-
-          <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-black lowercase text-charcoal tracking-tight">
-            ready to master data structures?
-          </h2>
-
-          <p className="text-base sm:text-xl text-cocoa-ink font-sans max-w-2xl mx-auto font-medium">
-            jump into the interactive notebook, step through 191 problems, and build unforgettable algorithmic intuition.
-          </p>
-
-          <div className="pt-2">
-            <Button
-              size="lg"
-              onClick={() => onOpenNotebook()}
-              className="h-13 px-8 rounded-pill border-2 border-charcoal bg-white text-charcoal hover:bg-dew-drop text-base font-bold shadow-hard transition-all duration-200 active:translate-x-0.5 active:translate-y-0.5"
-            >
-              <span>open interactive notebook (free) →</span>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* 8. FOOTER */}
-      <footer className="border-t border-charcoal/30 bg-surface px-4 md:px-10 py-8 text-xs font-mono text-on-surface-variant flex flex-wrap items-center justify-between gap-4 max-w-[1600px] mx-auto">
-        <div className="flex items-center gap-2 font-display text-base font-bold lowercase text-charcoal">
-          <span>intuitionlab.</span>
-          <span className="text-xs font-mono text-on-surface-variant">
-            • 191 problems • 27 topics
+          <span className="font-display text-lg font-bold lowercase text-charcoal">
+            intuition<span className="text-marker-orange">lab.</span>
           </span>
         </div>
-
-        <div className="flex items-center gap-4">
-          <button onClick={() => onOpenNotebook()} className="hover:text-charcoal transition-colors">
-            notebook workspace
-          </button>
-          <span>•</span>
-          <a href="#curriculum" className="hover:text-charcoal transition-colors">
-            curriculum
-          </a>
-        </div>
+        <p className="text-xs font-mono text-on-surface-variant">
+          made with <strong className="text-marker-orange">marker orange</strong> & <strong className="text-cocoa-ink">cocoa ink</strong> ✦ open source & free
+        </p>
       </footer>
     </div>
   );

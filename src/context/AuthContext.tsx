@@ -18,7 +18,7 @@ interface AuthContextType {
   loading: boolean;
   isConfigured: boolean;
   signInWithPassword: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUpWithPassword: (email: string, password: string, username?: string) => Promise<{ error: string | null }>;
+  signUpWithPassword: (email: string, password: string, username?: string) => Promise<{ error: string | null; needsEmailConfirmation?: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (username: string) => Promise<{ error: string | null }>;
   refreshProfile: () => Promise<void>;
@@ -35,7 +35,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const fetchProfile = async (userId: string, email: string) => {
     try {
       if (!isConfigured) {
-        // Fallback for dev mode
         setProfile({
           id: userId,
           email,
@@ -61,7 +60,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (data) {
         setProfile(data as UserProfile);
       } else {
-        // Profile not created yet, create it
         const newProfile: UserProfile = {
           id: userId,
           email,
@@ -84,7 +82,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    // Get current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -93,7 +90,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session: Session | null) => {
         setUser(session?.user ?? null);
@@ -113,7 +109,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInWithPassword = async (email: string, password: string) => {
     if (!isConfigured) {
-      // Mock sign in
       const mockUser = { id: 'mock-user-id', email } as User;
       setUser(mockUser);
       setProfile({
@@ -127,8 +122,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error: null };
     }
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error ? error.message : null };
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      // Check if the error is email not confirmed
+      if (error.message.toLowerCase().includes('email not confirmed')) {
+        return {
+          error: 'Email not confirmed yet. In Supabase Dashboard ➔ Authentication ➔ Providers ➔ Email, disable "Confirm email" or confirm your account in the SQL Editor.',
+        };
+      }
+      return { error: error.message };
+    }
+
+    if (data.user) {
+      setUser(data.user);
+      await fetchProfile(data.user.id, data.user.email || '');
+    }
+
+    return { error: null };
   };
 
   const signUpWithPassword = async (email: string, password: string, username?: string) => {
@@ -146,7 +156,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error: null };
     }
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -156,7 +166,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       },
     });
 
-    return { error: error ? error.message : null };
+    if (error) {
+      return { error: error.message };
+    }
+
+    // If session is present, user is logged in automatically (Confirm email is disabled)
+    if (data.session && data.user) {
+      setUser(data.user);
+      await fetchProfile(data.user.id, data.user.email || '');
+      return { error: null, needsEmailConfirmation: false };
+    }
+
+    // If user is created but no session, Supabase has "Confirm email" enabled
+    return { error: null, needsEmailConfirmation: true };
   };
 
   const signOut = async () => {
