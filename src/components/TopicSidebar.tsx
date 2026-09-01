@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Topic, Problem } from '@/types/problem';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -35,9 +35,40 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
   const [filterMode, setFilterMode] = useState<'all' | 'solved' | 'bookmarked'>('all');
-  const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({
-    '01_Arrays': true,
+
+  // Auto-expand the topic corresponding to the active currentProblemId
+  const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>(() => {
+    const activeTopicId =
+      problems.find(p => p.id === currentProblemId)?.topicFolder ||
+      currentProblemId?.split('/')[0] ||
+      '01_Arrays';
+    return { [activeTopicId]: true };
   });
+
+  // Whenever currentProblemId changes, keep the active topic expanded & scroll into view
+  useEffect(() => {
+    if (currentProblemId) {
+      const activeProblem = problems.find(p => p.id === currentProblemId);
+      const activeTopicId = activeProblem?.topicFolder || currentProblemId.split('/')[0];
+
+      if (activeTopicId) {
+        setExpandedTopics(prev => ({
+          ...prev,
+          [activeTopicId]: true,
+        }));
+      }
+
+      // Smooth scroll active problem into sidebar view
+      const timer = setTimeout(() => {
+        const activeElem = document.getElementById(`sidebar-problem-${currentProblemId}`);
+        if (activeElem) {
+          activeElem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentProblemId, problems]);
 
   const toggleTopic = (topicId: string) => {
     setExpandedTopics(prev => ({
@@ -101,47 +132,45 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
             </button>
           </div>
 
-          {/* Progress Mini Meter */}
-          <div className="space-y-1.5">
-            <div className="flex justify-between text-xs font-mono text-on-surface-variant font-medium">
-              <span>strivers sde progress</span>
-              <span className="font-bold text-marker-orange">
-                {totalSolvedCount}/{totalProblemsCount} ({progressPercent}%)
+          {/* Progress Bar */}
+          <div className="space-y-1.5 pt-1">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-on-surface-variant font-medium">Sheet Mastery</span>
+              <span className="font-bold text-charcoal">
+                {totalSolvedCount} / {totalProblemsCount} ({progressPercent}%)
               </span>
             </div>
-            <div className="w-full bg-surface-container-high h-2.5 rounded-full border border-charcoal/20 overflow-hidden">
+            <div className="h-2 w-full bg-surface-container-high rounded-full overflow-hidden border border-outline/30">
               <div
-                className="bg-primary-container h-full transition-all duration-500 rounded-full"
+                className="h-full bg-marker-orange rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
           </div>
         </div>
 
-        {/* Search & Filter Bar */}
-        <div className="p-3.5 border-b border-outline/30 bg-surface space-y-2.5">
-          {/* Search Input */}
+        {/* Search & Filters */}
+        <div className="p-3 border-b border-outline/30 bg-surface space-y-2.5">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
+            <Search className="w-4 h-4 absolute left-3 top-2.5 text-on-surface-variant" />
             <input
               type="text"
-              placeholder="search 150+ problems..."
+              placeholder="Search problems, #number, tags..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-7 py-2 text-xs md:text-sm bg-cream-paper border-[1.5px] border-charcoal/40 rounded-pill text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-2 focus:ring-primary font-mono shadow-xs"
+              className="w-full pl-9 pr-8 py-1.5 text-xs font-mono rounded-lg border border-outline/40 bg-dew-drop text-charcoal placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-1 focus:ring-primary focus:bg-surface transition-all"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant hover:text-charcoal"
+                className="absolute right-2.5 top-2 text-on-surface-variant hover:text-charcoal"
               >
-                ✕
+                <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
 
-          {/* Quick Filters (Difficulty & Status) */}
-          <div className="flex items-center justify-between gap-1.5 text-xs">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
               {['All', 'Easy', 'Med', 'Hard'].map(d => (
                 <button
@@ -185,8 +214,8 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
           </div>
         </div>
 
-        {/* Scrollable Topics & Problems List (takes full remaining height) */}
-        <div className="flex-1 overflow-y-auto p-2.5 space-y-2 notebook-ruled-bg">
+        {/* Scrollable Topics & Problems List */}
+        <div id="sidebar-scroll-container" className="flex-1 overflow-y-auto p-2.5 space-y-2 notebook-ruled-bg">
           {topics.map(topic => {
             const matchingProblems = topic.problems.filter(isProblemMatching);
             if (searchQuery && matchingProblems.length === 0) return null;
@@ -197,6 +226,7 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
             return (
               <div
                 key={topic.id}
+                id={`sidebar-topic-${topic.id}`}
                 className="rounded-lg border-[1.5px] border-outline/50 bg-surface/95 overflow-hidden shadow-xs"
               >
                 {/* Topic Header Accordion Button */}
@@ -233,6 +263,7 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
                       return (
                         <button
                           key={p.id}
+                          id={`sidebar-problem-${p.id}`}
                           onClick={() => {
                             onSelectProblem(p.id);
                             onCloseMobile();
@@ -250,16 +281,22 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
                             <span className="truncate lowercase">{p.title}</span>
                           </div>
 
-                          <div className="flex items-center gap-1.5 shrink-0">
+                          <div className="flex items-center gap-1.5 shrink-0 ml-1">
                             {isBookmarked && (
-                              <Bookmark className="w-3.5 h-3.5 text-marker-orange fill-marker-orange" />
+                              <Bookmark className="w-3 h-3 text-marker-orange fill-marker-orange" />
                             )}
                             {isSolved && (
                               <CheckCircle2 className="w-3.5 h-3.5 text-sprout-sticker" />
                             )}
                             <Badge
-                              variant={p.difficulty.toLowerCase() as any}
-                              className="text-[10px] px-1.5 py-0"
+                              variant={
+                                p.difficulty.toLowerCase() === 'easy'
+                                  ? 'easy'
+                                  : p.difficulty.toLowerCase() === 'medium'
+                                  ? 'medium'
+                                  : 'hard'
+                              }
+                              className="text-[9px] px-1.5 py-0 h-4 uppercase font-mono"
                             >
                               {p.difficulty[0]}
                             </Badge>
