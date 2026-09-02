@@ -10,6 +10,39 @@ interface TreeVisualizerProps {
   customData?: TreeVisualizationData;
 }
 
+function parseNodeValue(rawVal: any): { mainVal: string; annotation?: string } {
+  if (rawVal === undefined || rawVal === null) return { mainVal: '' };
+  const str = String(rawVal).trim();
+
+  // Pattern: "20 (sum=42)", "9 (gain=9)", "3 (Root)", "-10 (path=34)"
+  const parenMatch = str.match(/^(.*?)\s*\((.*?)\)$/);
+  if (parenMatch && parenMatch[1].trim()) {
+    return { mainVal: parenMatch[1].trim(), annotation: parenMatch[2].trim() };
+  }
+
+  // Pattern: "20 [OPTIMAL]", "15 [PATH]"
+  const bracketMatch = str.match(/^(.*?)\s*\[(.*?)\]$/);
+  if (bracketMatch && bracketMatch[1].trim()) {
+    return { mainVal: bracketMatch[1].trim(), annotation: bracketMatch[2].trim() };
+  }
+
+  // Pattern: "val: label"
+  if (str.includes(': ') && !str.startsWith('http')) {
+    const parts = str.split(': ');
+    if (parts.length === 2 && parts[0].length <= 5) {
+      return { mainVal: parts[0].trim(), annotation: parts[1].trim() };
+    }
+  }
+
+  // If string is long with a space, e.g. "Root 1"
+  if (str.length > 6 && str.includes(' ')) {
+    const parts = str.split(' ');
+    return { mainVal: parts[parts.length - 1], annotation: parts.slice(0, -1).join(' ') };
+  }
+
+  return { mainVal: str };
+}
+
 export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ problem, customData }) => {
   const [step, setStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -69,7 +102,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ problem, customD
   // Dynamically compute bounding box with generous padding so the tree NEVER overflows or clips
   const viewBox = useMemo(() => {
     if (!nodes || nodes.length === 0) return '0 0 400 240';
-    const padding = 42;
+    const padding = 45;
     const xs = nodes.map(n => n.x);
     const ys = nodes.map(n => n.y);
     const minX = Math.min(...xs) - padding;
@@ -77,8 +110,8 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ problem, customD
     const minY = Math.min(...ys) - padding;
     const maxY = Math.max(...ys) + padding;
 
-    const width = Math.max(maxX - minX, 280);
-    const height = Math.max(maxY - minY, 190);
+    const width = Math.max(maxX - minX, 320);
+    const height = Math.max(maxY - minY, 210);
 
     return `${minX} ${minY} ${width} ${height}`;
   }, [nodes]);
@@ -107,7 +140,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ problem, customD
       </div>
 
       <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center justify-center overflow-hidden w-full select-none">
-        <div className="w-full max-w-[560px] min-h-[220px] max-h-[380px] flex items-center justify-center">
+        <div className="w-full max-w-[620px] min-h-[220px] max-h-[380px] flex items-center justify-center">
           <svg
             viewBox={viewBox}
             className="w-full h-auto max-h-[360px] drop-shadow-sm"
@@ -193,13 +226,20 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ problem, customD
                 textColor = '#9ca3af';
               }
 
-              const valStr = String(node.val);
-              // Dynamic radius and font size so text is 100% inside node
-              const radius = Math.max(19, valStr.length * 4.5 + 7);
-              const fontSize = valStr.length > 5 ? 9 : valStr.length > 3 ? 10 : 12;
+              const { mainVal, annotation } = parseNodeValue(node.val);
+              // Fixed, consistent node radius so nodes never balloon in size
+              const radius = 18;
+              const fontSize = mainVal.length > 4 ? 9 : mainVal.length > 2 ? 10 : 12;
+
+              // Auxiliary annotation badge (e.g. gain=9, sum=42, Root, OPTIMAL)
+              const badgeText = annotation || '';
+              const badgeWidth = badgeText ? Math.max(26, badgeText.length * 5.2 + 8) : 0;
+              const isNearTop = node.y <= 65;
+              const badgeY = isNearTop ? node.y + 26 : node.y - 23;
 
               return (
-                <g key={`node-${node.id}`} className="transition-all duration-300" filter="url(#nodeShadow)">
+                <g key={`node-${node.id}`} className="transition-all duration-300">
+                  {/* Node Circle */}
                   <circle
                     cx={node.x}
                     cy={node.y}
@@ -207,7 +247,9 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ problem, customD
                     fill={fill}
                     stroke={stroke}
                     strokeWidth="2.5"
+                    filter="url(#nodeShadow)"
                   />
+                  {/* Node Value */}
                   <text
                     x={node.x}
                     y={node.y + 4}
@@ -217,8 +259,36 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ problem, customD
                     fontFamily="monospace"
                     fill={textColor}
                   >
-                    {node.val}
+                    {mainVal}
                   </text>
+
+                  {/* Auxiliary Badge (if present) */}
+                  {badgeText && (
+                    <g transform={`translate(${node.x}, ${badgeY})`}>
+                      <rect
+                        x={-badgeWidth / 2}
+                        y="-7.5"
+                        width={badgeWidth}
+                        height="15"
+                        rx="4"
+                        fill={status === 'matched' || status === 'active' || isPath ? '#ffedd5' : '#f8fafc'}
+                        stroke={status === 'matched' || status === 'active' || isPath ? '#ff6f1e' : '#94a3b8'}
+                        strokeWidth="1"
+                        filter="url(#nodeShadow)"
+                      />
+                      <text
+                        x="0"
+                        y="2.5"
+                        textAnchor="middle"
+                        fontSize="8"
+                        fontWeight="bold"
+                        fontFamily="monospace"
+                        fill={status === 'matched' || status === 'active' || isPath ? '#c2410c' : '#475569'}
+                      >
+                        {badgeText}
+                      </text>
+                    </g>
+                  )}
                 </g>
               );
             })}

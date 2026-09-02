@@ -10,6 +10,34 @@ interface GraphVisualizerProps {
   customData?: GraphVisualizationData;
 }
 
+function parseGraphNodeValue(rawLabel: any, id: any): { mainVal: string; annotation?: string } {
+  const str = String(rawLabel !== undefined && rawLabel !== null ? rawLabel : id).trim();
+
+  const parenMatch = str.match(/^(.*?)\s*\((.*?)\)$/);
+  if (parenMatch && parenMatch[1].trim()) {
+    return { mainVal: parenMatch[1].trim(), annotation: parenMatch[2].trim() };
+  }
+
+  const bracketMatch = str.match(/^(.*?)\s*\[(.*?)\]$/);
+  if (bracketMatch && bracketMatch[1].trim()) {
+    return { mainVal: bracketMatch[1].trim(), annotation: bracketMatch[2].trim() };
+  }
+
+  if (str.includes(': ') && !str.startsWith('http')) {
+    const parts = str.split(': ');
+    if (parts.length === 2 && parts[0].length <= 5) {
+      return { mainVal: parts[0].trim(), annotation: parts[1].trim() };
+    }
+  }
+
+  if (str.length > 5 && str.includes(' ')) {
+    const parts = str.split(' ');
+    return { mainVal: parts[parts.length - 1], annotation: parts.slice(0, -1).join(' ') };
+  }
+
+  return { mainVal: str };
+}
+
 export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ problem, customData }) => {
   const [step, setStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -69,7 +97,7 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ problem, custo
   // Dynamically compute bounding box with generous padding so graph never clips
   const viewBox = useMemo(() => {
     if (!nodes || nodes.length === 0) return '0 0 360 220';
-    const padding = 42;
+    const padding = 45;
     const xs = nodes.map(n => n.x);
     const ys = nodes.map(n => n.y);
     const minX = Math.min(...xs) - padding;
@@ -77,8 +105,8 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ problem, custo
     const minY = Math.min(...ys) - padding;
     const maxY = Math.max(...ys) + padding;
 
-    const width = Math.max(maxX - minX, 300);
-    const height = Math.max(maxY - minY, 180);
+    const width = Math.max(maxX - minX, 320);
+    const height = Math.max(maxY - minY, 200);
 
     return `${minX} ${minY} ${width} ${height}`;
   }, [nodes]);
@@ -107,7 +135,7 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ problem, custo
       </div>
 
       <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center justify-center overflow-hidden w-full select-none">
-        <div className="w-full max-w-[560px] min-h-[220px] max-h-[380px] flex items-center justify-center">
+        <div className="w-full max-w-[600px] min-h-[220px] max-h-[380px] flex items-center justify-center">
           <svg viewBox={viewBox} className="w-full h-auto max-h-[360px] drop-shadow-sm" preserveAspectRatio="xMidYMid meet">
             <defs>
               <filter id="graphNodeShadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -174,12 +202,17 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ problem, custo
                 textColor = '#3730a3';
               }
 
-              const labelStr = String(node.label || node.id);
-              const radius = Math.max(19, labelStr.length * 4.5 + 7);
-              const fontSize = labelStr.length > 5 ? 8 : labelStr.length > 3 ? 10 : 11;
+              const { mainVal, annotation } = parseGraphNodeValue(node.label, node.id);
+              const radius = 18;
+              const fontSize = mainVal.length > 4 ? 9 : mainVal.length > 2 ? 10 : 12;
+
+              const badgeText = annotation || '';
+              const badgeWidth = badgeText ? Math.max(26, badgeText.length * 5.2 + 8) : 0;
+              const isNearTop = node.y <= 65;
+              const badgeY = isNearTop ? node.y + 26 : node.y - 23;
 
               return (
-                <g key={`node-${node.id}`} className="transition-all duration-300" filter="url(#graphNodeShadow)">
+                <g key={`node-${node.id}`} className="transition-all duration-300">
                   <circle
                     cx={node.x}
                     cy={node.y}
@@ -187,6 +220,7 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ problem, custo
                     fill={fill}
                     stroke={stroke}
                     strokeWidth="2.5"
+                    filter="url(#graphNodeShadow)"
                   />
                   <text
                     x={node.x}
@@ -197,8 +231,35 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ problem, custo
                     fontFamily="monospace"
                     fill={textColor}
                   >
-                    {labelStr}
+                    {mainVal}
                   </text>
+
+                  {badgeText && (
+                    <g transform={`translate(${node.x}, ${badgeY})`}>
+                      <rect
+                        x={-badgeWidth / 2}
+                        y="-7.5"
+                        width={badgeWidth}
+                        height="15"
+                        rx="4"
+                        fill={isActive || isTarget ? '#ffedd5' : '#f8fafc'}
+                        stroke={isActive || isTarget ? '#ff6f1e' : '#94a3b8'}
+                        strokeWidth="1"
+                        filter="url(#graphNodeShadow)"
+                      />
+                      <text
+                        x="0"
+                        y="2.5"
+                        textAnchor="middle"
+                        fontSize="8"
+                        fontWeight="bold"
+                        fontFamily="monospace"
+                        fill={isActive || isTarget ? '#c2410c' : '#475569'}
+                      >
+                        {badgeText}
+                      </text>
+                    </g>
+                  )}
                 </g>
               );
             })}
