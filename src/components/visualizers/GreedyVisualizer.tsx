@@ -131,6 +131,7 @@ export const GreedyVisualizer: React.FC<GreedyVisualizerProps> = ({ problem, cus
         variableStates={cur.states || {}}
         codeSnippet={cur.codeSnippet}
         timeSpaceImpact={cur.impact || 'Time: O(N log N) | Space: O(1)'}
+        result={cur.result}
       />
     </div>
   );

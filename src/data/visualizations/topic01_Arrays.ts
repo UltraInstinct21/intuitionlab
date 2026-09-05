@@ -54,7 +54,7 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
           [0, 0, 0],
           [1, 0, 1]
         ],
-        activeCell: [2, 2],
+        activeCell: [1, 2],
         highlightCells: [[1, 1], [1, 2], [2, 1]],
         states: {
           'matrix[1][2]': 0,
@@ -97,7 +97,6 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         result: '[[1]]',
         states: {
           row: 0,
-          numRows: 5,
           current_row: '[1]'
         },
         impact: 'Time: O(1) | Space: O(1)'
@@ -291,7 +290,7 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         impact: 'Time: O(1) | Space: O(1)'
       },
       {
-        title: 'Restart Subarray at Index 3 (Value 4)',
+        title: 'Absorb Index 2, Restart at Index 3',
         whatHappens: 'At index 2 (val -3, sum -2). At index 3 (nums[3]=4), current_sum = max(4, -2 + 4) = 4. Update max_sum = 4.',
         whyRationale: 'Previous running sum (-2) dragged down the total, so reset running sum to 4 at index 3.',
         codeSnippet: 'current_sum = max(nums[i], current_sum + nums[i])\nmax_sum = max(max_sum, current_sum)',
@@ -310,7 +309,7 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         title: 'Accumulate Global Maximum Subarray [4, -1, 2, 1]',
         whatHappens: 'Traverse i=4 (-1, sum=3), i=5 (2, sum=5), i=6 (1, sum=6). max_sum reaches 6.',
         whyRationale: 'Contiguous elements [4, -1, 2, 1] yield the optimal contiguous sum of 6.',
-        codeSnippet: 'current_sum += nums[i]\nmax_sum = max(max_sum, current_sum)',
+        codeSnippet: 'current_sum = max(nums[i], current_sum + nums[i])\nmax_sum = max(max_sum, current_sum)',
         arrayState: [-2, 1, -3, 4, -1, 2, 1, -5, 4],
         pointers: [
           { idx: 3, label: 'sub_start', color: '#22c55e' },
@@ -404,10 +403,29 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         impact: 'Time: O(1) | Space: O(1)'
       },
       {
-        title: 'Process Remaining 0s and 2s',
-        whatHappens: 'At mid=1 (0), swap with low=1, low=2, mid=2. At mid=2 (2), swap with high=4 (1), high=3.',
-        whyRationale: 'All 0s are pushed left and all 2s are pushed right in-place.',
-        codeSnippet: 'while mid <= high:\n    # Dutch National Flag swaps',
+        title: 'nums[mid] == 0: Self-Swap at Mid 1',
+        whatHappens: 'At mid=1 (0), swap nums[low=1] with itself. Increment low to 2 and mid to 2.',
+        whyRationale: 'The 0 is already at the low boundary, so the self-swap just extends the 0s region and advances mid.',
+        codeSnippet: 'if nums[mid] == 0:\n    nums[low], nums[mid] = nums[mid], nums[low]\n    low += 1\n    mid += 1',
+        arrayState: [0, 0, 2, 1, 1, 2],
+        pointers: [
+          { idx: 2, label: 'low, mid', color: '#3b82f6' },
+          { idx: 4, label: 'high', color: '#ef4444' }
+        ],
+        highlightIndices: [1],
+        states: {
+          low: 2,
+          mid: 2,
+          high: 4,
+          swapped: 'nums[1] <-> nums[1]'
+        },
+        impact: 'Time: O(1) | Space: O(1)'
+      },
+      {
+        title: 'nums[mid] == 2: Swap with High at Mid 2',
+        whatHappens: 'At mid=2 (2), swap nums[mid=2] with nums[high=4] (1). Decrement high to 3. Do not increment mid.',
+        whyRationale: 'The element swapped from high is unexamined, so mid stays to evaluate the new 1 next.',
+        codeSnippet: 'if nums[mid] == 2:\n    nums[mid], nums[high] = nums[high], nums[mid]\n    high -= 1',
         arrayState: [0, 0, 1, 1, 2, 2],
         pointers: [
           { idx: 2, label: 'low, mid', color: '#3b82f6' },
@@ -418,9 +436,9 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
           low: 2,
           mid: 2,
           high: 3,
-          array: '[0, 0, 1, 1, 2, 2]'
+          swapped: 'nums[2] <-> nums[4]'
         },
-        impact: 'Time: O(N) | Space: O(1)'
+        impact: 'Time: O(1) | Space: O(1)'
       },
       {
         title: 'Skip 1s and Finish Sorting',
@@ -458,7 +476,7 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         pointers: [{ idx: 0, label: 'min_price = 7', color: '#3b82f6' }],
         highlightIndices: [0],
         states: {
-          day: 0,
+          day: 1,
           price: 7,
           min_price: 7,
           max_profit: 0
@@ -466,7 +484,7 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         impact: 'Time: O(1) | Space: O(1)'
       },
       {
-        title: 'Day 1: Encounter New Lowest Price (1)',
+        title: 'Day 2: Encounter New Lowest Price (1)',
         whatHappens: 'At price = 1, since 1 < min_price (7), update min_price = 1. Profit = 0.',
         whyRationale: 'Buying at price 1 will yield higher future profits than buying at price 7.',
         codeSnippet: 'min_price = min(min_price, price)\nmax_profit = max(max_profit, price - min_price)',
@@ -474,7 +492,7 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         pointers: [{ idx: 1, label: 'new min = 1', color: '#22c55e' }],
         highlightIndices: [1],
         states: {
-          day: 1,
+          day: 2,
           price: 1,
           min_price: 1,
           profit_today: 0,
@@ -483,7 +501,7 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         impact: 'Time: O(1) | Space: O(1)'
       },
       {
-        title: 'Day 2: Potential Profit of 4',
+        title: 'Day 3: Potential Profit of 4',
         whatHappens: 'At price = 5, profit if selling today = 5 - 1 = 4. Update max_profit = 4.',
         whyRationale: '4 is greater than previous max_profit 0, establishing our first profitable transaction.',
         codeSnippet: 'max_profit = max(max_profit, price - min_price)',
@@ -494,7 +512,7 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         ],
         highlightIndices: [1, 2],
         states: {
-          day: 2,
+          day: 3,
           price: 5,
           min_price: 1,
           profit_today: 4,
@@ -503,7 +521,27 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         impact: 'Time: O(1) | Space: O(1)'
       },
       {
-        title: 'Day 4: Peak Profit of 5 (Buy at 1, Sell at 6)',
+        title: 'Day 4: Price Dip Holds Profit at 4',
+        whatHappens: 'At price = 3, profit if selling today = 3 - 1 = 2. Since 2 < 4, max_profit stays 4.',
+        whyRationale: 'A lower sell price cannot beat the best profit so far, so only min_price (1) carries forward.',
+        codeSnippet: 'max_profit = max(max_profit, price - min_price)',
+        arrayState: [7, 1, 5, 3, 6, 4],
+        pointers: [
+          { idx: 1, label: 'buy: 1', color: '#22c55e' },
+          { idx: 3, label: 'sell: 3 (+2)', color: '#f59e0b' }
+        ],
+        highlightIndices: [1, 3],
+        states: {
+          day: 4,
+          price: 3,
+          min_price: 1,
+          profit_today: 2,
+          max_profit: 4
+        },
+        impact: 'Time: O(1) | Space: O(1)'
+      },
+      {
+        title: 'Day 5: Peak Profit of 5 (Buy at 1, Sell at 6)',
         whatHappens: 'At price = 6, profit if selling today = 6 - 1 = 5. Update max_profit = 5.',
         whyRationale: 'Selling at price 6 against minimum buy price 1 yields the optimal single-transaction profit.',
         codeSnippet: 'max_profit = max(max_profit, price - min_price)',
@@ -515,7 +553,7 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         highlightIndices: [1, 4],
         result: 'Max Profit = 5',
         states: {
-          day: 4,
+          day: 5,
           price: 6,
           min_price: 1,
           profit_today: 5,
@@ -525,7 +563,7 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
       },
       {
         title: 'Final Day & Return Optimal Profit',
-        whatHappens: 'Day 5 at price 4 yields profit 4 - 1 = 3 <= 5. Single pass finishes with max_profit = 5.',
+        whatHappens: 'Day 6 at price 4 yields profit 4 - 1 = 3 <= 5. Single pass finishes with max_profit = 5.',
         whyRationale: 'All future days evaluated; maximum achievable profit is 5.',
         codeSnippet: 'return max_profit',
         arrayState: [7, 1, 5, 3, 6, 4],
@@ -536,8 +574,8 @@ export const topic01Visualizations: Record<string, ProblemVisualization> = {
         highlightIndices: [1, 4],
         result: '5',
         states: {
-          best_buy_day: 1,
-          best_sell_day: 4,
+          best_buy_day: 2,
+          best_sell_day: 5,
           max_profit: 5
         },
         impact: 'Time: O(N) | Space: O(1)'

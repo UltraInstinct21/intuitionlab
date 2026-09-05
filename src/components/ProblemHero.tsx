@@ -28,7 +28,7 @@ export const ProblemHero: React.FC<ProblemHeroProps> = ({ problem }) => {
           {problem.tags.map((tag, idx) => (
             <span
               key={idx}
-              className="px-3 py-1 bg-dew-drop border border-outline/30 rounded-pill text-xs md:text-sm font-mono text-on-surface-variant font-medium"
+              className="px-2.5 py-1 bg-dew-drop border border-outline/30 rounded-md text-xs md:text-sm font-mono text-on-surface-variant font-medium"
             >
               {tag}
             </span>
@@ -38,23 +38,23 @@ export const ProblemHero: React.FC<ProblemHeroProps> = ({ problem }) => {
 
       {/* Chunky Lowercase Display Title with Floating Sticker */}
       <div className="relative">
-        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold lowercase text-charcoal tracking-tight leading-[1.02] break-words">
+        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold lowercase text-charcoal tracking-tight leading-[1.05] break-words">
           {problem.title}
         </h1>
 
         {/* Playful Floating Illustrated Stickers */}
-        <div className="absolute -top-6 right-2 sm:right-10 flex items-center gap-2.5 pointer-events-none select-none">
-          <div className="w-11 h-11 rounded-full bg-primary-container text-on-primary-container border-[1.5px] border-charcoal flex items-center justify-center font-bold text-base shadow-hard rotate-12">
+        <div className="absolute -top-4 right-1 sm:-top-6 sm:right-10 flex items-center gap-2 pointer-events-none select-none opacity-80 sm:opacity-100 scale-75 sm:scale-100">
+          <div className="w-10 h-10 rounded-lg bg-primary-container text-on-primary-container border-[1.5px] border-charcoal flex items-center justify-center font-bold text-sm shadow-hard rotate-12">
             ★
           </div>
-          <div className="w-10 h-10 rounded-md bg-bubblegum-sticker text-white border-[1.5px] border-charcoal flex items-center justify-center text-sm font-bold shadow-sm -rotate-6 hidden sm:flex">
+          <div className="w-9 h-9 rounded-md bg-bubblegum-sticker text-white border-[1.5px] border-charcoal flex items-center justify-center text-xs font-bold shadow-sm -rotate-6 hidden sm:flex">
             ♥
           </div>
         </div>
       </div>
 
       {/* Problem Statement Card */}
-      <div className="rounded-xl border-[1.5px] border-charcoal bg-surface p-6 sm:p-8 shadow-hard relative overflow-hidden">
+      <div className="rounded-xl border-[1.5px] border-charcoal bg-surface p-4 sm:p-6 md:p-8 shadow-hard relative overflow-hidden">
         {/* Paper margin accent */}
         <div className="absolute top-0 left-0 bottom-0 w-2 bg-marker-orange" />
 

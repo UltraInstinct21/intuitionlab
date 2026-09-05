@@ -152,8 +152,8 @@ export const BSTStepVisualizer: React.FC<{ problem: Problem }> = ({ problem }) =
         <div className="flex items-center gap-1.5 flex-wrap">
           {steps.map((_, i) => (
             <button key={i} onClick={() => { setStep(i); setIsPlaying(false); }}
-              className={`w-7 h-7 rounded-full text-[10px] font-mono font-bold transition-all flex items-center justify-center ${
-                step === i ? 'bg-primary-container text-on-primary-container border-2 border-charcoal shadow-xs scale-110'
+              className={`w-7 h-7 rounded-md text-[10px] font-mono font-bold transition-all flex items-center justify-center ${
+                step === i ? 'bg-primary-container text-on-primary-container border-2 border-charcoal shadow-xs scale-105'
                 : i < step ? 'bg-sprout-sticker/20 text-[#15803d] border border-sprout-sticker/40'
                 : 'bg-surface text-on-surface-variant border border-outline/30'
               }`}>
@@ -176,7 +176,7 @@ export const BSTStepVisualizer: React.FC<{ problem: Problem }> = ({ problem }) =
           <BSTSvg node={tree} x={250} y={30} dx={110} highlight={s.highlightNodes} path={s.pathNodes} current={s.currentNode} />
         </svg>
         {s.result && (
-          <div className="px-4 py-2 rounded-pill bg-sprout-sticker text-white font-mono font-bold text-sm border-2 border-charcoal shadow-md mt-2">
+          <div className="px-3.5 py-1.5 rounded-md bg-sprout-sticker text-white font-mono font-bold text-sm border-2 border-charcoal shadow-md mt-2">
             {s.result}
           </div>
         )}

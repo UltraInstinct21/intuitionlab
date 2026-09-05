@@ -175,7 +175,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       />
 
       {/* 1. TOP STICKY NAVBAR */}
-      <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-charcoal/30 bg-surface/90 px-4 md:px-10 backdrop-blur-md transition-all">
+      <header className="sticky top-0 z-40 flex h-14 sm:h-16 items-center justify-between border-b border-charcoal/30 bg-surface/90 px-3 sm:px-6 md:px-10 backdrop-blur-md transition-all">
         <div className="flex items-center gap-3">
           <motion.div
             whileHover={{ scale: 1.04 }}
@@ -183,11 +183,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             className="flex items-center gap-2 cursor-pointer"
             onClick={scrollToTop}
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-on-primary-container font-extrabold text-base border-[1.5px] border-charcoal shadow-xs">
+            <span className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md bg-primary-container text-on-primary-container font-extrabold text-sm sm:text-base border-[1.5px] border-charcoal shadow-xs">
               <Lightbulb className="w-4 h-4 text-on-primary-container" />
             </span>
             <div className="flex flex-col">
-              <span className="font-display text-xl font-extrabold lowercase leading-tight text-charcoal tracking-tight">
+              <span className="font-display text-lg sm:text-xl font-extrabold lowercase leading-tight text-charcoal tracking-tight">
                 intuition<span className="text-marker-orange">lab.</span>
               </span>
               <span className="text-[10px] font-mono text-on-surface-variant hidden sm:inline-block">
@@ -214,27 +214,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </nav>
 
         {/* Right Auth & CTA Actions */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5">
           {isAdmin && (
             <Button
               size="sm"
               variant="default"
               onClick={onOpenAdminModal}
-              className="h-9 px-3 bg-dew-drop border-2 border-marker-orange text-marker-orange hover:bg-primary-fixed-dim font-mono font-bold text-xs flex items-center gap-1.5 shadow-xs"
+              className="h-8 sm:h-9 px-2.5 sm:px-3 bg-dew-drop border-2 border-marker-orange text-marker-orange hover:bg-primary-fixed-dim font-mono font-bold text-xs flex items-center gap-1.5 shadow-xs rounded-md"
             >
               <Shield className="w-3.5 h-3.5 fill-marker-orange/20" />
-              <span>admin panel</span>
+              <span className="hidden sm:inline">admin panel</span>
             </Button>
           )}
 
           {user ? (
-            <div className="flex items-center gap-1.5 bg-dew-drop p-1 rounded-pill border border-charcoal">
-              <span className="text-xs font-mono font-bold px-2 py-0.5 text-charcoal truncate max-w-[120px]">
+            <div className="flex items-center gap-1.5 bg-dew-drop p-1 rounded-md border border-charcoal">
+              <span className="text-xs font-mono font-bold px-2 py-0.5 text-charcoal truncate max-w-[100px] sm:max-w-[120px]">
                 {profile?.username || user.email?.split('@')[0]}
               </span>
               <button
                 onClick={signOut}
-                className="p-1 text-on-surface-variant hover:text-red-600 rounded-full transition-colors cursor-pointer"
+                className="p-1 text-on-surface-variant hover:text-red-600 rounded transition-colors cursor-pointer"
                 title="Sign Out"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -245,9 +245,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               size="sm"
               variant="default"
               onClick={onOpenAuthModal}
-              className="h-9 px-3.5 rounded-pill border-[1.5px] border-charcoal bg-surface text-charcoal hover:bg-dew-drop text-xs md:text-sm font-mono font-bold shadow-xs transition-all flex items-center gap-1.5"
+              className="h-8 sm:h-9 px-3 sm:px-3.5 rounded-md border-[1.5px] border-charcoal bg-surface text-charcoal hover:bg-dew-drop text-xs md:text-sm font-mono font-bold shadow-xs transition-all flex items-center gap-1.5"
             >
-              <User className="w-4 h-4 text-marker-orange" />
+              <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-marker-orange" />
               <span>sign in</span>
             </Button>
           )}
@@ -255,25 +255,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
             <Button
               onClick={() => onOpenNotebook()}
-              className="h-9 px-4 rounded-pill border-[1.5px] border-charcoal bg-primary-container text-on-primary-container hover:bg-primary-container/90 text-xs md:text-sm font-bold shadow-hard transition-all duration-200 flex items-center gap-1.5"
+              className="h-8 sm:h-9 px-3 sm:px-4 rounded-md border-[1.5px] border-charcoal bg-primary-container text-on-primary-container hover:bg-primary-container/90 text-xs md:text-sm font-bold shadow-hard transition-all duration-200 flex items-center gap-1.5"
             >
-              <BookOpen className="w-4 h-4" />
+              <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">open notebook</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
+              <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 ml-0.5" />
             </Button>
           </motion.div>
         </div>
       </header>
 
       {/* 2. HERO SECTION */}
-      <section className="relative px-4 sm:px-8 lg:px-12 xl:px-16 pt-12 pb-20 max-w-[1600px] mx-auto space-y-16">
+      <section className="relative px-3 sm:px-8 lg:px-12 xl:px-16 pt-8 sm:pt-12 pb-16 sm:pb-20 max-w-[1600px] mx-auto space-y-12 sm:space-y-16">
         {/* Hero Copy */}
-        <div className="text-center max-w-5xl xl:max-w-6xl mx-auto space-y-6">
+        <div className="text-center max-w-5xl xl:max-w-6xl mx-auto space-y-5 sm:space-y-6">
           <motion.h1
             initial={{ opacity: 0, scale: 0.92, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
-            className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black lowercase text-charcoal tracking-tight leading-[1.02]"
+            className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black lowercase text-charcoal tracking-tight leading-[1.05] break-words"
           >
             master every algorithm.{' '}
             <span className="text-marker-orange block sm:inline underline decoration-marker-orange/40 decoration-wavy decoration-2">
@@ -285,7 +285,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg sm:text-xl md:text-2xl text-cocoa-ink font-sans leading-relaxed max-w-4xl mx-auto font-medium"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-cocoa-ink font-sans leading-relaxed max-w-4xl mx-auto font-medium"
           >
             Great for revising and brushing up core concepts before interviews. Step through data structure transitions, trace pointer mechanics, and grasp the core invariant behind every optimal leap.
           </motion.p>
@@ -294,16 +294,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-wrap items-center justify-center gap-5 pt-4"
+            className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 pt-2 sm:pt-4"
           >
             <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.96 }}>
               <Button
                 onClick={() => onOpenNotebook()}
-                className="h-12 sm:h-14 px-8 sm:px-10 rounded-pill border-2 border-charcoal bg-primary-container text-on-primary-container hover:bg-primary-container/90 text-base sm:text-lg font-bold shadow-hard transition-all flex items-center gap-2.5"
+                className="h-11 sm:h-14 px-6 sm:px-10 rounded-xl border-2 border-charcoal bg-primary-container text-on-primary-container hover:bg-primary-container/90 text-sm sm:text-lg font-bold shadow-hard transition-all flex items-center gap-2 sm:gap-2.5"
               >
-                <BookOpen className="w-5 h-5" />
+                <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>start learning (191 problems)</span>
-                <ArrowRight className="w-5 h-5 ml-1" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-0.5 sm:ml-1" />
               </Button>
             </motion.div>
 
@@ -312,7 +312,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <Button
                   variant="outline"
                   onClick={onOpenAuthModal}
-                  className="h-12 sm:h-14 px-7 sm:px-8 rounded-pill border-2 border-charcoal bg-surface text-charcoal hover:bg-dew-drop text-base font-mono font-bold shadow-hard transition-all flex items-center gap-2"
+                  className="h-11 sm:h-14 px-5 sm:px-8 rounded-xl border-2 border-charcoal bg-surface text-charcoal hover:bg-dew-drop text-sm sm:text-base font-mono font-bold shadow-hard transition-all flex items-center gap-2"
                 >
                   <User className="w-4 h-4 text-marker-orange" />
                   <span>sign in / create account</span>
@@ -369,8 +369,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
 
             {/* Interactive Array Elements with Animated Layout Transitions */}
-            <div className="py-8 px-6 bg-dew-drop rounded-2xl border border-charcoal flex flex-col items-center gap-6 overflow-x-auto shadow-inner">
-              <div className="flex items-end justify-center gap-3 sm:gap-4 md:gap-6 flex-wrap min-w-max">
+            <div className="py-6 sm:py-8 px-3 sm:px-6 bg-dew-drop rounded-2xl border border-charcoal flex flex-col items-center gap-6 overflow-x-auto shadow-inner max-w-full">
+              <div className="flex items-end justify-center gap-2 sm:gap-4 md:gap-6 flex-wrap min-w-max">
                 {demoArr.map((val, idx) => {
                   const isLow = idx === demoLow;
                   const isMid = idx === demoMid;
@@ -381,16 +381,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       key={idx}
                       layout
                       transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                      className="flex flex-col items-center gap-2 min-w-[60px] sm:min-w-[72px]"
+                      className="flex flex-col items-center gap-1.5 sm:gap-2 min-w-[50px] sm:min-w-[60px] md:min-w-[72px]"
                     >
-                      <div className="h-6 flex items-center justify-center gap-1.5 text-xs font-mono font-bold">
-                        {isLow && <span className="bg-[#ba1a1a] text-white px-2 py-0.5 rounded-pill shadow-xs">low</span>}
-                        {isMid && <span className="bg-marker-orange text-white px-2 py-0.5 rounded-pill shadow-xs">mid</span>}
-                        {isHigh && <span className="bg-sprout-sticker text-white px-2 py-0.5 rounded-pill shadow-xs">high</span>}
+                      <div className="h-6 flex items-center justify-center gap-1 text-xs font-mono font-bold">
+                        {isLow && <span className="bg-[#ba1a1a] text-white px-2 py-0.5 rounded-md shadow-xs">low</span>}
+                        {isMid && <span className="bg-marker-orange text-white px-2 py-0.5 rounded-md shadow-xs">mid</span>}
+                        {isHigh && <span className="bg-sprout-sticker text-white px-2 py-0.5 rounded-md shadow-xs">high</span>}
                       </div>
                       <motion.div
                         whileHover={{ scale: 1.08 }}
-                        className={`w-14 h-16 sm:w-18 sm:h-20 md:w-20 md:h-24 flex items-center justify-center font-mono font-bold text-xl sm:text-2xl md:text-3xl rounded-2xl border-2 shadow-hard transition-all duration-300 ${
+                        className={`w-12 h-14 sm:w-16 sm:h-20 md:w-20 md:h-24 flex items-center justify-center font-mono font-bold text-lg sm:text-2xl md:text-3xl rounded-xl sm:rounded-2xl border-2 shadow-hard transition-all duration-300 ${
                           val === 0
                             ? 'border-[#ba1a1a] bg-[#ffdad6] text-[#93000a]'
                             : val === 1
@@ -409,7 +409,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Step Explanation & Live Invariant State Inspector */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-2 p-5 rounded-2xl bg-cream-paper border border-outline/30 text-xs sm:text-sm font-mono text-cocoa-ink flex items-start gap-3 shadow-xs">
+              <div className="md:col-span-2 p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-cream-paper border border-outline/30 text-xs sm:text-sm font-mono text-cocoa-ink flex items-start gap-3 shadow-xs">
                 <Info className="w-5 h-5 text-marker-orange flex-shrink-0 mt-0.5" />
                 <div className="space-y-1">
                   <span className="font-bold text-charcoal block">current transition:</span>
@@ -417,7 +417,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </div>
               </div>
 
-              <div className="p-5 rounded-2xl bg-cream-paper border border-outline/30 text-xs font-mono text-cocoa-ink flex flex-col justify-center gap-2 shadow-xs">
+              <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-cream-paper border border-outline/30 text-xs font-mono text-cocoa-ink flex flex-col justify-center gap-2 shadow-xs">
                 <span className="font-bold text-charcoal">partition ranges:</span>
                 <div className="grid grid-cols-2 gap-2 text-[11px]">
                   <span className="text-[#93000a] font-bold">0s: [0..{demoLow > 0 ? demoLow - 1 : 'none'}]</span>
@@ -436,7 +436,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           whileInView={{ opacity: 1, scale: 1, y: 0 }}
           viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto pt-4"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto pt-2 sm:pt-4"
         >
           <motion.div
             whileHover={{ scale: 1.04, y: -4 }}
@@ -680,7 +680,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search topics (e.g. Arrays, Trees, DP, Graphs)..."
-                className="w-full h-11 pl-10 pr-4 rounded-pill border-[1.5px] border-charcoal bg-cream-paper text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-marker-orange shadow-xs"
+                className="w-full h-11 pl-10 pr-4 rounded-lg border-[1.5px] border-charcoal bg-cream-paper text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-marker-orange shadow-xs"
               />
               {searchQuery && (
                 <button
@@ -692,13 +692,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               )}
             </div>
 
-            {/* Category Filter Pills */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-none flex-wrap">
+            {/* Category Filter Buttons */}
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-none flex-wrap">
               {categories.map(cat => (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-3.5 py-1.5 rounded-pill text-xs font-mono font-bold whitespace-nowrap transition-all border cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-md text-xs font-mono font-bold whitespace-nowrap transition-all border cursor-pointer ${
                     selectedCategory === cat.id
                       ? 'bg-charcoal text-white border-charcoal shadow-xs'
                       : 'bg-surface text-on-surface-variant border-charcoal/30 hover:bg-dew-drop'
@@ -712,7 +712,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </motion.div>
 
         {/* Topics Grid with 4-Column Responsive Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
           <AnimatePresence>
             {filteredTopics.map((topic, index) => {
               const firstProblem =
@@ -731,7 +731,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   whileHover={{ scale: 1.03, y: -4 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => onOpenNotebook(targetProblemId)}
-                  className="p-5 rounded-2xl border-2 border-charcoal bg-surface hover:bg-dew-drop hover:border-marker-orange transition-all cursor-pointer shadow-hard group flex flex-col justify-between min-h-[140px]"
+                  className="p-4 sm:p-5 rounded-xl sm:rounded-2xl border-2 border-charcoal bg-surface hover:bg-dew-drop hover:border-marker-orange transition-all cursor-pointer shadow-hard group flex flex-col justify-between min-h-[130px] sm:min-h-[140px]"
                   title={`Explore ${topic.title} in Interactive Notebook`}
                 >
                   <div>
@@ -739,7 +739,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       <span className="font-display text-base font-bold lowercase text-charcoal group-hover:text-marker-orange transition-colors truncate">
                         {topic.title}
                       </span>
-                      <span className="text-xs font-mono font-bold bg-primary-container px-2 py-0.5 rounded-pill border border-charcoal shadow-xs flex-shrink-0">
+                      <span className="text-xs font-mono font-bold bg-primary-container px-2 py-0.5 rounded-md border border-charcoal shadow-xs flex-shrink-0">
                         {topic.count}
                       </span>
                     </div>
@@ -761,7 +761,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         {filteredTopics.length === 0 && (
-          <div className="text-center py-16 border-2 border-dashed border-charcoal/30 rounded-3xl bg-dew-drop/30 space-y-3">
+          <div className="text-center py-16 border-2 border-dashed border-charcoal/30 rounded-2xl bg-dew-drop/30 space-y-3">
             <p className="font-mono text-base text-charcoal font-bold">No topics found matching "{searchQuery}"</p>
             <Button size="sm" variant="default" onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}>
               Reset Filters
@@ -771,19 +771,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* 7. BOTTOM CALLOUT / REVISION BANNER WITH ZOOM IN */}
-      <section className="px-4 sm:px-8 lg:px-12 xl:px-16 py-20 max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto">
+      <section className="px-3 sm:px-8 lg:px-12 xl:px-16 py-16 sm:py-20 max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, scale: 0.88, y: 30 }}
           whileInView={{ opacity: 1, scale: 1, y: 0 }}
           viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.6 }}
-          className="rounded-3xl border-2 border-charcoal bg-gradient-to-br from-primary-fixed/60 via-dew-drop to-secondary-container/40 p-10 sm:p-16 text-center shadow-hard-lg space-y-8 relative overflow-hidden"
+          className="rounded-2xl sm:rounded-3xl border-2 border-charcoal bg-gradient-to-br from-primary-fixed/60 via-dew-drop to-secondary-container/40 p-6 sm:p-12 md:p-16 text-center shadow-hard-lg space-y-6 sm:space-y-8 relative overflow-hidden"
         >
-          <div className="space-y-4 max-w-3xl mx-auto">
-            <h2 className="font-display text-4xl sm:text-6xl font-black lowercase text-charcoal tracking-tight">
+          <div className="space-y-3 sm:space-y-4 max-w-3xl mx-auto">
+            <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-black lowercase text-charcoal tracking-tight">
               ready to master the sde sheet?
             </h2>
-            <p className="text-base sm:text-lg font-sans text-cocoa-ink leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg font-sans text-cocoa-ink leading-relaxed">
               Step through all 191 visual problem solutions, test your mental models, and brush up on optimal invariants before your next interview round.
             </p>
           </div>
@@ -791,7 +791,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
             <Button
               onClick={() => onOpenNotebook()}
-              className="h-14 px-10 rounded-pill border-2 border-charcoal bg-primary-container text-on-primary-container hover:bg-primary-container/90 text-lg font-bold shadow-hard transition-all flex items-center gap-2.5"
+              className="h-12 sm:h-14 px-6 sm:px-10 rounded-xl border-2 border-charcoal bg-primary-container text-on-primary-container hover:bg-primary-container/90 text-base sm:text-lg font-bold shadow-hard transition-all flex items-center gap-2.5"
             >
               <BookOpen className="w-5 h-5" />
               <span>launch interactive notebook</span>
@@ -802,12 +802,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* 8. FOOTER */}
-      <footer className="border-t border-charcoal/30 bg-dew-drop py-12 px-4 text-center space-y-4">
+      <footer className="border-t border-charcoal/30 bg-dew-drop py-8 sm:py-12 px-4 text-center space-y-3 sm:space-y-4">
         <div className="flex items-center justify-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-container text-on-primary-container font-extrabold text-xs border border-charcoal shadow-xs">
+          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary-container text-on-primary-container font-extrabold text-xs border border-charcoal shadow-xs">
             <Lightbulb className="w-3.5 h-3.5 text-on-primary-container" />
           </span>
-          <span className="font-display text-lg font-bold lowercase text-charcoal">
+          <span className="font-display text-base sm:text-lg font-bold lowercase text-charcoal">
             intuition<span className="text-marker-orange">lab.</span>
           </span>
         </div>
@@ -827,7 +827,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             whileHover={{ scale: 1.1, y: -2 }}
             whileTap={{ scale: 0.9 }}
             onClick={scrollToTop}
-            className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-primary-container text-on-primary-container border-2 border-charcoal shadow-hard cursor-pointer transition-colors"
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 p-2.5 sm:p-3 rounded-xl bg-primary-container text-on-primary-container border-2 border-charcoal shadow-hard cursor-pointer transition-colors"
             title="Back to top"
           >
             <ChevronUp className="w-5 h-5" />

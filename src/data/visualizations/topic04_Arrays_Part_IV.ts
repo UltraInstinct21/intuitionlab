@@ -89,7 +89,7 @@ export const topic04Visualizations: Record<string, ProblemVisualization> = {
       {
         title: 'Evaluate Sum for i=0, j=1: Total = -1 < 0 -> Advance Left',
         whatHappens:
-          'Calculate total = (-2) + (-1) + 0 + 2 = -1. Since -1 < target (0), sum is too small. Increment left pointer from index 2 to 3 (nums[3]=0). Next check: -2 + -1 + 0 + 2 = -1 < 0 -> Increment left to 4 (nums[4]=1).',
+          'Calculate total = (-2) + (-1) + 0 + 2 = -1. Since -1 < target (0), sum is too small. Increment left pointer from index 2 to 3 (nums[3]=0).',
         whyRationale:
           'Because the array is sorted, incrementing left increases the sum towards the target.',
         arrayState: [-2, -1, 0, 0, 1, 2],
@@ -133,7 +133,7 @@ export const topic04Visualizations: Record<string, ProblemVisualization> = {
           foundCount: 1
         },
         codeSnippet:
-          'if total == target:\n    result.append([nums[i], nums[j], nums[left], nums[right]])\n    left += 1; right -= 1',
+          'if total == target:\n    result.append([nums[i], nums[j], nums[left], nums[right]])\n    while left < right and nums[left] == nums[left + 1]:\n        left += 1\n    while left < right and nums[right] == nums[right - 1]:\n        right -= 1\n    left += 1; right -= 1',
         impact: 'Time: O(N³) | Space: O(1)'
       },
       {
@@ -160,6 +160,32 @@ export const topic04Visualizations: Record<string, ProblemVisualization> = {
         impact: 'Time: O(N³) | Space: O(1)'
       },
       {
+        title: 'Iteration i=1, j=2 (-1, 0): Total = 1 > 0 -> Move Right',
+        whatHappens:
+          'Set i=1 (nums[i]=-1), j=2 (nums[j]=0), left=3 (nums[left]=0), right=5 (nums[right]=2). Total = (-1) + 0 + 0 + 2 = 1. Since 1 > target (0), sum is too large. Decrement right pointer from index 5 to 4 (nums[4]=1).',
+        whyRationale:
+          'Because the array is sorted, decrementing right decreases the sum towards the target.',
+        arrayState: [-2, -1, 0, 0, 1, 2],
+        pointers: [
+          { idx: 1, label: 'i (-1)', color: '#3b82f6' },
+          { idx: 2, label: 'j (0)', color: '#eab308' },
+          { idx: 3, label: 'L (0)', color: '#06b6d4' },
+          { idx: 4, label: 'R (1)', color: '#a855f7' }
+        ],
+        highlightIndices: [1, 2, 3, 4],
+        states: {
+          'nums[i]': -1,
+          'nums[j]': 0,
+          'nums[left]': 0,
+          'nums[right]': 2,
+          total: 1,
+          action: 'total > 0 -> right--'
+        },
+        codeSnippet:
+          'total = nums[i] + nums[j] + nums[left] + nums[right]\nelif total > target:\n    right -= 1',
+        impact: 'Time: O(N³) | Space: O(1)'
+      },
+      {
         title: 'Iteration i=1, j=2 (-1, 0) Finds [-1, 0, 0, 1] & Completes',
         whatHappens:
           'Set i=1 (nums[i]=-1), j=2 (nums[j]=0), left=3 (0), right=4 (1). Total = (-1) + 0 + 0 + 1 = 0 == target. Record [-1, 0, 0, 1]. All combinations scanned. Return all 3 unique quadruplets.',
@@ -175,6 +201,11 @@ export const topic04Visualizations: Record<string, ProblemVisualization> = {
         highlightIndices: [1, 2, 3, 4],
         result: '[[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]]',
         states: {
+          i: 1,
+          j: 2,
+          left: 3,
+          right: 4,
+          total: 0,
           allQuadruplets: '[[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]]',
           totalFound: 3
         },
@@ -514,7 +545,7 @@ export const topic04Visualizations: Record<string, ProblemVisualization> = {
           i: 4,
           num: 4,
           prefix_xor: 6,
-          allSubarraysCount: 4,
+          totalCount: 4,
           subarrays: '[4, 2], [2, 2, 6], [6], [4, 2, 2, 6, 4]'
         },
         codeSnippet: 'return count  # 4',
@@ -615,7 +646,7 @@ export const topic04Visualizations: Record<string, ProblemVisualization> = {
           max_length: 3
         },
         codeSnippet:
-          'max_length = max(max_length, right - left + 1)  # max remains 3',
+          'while s[right] in char_set:\n    char_set.remove(s[left])\n    left += 1\nchar_set.add(s[right])\nmax_length = max(max_length, right - left + 1)  # max remains 3',
         impact: 'Time: O(N) | Space: O(min(N, M))'
       },
       {

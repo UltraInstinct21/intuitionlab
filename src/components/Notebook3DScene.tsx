@@ -203,7 +203,7 @@ export const Notebook3DScene: React.FC<Notebook3DSceneProps> = ({
   return (
     <div className={`relative flex items-center justify-center select-none ${className}`}>
       <div ref={mountRef} className="w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing" />
-      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-cream-paper border border-charcoal rounded-pill px-2.5 py-0.5 text-[10px] font-semibold text-cocoa-ink shadow-sm pointer-events-none whitespace-nowrap">
+      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-cream-paper border border-charcoal rounded-md px-2.5 py-0.5 text-[10px] font-semibold text-cocoa-ink shadow-sm pointer-events-none whitespace-nowrap">
         notebook #{problemNumber || 'sde'}
       </div>
     </div>

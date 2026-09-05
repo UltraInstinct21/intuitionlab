@@ -20,7 +20,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         ],
         activeNodeId: 1,
         visitedIds: [1],
-        queueOrStack: ['DFS(1)'],
+        queueOrStack: [1],
         states: {
           currentNode: 1,
           'clonedMap': '{ 1: 1\' }',
@@ -49,7 +49,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         activeNodeId: 3,
         visitedIds: [1, 2, 3],
         activePath: [1, 2, 3],
-        queueOrStack: ['DFS(1)', 'DFS(2)', 'DFS(3)'],
+        queueOrStack: [1, 2, 3],
         states: {
           currentNode: 3,
           'clonedMap': '{ 1: 1\', 2: 2\', 3: 3\' }',
@@ -78,7 +78,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         ],
         activeNodeId: 4,
         visitedIds: [1, 2, 3, 4],
-        queueOrStack: ['DFS(1)', 'DFS(2)', 'DFS(3)', 'DFS(4)'],
+        queueOrStack: [1, 2, 3, 4],
         states: {
           currentNode: 4,
           'clonedMap[1]': '1\' (Exists)',
@@ -101,7 +101,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
           ["1'", "2'"], ["2'", "3'"], ["3'", "4'"], ["4'", "1'"]
         ],
         activeNodeId: "1'",
-        visitedIds: ["1'", "2'", "3'", "4'"],
+        visitedIds: [1, 2, 3, 4],
         states: {
           totalClonedNodes: 4,
           isDeepCopy: true,
@@ -110,7 +110,64 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         codeSnippet: 'return dfs(node)',
         impact: 'Total Time: O(V + E) | Total Space: O(V)'
       }
-    ]
+    ],
+    approachVisualizations: {
+      0: {
+        type: 'graph',
+        approachName: 'BFS',
+        steps: [
+          {
+            title: 'BFS: Clone Root 1 & Enqueue Neighbors [2, 4]',
+            whatHappens: 'Visit Node 1. Create Clone(1) (cloned[1] = 1\'). Enqueue unvisited neighbors 2 and 4 into the FIFO queue = [2, 4].',
+            whyRationale: 'BFS clones level by level: node 1 (level 0) is cloned before any level-1 node, using a queue instead of the call stack.',
+            nodes: [
+              { id: 1, label: '1 (Orig)', x: 70, y: 60, status: 'visited' },
+              { id: 2, label: '2', x: 270, y: 60, status: 'active' },
+              { id: 3, label: '3', x: 270, y: 160, status: 'default' },
+              { id: 4, label: '4', x: 70, y: 160, status: 'active' },
+              { id: "1'", label: "1' (Copy)", x: 170, y: 60, status: 'visited' }
+            ],
+            edges: [
+              [1, 2], [2, 3], [3, 4], [4, 1]
+            ],
+            activeNodeId: 1,
+            visitedIds: [1],
+            queueOrStack: [2, 4],
+            states: {
+              currentNode: 1,
+              'clonedMap': '{ 1: 1\' }',
+              queue: '[2, 4]'
+            },
+            codeSnippet: 'clone = Node(node.val)\ncloned[node] = clone\nqueue = deque([node])',
+            impact: 'Time: O(1) | Space: O(V) for queue + hash map'
+          },
+          {
+            title: 'BFS Drains Queue Level by Level & Returns Clone(1)',
+            whatHappens: 'Dequeue 2 -> clone 2\', link 1\' <-> 2\', enqueue 3. Dequeue 4 -> clone 4\', link 1\' <-> 4\'. Dequeue 3 -> clone 3\', link 2\' <-> 3\' and 4\' <-> 3\'. Queue empties. Return Clone(1).',
+            whyRationale: 'Each node is dequeued once and cloned exactly once; already-cloned neighbors are linked via hash-map lookup, so cycles cannot loop forever.',
+            nodes: [
+              { id: "1'", label: "1' (Root)", x: 90, y: 60, status: 'target' },
+              { id: "2'", label: "2'", x: 250, y: 60, status: 'target' },
+              { id: "3'", label: "3'", x: 250, y: 160, status: 'target' },
+              { id: "4'", label: "4'", x: 90, y: 160, status: 'target' }
+            ],
+            edges: [
+              ["1'", "2'"], ["2'", "3'"], ["3'", "4'"], ["4'", "1'"]
+            ],
+            activeNodeId: "1'",
+            visitedIds: [1, 2, 4, 3],
+            queueOrStack: [],
+            states: {
+              totalClonedNodes: 4,
+              isDeepCopy: true,
+              returnedNode: "1'"
+            },
+            codeSnippet: 'while queue:\n    node = queue.popleft()\n    for nb in node.neighbors:\n        if nb not in cloned: clone + enqueue',
+            impact: 'Total Time: O(V + E) | Total Space: O(V)'
+          }
+        ]
+      }
+    }
   },
 
   '23_Graph/02-flood-fill': {
@@ -267,12 +324,11 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
           ['0', '0', '0', '0', '0'],
           ['0', '0', '0', '0', '0']
         ],
-        activeCell: [3, 4],
+        activeCell: [3, 3],
         highlightCells: [[3, 3], [3, 4]],
         states: {
           totalIslands: 3,
-          gridTraversed: true,
-          result: 3
+          gridTraversed: true
         },
         codeSnippet: 'return count',
         impact: 'Total Time: O(M × N) | Space: O(M × N) worst-case recursion'
@@ -296,7 +352,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         activeCell: [0, 0],
         highlightCells: [[0, 0], [0, 1], [1, 0]],
         states: {
-          shape1: '(0,0),(0,1),(1,0)',
+          shape1: '(0,0),(1,0),(0,1)',
           distinctSetSize: 1,
           uniqueShapes: '["L-shape-down"]'
         },
@@ -324,20 +380,21 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         impact: 'Time: O(1) set insertion'
       },
       {
-        title: 'Explore Third Island at (2,4) & Duplicate Island at (3,3)',
-        whatHappens: 'At (2,4), single dot [(0,0)] added (count=3). At (3,3), find horizontal 1x2 bar: offsets [(0,0), (0,1)]. This signature is ALREADY in the set!',
-        whyRationale: 'Because [(0,0), (0,1)] already exists in the hash set from island 2, the duplicate translated shape is ignored.',
+        title: 'Explore Dot Island at (2,4) & Skip Duplicate Bars',
+        whatHappens: 'At (2,4), single dot [(0,0)] is new -> add to set (size 3). At (3,0), horizontal bar [(0,0),(0,1)] matches island 2 -> skip. At (3,3), the same bar appears again -> skip.',
+        whyRationale: 'Because [(0,0), (0,1)] already exists in the hash set from island 2, both translated duplicate bars are ignored while the new dot shape grows the set.',
         grid: [
           ['0', '0', '0', '0', '0'],
           ['0', '0', '0', '0', '0'],
           ['0', '0', '0', '0', '1'],
           ['1', '1', '0', '1', '1']
         ],
-        activeCell: [3, 3],
-        highlightCells: [[3, 3], [3, 4]],
+        activeCell: [2, 4],
+        highlightCells: [[2, 4], [3, 0], [3, 1], [3, 3], [3, 4]],
         states: {
-          duplicateFound: 'Horizontal bar (3,3)-(3,4)',
+          newShape: '(0,0)',
           distinctSetSize: 3,
+          duplicatesSkipped: '[(3,0), (3,3)]',
           isDuplicate: true
         },
         codeSnippet: 'distinct_islands.add(path) # Set deduplicates identical shapes',
@@ -356,13 +413,59 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         activeCell: [3, 4],
         highlightCells: [],
         states: {
-          distinctIslandsCount: 3,
-          result: 3
+          distinctIslandsCount: 3
         },
         codeSnippet: 'return len(distinct_islands)',
         impact: 'Total Time: O(M × N) | Total Space: O(M × N)'
       }
-    ]
+    ],
+    approachVisualizations: {
+      0: {
+        type: 'matrix',
+        approachName: 'Brute Force',
+        steps: [
+          {
+            title: 'Brute Force: Collect Shapes & Compare Against All Stored',
+            whatHappens: 'DFS each island into a relative-offset list. L-shape [(0,0),(1,0),(0,1)] stored. Next H-bar [(0,0),(0,1)] is linearly compared against every stored shape (1 comparison) before appending.',
+            whyRationale: 'Without a hash set, each new island shape is scanned against the full list of known shapes, so dedup costs O(K) per island instead of O(1).',
+            grid: [
+              ['0', '0', '0', '1', '1'],
+              ['0', '0', '0', '0', '0'],
+              ['0', '0', '0', '0', '1'],
+              ['1', '1', '0', '1', '1']
+            ],
+            activeCell: [0, 3],
+            highlightCells: [[0, 3], [0, 4]],
+            states: {
+              storedShapes: 1,
+              comparisons: 1,
+              newShape: '(0,0),(0,1)'
+            },
+            codeSnippet: 'if path not in islands:\n    islands.append(path)',
+            impact: 'O(K) list scan per island (K = distinct so far)'
+          },
+          {
+            title: 'Duplicate Bar Found Only After Full List Scan',
+            whatHappens: 'Island at (3,3) yields [(0,0),(0,1)]. Linear scan finds it already in the list -> skip append. Total distinct = 3 after comparing against all stored shapes each time.',
+            whyRationale: 'Same answer as the hash-set version, but every membership test walks the whole list, degrading to O(K^2) shape comparisons overall.',
+            grid: [
+              ['0', '0', '0', '0', '0'],
+              ['0', '0', '0', '0', '0'],
+              ['0', '0', '0', '0', '0'],
+              ['0', '0', '0', '1', '1']
+            ],
+            activeCell: [3, 3],
+            highlightCells: [[3, 3], [3, 4]],
+            states: {
+              isDuplicate: true,
+              distinctIslandsCount: 3
+            },
+            codeSnippet: 'return len(islands)',
+            impact: 'Total Time: O(M × N + K^2) | Space: O(M × N)'
+          }
+        ]
+      }
+    }
   },
 
   '23_Graph/05-bfs-of-graph': {
@@ -513,7 +616,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         ],
         activeNodeId: 0,
         visitedIds: [0],
-        queueOrStack: ['dfs(0)'],
+        queueOrStack: [0],
         states: {
           'color[0]': 'GRAY (In Stack)',
           'color[1..3]': 'WHITE',
@@ -538,7 +641,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         activeNodeId: 2,
         visitedIds: [0, 1, 2],
         activePath: [0, 1, 2],
-        queueOrStack: ['dfs(0)', 'dfs(1)', 'dfs(2)'],
+        queueOrStack: [0, 1, 2],
         states: {
           activeStack: '[0 -> 1 -> 2]',
           nextNeighbor: '3'
@@ -562,7 +665,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         activeNodeId: 3,
         visitedIds: [0, 1, 2, 3],
         activePath: [0, 1, 2, 3],
-        queueOrStack: ['dfs(0)', 'dfs(1)', 'dfs(2)', 'dfs(3)'],
+        queueOrStack: [0, 1, 2, 3],
         states: {
           activeStack: '[0 -> 1 -> 2 -> 3]',
           evaluatingEdge: '3 -> 1'
@@ -584,7 +687,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
           [0, 1, '→'], [1, 2, 'cycle'], [2, 3, 'cycle'], [3, 1, 'BACK-EDGE']
         ],
         activeNodeId: 1,
-        visitedIds: [1, 2, 3],
+        visitedIds: [0, 1, 2, 3],
         activePath: [1, 2, 3, 1],
         states: {
           'color[1]': 'GRAY (Cycle Trigger)',
@@ -616,7 +719,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         ],
         activeNodeId: 0,
         visitedIds: [0],
-        queueOrStack: ['dfs(0, -1)'],
+        queueOrStack: [0],
         states: {
           currentNode: 0,
           parent: -1,
@@ -642,7 +745,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         activeNodeId: 3,
         visitedIds: [0, 1, 2, 3],
         activePath: [0, 1, 2, 3],
-        queueOrStack: ['dfs(0,-1)', 'dfs(1,0)', 'dfs(2,1)', 'dfs(3,2)'],
+        queueOrStack: [0, 1, 2, 3],
         states: {
           currentNode: 3,
           parent: 2,
@@ -667,8 +770,8 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         ],
         activeNodeId: 4,
         visitedIds: [0, 1, 2, 3, 4],
-        activePath: [1, 2, 3, 4],
-        queueOrStack: ['dfs(1,0)', 'dfs(2,1)', 'dfs(3,2)', 'dfs(4,3)'],
+        activePath: [0, 1, 2, 3, 4],
+        queueOrStack: [0, 1, 2, 3, 4],
         states: {
           currentNode: 4,
           parent: 3,
@@ -692,12 +795,11 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
           [0, 1], [1, 2, 'cycle'], [2, 3, 'cycle'], [3, 4, 'cycle'], [4, 1, 'CYCLE-EDGE']
         ],
         activeNodeId: 4,
-        visitedIds: [1, 2, 3, 4],
+        visitedIds: [0, 1, 2, 3, 4],
         activePath: [1, 2, 3, 4, 1],
         states: {
           cycleFound: true,
-          cycleMembers: '[1, 2, 3, 4]',
-          result: true
+          cycleMembers: '[1, 2, 3, 4]'
         },
         codeSnippet: 'elif neighbor != parent:\n    return True  # Undirected cycle found',
         impact: 'Total Time: O(V + E) | Total Space: O(V)'
@@ -803,7 +905,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
           [5, 0], [5, 2], [4, 0], [4, 1], [2, 3], [3, 1]
         ],
         activeNodeId: 1,
-        visitedIds: [5, 4, 2, 0, 3, 1],
+        visitedIds: [4, 5, 0, 2, 3, 1],
         queueOrStack: [],
         states: {
           finalTopologicalOrder: '[4, 5, 0, 2, 3, 1]',
@@ -1016,8 +1118,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
         queueOrStack: [3, 4],
         states: {
           'dist[4]': 2,
-          shortestPath: '0 -> 2 -> 4',
-          result: 2
+          shortestPath: '0 -> 2 -> 4'
         },
         codeSnippet: 'return distances[D]',
         impact: 'Total Time: O(V + E) | Total Space: O(V)'
@@ -1152,7 +1253,7 @@ export const topic23Visualizations: Record<string, ProblemVisualization> = {
           ['hit', 'hot', 'path'], ['hot', 'dot', 'path'], ['hot', 'lot'], ['dot', 'dog', 'path'], ['lot', 'log'], ['dog', 'cog', 'path'], ['log', 'cog']
         ],
         activeNodeId: 'cog',
-        visitedIds: ['hit', 'hot', 'dot', 'dog', 'cog'],
+        visitedIds: ['hit', 'hot', 'dot', 'lot', 'dog', 'log', 'cog'],
         activePath: ['hit', 'hot', 'dot', 'dog', 'cog'],
         states: {
           word: 'cog',

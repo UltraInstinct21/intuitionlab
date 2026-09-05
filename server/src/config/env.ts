@@ -14,6 +14,17 @@ export const config = {
     serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
     anonKey: process.env.SUPABASE_ANON_KEY || '',
   },
+  jwt: {
+    // Signs app tokens for Google-OAuth users + the OAuth `state` param
+    secret: process.env.JWT_SECRET || '',
+    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  },
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID || '',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    // Must match an Authorized redirect URI in Google Cloud Console exactly
+    callbackUrl: process.env.GOOGLE_CALLBACK_URL || '',
+  },
   rateLimits: {
     generalWindowMs: 15 * 60 * 1000, // 15 minutes
     generalMax: 100,

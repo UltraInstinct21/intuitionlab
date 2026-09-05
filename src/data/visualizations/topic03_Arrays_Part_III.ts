@@ -131,7 +131,7 @@ export const topic03Visualizations: Record<string, ProblemVisualization> = {
           'To calculate 2.0¹⁰, initialize product accumulator ans = 1.0, current base x = 2.0, and power n = 10. Exponent 10 in binary is (1010)₂ = 2³ + 2¹ = 8 + 2.',
         whyRationale:
           'Iterative binary exponentiation decomposes the exponent into powers of 2. Each step either multiplies ans by current base (if power is odd) or squares the base and halves the power (if power is even).',
-        arrayState: ['Base x: 2.0', 'Exponent n: 10', 'ans: 1.0', 'Bit: 0 (Even)'],
+        arrayState: ['2.0', '10', '1.0'],
         pointers: [
           { idx: 0, label: 'x=2.0', color: '#3b82f6' },
           { idx: 1, label: 'n=10', color: '#eab308' },
@@ -148,13 +148,13 @@ export const topic03Visualizations: Record<string, ProblemVisualization> = {
           'Current state: x = 4.0, n = 5. Since n = 5 is odd (n % 2 == 1), multiply accumulator: ans = ans × x = 1.0 × 4.0 = 4.0. Then square base: x = 4.0 × 4.0 = 16.0, and halve exponent: n = 5 // 2 = 2.',
         whyRationale:
           'When n is odd, xⁿ = x × (x²)^((n-1)/2). We extract one factor of x into ans, leaving an even exponent (n-1) to be halved.',
-        arrayState: ['Base x: 16.0', 'Exponent n: 2', 'ans: 4.0', 'Bit: 1 (Odd)'],
+        arrayState: ['16.0', '2', '4.0'],
         pointers: [
           { idx: 0, label: 'x=16.0', color: '#3b82f6' },
           { idx: 1, label: 'n=2', color: '#eab308' },
           { idx: 2, label: 'ans=4.0', color: '#22c55e' }
         ],
-        states: { x: 16.0, n: 2, ans: 4.0, isOdd: true },
+        states: { x: 16.0, n: 2, ans: 4.0, consumedOdd: true },
         codeSnippet:
           'if n % 2 == 1:\n    ans = ans * x  # ans = 4.0\nx = x * x  # x = 16.0\nn = n // 2  # n = 2',
         impact: 'Time: O(log N) | Space: O(1)'
@@ -165,13 +165,13 @@ export const topic03Visualizations: Record<string, ProblemVisualization> = {
           'Current state: x = 16.0, n = 2. Since n is even, ans remains 4.0. Square base: x = 16.0 × 16.0 = 256.0. Halve exponent: n = 2 // 2 = 1.',
         whyRationale:
           'For an even exponent, no multiplication with ans is needed. Squaring the base prepares for the next binary power 2³ = 8.',
-        arrayState: ['Base x: 256.0', 'Exponent n: 1', 'ans: 4.0', 'Bit: 0 (Even)'],
+        arrayState: ['256.0', '1', '4.0'],
         pointers: [
           { idx: 0, label: 'x=256.0', color: '#3b82f6' },
           { idx: 1, label: 'n=1', color: '#eab308' },
           { idx: 2, label: 'ans=4.0', color: '#22c55e' }
         ],
-        states: { x: 256.0, n: 1, ans: 4.0, isOdd: false },
+        states: { x: 256.0, n: 1, ans: 4.0, consumedOdd: false },
         codeSnippet:
           '# n = 2 is even\nx = x * x  # x = 256.0\nn = n // 2  # n = 1',
         impact: 'Time: O(log N) | Space: O(1)'
@@ -182,11 +182,11 @@ export const topic03Visualizations: Record<string, ProblemVisualization> = {
           'Current state: x = 256.0, n = 1. Since n = 1 is odd, multiply accumulator: ans = ans × x = 4.0 × 256.0 = 1024.0. Exponent becomes n // 2 = 0.',
         whyRationale:
           'The final bit of exponent 10 is processed. The accumulator now contains 2² × 2⁸ = 2¹⁰ = 1024.0.',
-        arrayState: ['Base x: 256.0', 'Exponent n: 0', 'ans: 1024.0', 'Bit: 1 (Odd)'],
+        arrayState: ['256.0', '0', '1024.0'],
         pointers: [
           { idx: 2, label: 'ans=1024.0', color: '#22c55e' }
         ],
-        states: { x: 256.0, n: 0, ans: 1024.0, isOdd: true },
+        states: { x: 256.0, n: 0, ans: 1024.0, consumedOdd: true },
         codeSnippet:
           'if n % 2 == 1:\n    ans = ans * x  # 4.0 * 256.0 = 1024.0\nn = n // 2  # n = 0',
         impact: 'Time: O(log N) | Space: O(1)'
@@ -197,7 +197,7 @@ export const topic03Visualizations: Record<string, ProblemVisualization> = {
           'Exponent n reaches 0. The while loop terminates and the function returns ans = 1024.0.',
         whyRationale:
           'Instead of 10 linear multiplications, binary exponentiation computes 2¹⁰ in only 4 logarithmic steps.',
-        arrayState: ['Input: 2.0^10', 'Result: 1024.0', 'Multiplications: 4', 'Status: Complete'],
+        arrayState: ['2.0^10', '1024.0', '4 steps', 'Done'],
         pointers: [
           { idx: 1, label: 'Final: 1024.0', color: '#22c55e' }
         ],
@@ -408,7 +408,7 @@ export const topic03Visualizations: Record<string, ProblemVisualization> = {
           formula: 'dp[r][c] = dp[r-1][c] + dp[r][c-1]'
         },
         codeSnippet:
-          'dp = [[1] * n for _ in range(m)]',
+          'dp = [[0] * n for _ in range(m)]\nfor c in range(n): dp[0][c] = 1\nfor r in range(m): dp[r][0] = 1',
         impact: 'Time: O(M × N) | Space: O(M × N)'
       },
       {
@@ -504,7 +504,7 @@ export const topic03Visualizations: Record<string, ProblemVisualization> = {
         highlightRange: [0, 4],
         states: { left: 0, mid: 1, right: 4, totalCount: 0 },
         codeSnippet:
-          'mid = (left + right) // 2\ncount = mergeSort(arr, left, mid) + mergeSort(arr, mid + 1, right)',
+          'mid = 1  # Left [0..1] = [1, 3], Right [2..4] = [2, 3, 1]\ncount = mergeSort(arr, 0, 1) + mergeSort(arr, 2, 4)',
         impact: 'Time: O(N log N) | Space: O(N)'
       },
       {
@@ -534,7 +534,7 @@ export const topic03Visualizations: Record<string, ProblemVisualization> = {
       {
         title: 'Two-Pointer Count: i=1 (val 3) Finds Reverse Pair (3, 1)',
         whatHappens:
-          'For i=1 (arr[i]=3): Check j=2 (arr[j]=1): 3 > 2 × 1 is True -> j advances to 3 (arr[j]=2). Check j=3: 3 > 2 × 2 = 4 is False -> Stop. Add j - (mid + 1) = 3 - 2 = 1 reverse pair. (Pair: nums[1]=3 > 2 × nums[4]=1).',
+          'For i=1 (arr[i]=3): Check j=2 (arr[j]=1): 3 > 2 × 1 is True -> j advances to 3 (arr[j]=2). Check j=3: 3 > 2 × 2 = 4 is False -> Stop. Add j - (mid + 1) = 3 - 2 = 1 reverse pair. (Pair: arr[1]=3 > 2 × arr[2]=1).',
         whyRationale:
           'All elements in the right half from index (mid+1) up to j-1 satisfy arr[i] > 2 × arr[j].',
         arrayState: [1, 3, 1, 2, 3],
@@ -548,7 +548,7 @@ export const topic03Visualizations: Record<string, ProblemVisualization> = {
           'arr[i]': 3,
           j: 3,
           pairsAdded: 1,
-          totalReversePairs: 2
+          crossPairs: 1
         },
         codeSnippet:
           'while j <= right and arr[i] > 2 * arr[j]:\n    j += 1  # j moves from 2 to 3\ncount += j - (mid + 1)  # adds 1 pair',
@@ -567,9 +567,9 @@ export const topic03Visualizations: Record<string, ProblemVisualization> = {
         ],
         highlightRange: [0, 4],
         result: '2',
-        states: { finalArray: '[1, 1, 2, 3, 3]', totalReversePairs: 2 },
+        states: { finalArray: '[1, 1, 2, 3, 3]', rightHalfPairs: 1, crossPairs: 1, totalReversePairs: 2 },
         codeSnippet:
-          '# Standard merge step\nwhile i <= mid and j <= right:\n    # merge into temp...\nreturn count  # 2',
+          'i, j = 0, 2  # Left [0..1] = [1, 3], Right [2..4] = [1, 2, 3]\nwhile i <= 1 and j <= 4:\n    tmp.append(arr[i] if arr[i] <= arr[j] else arr[j])  # -> [1, 1, 2, 3, 3]\nreturn count  # 0 (left) + 1 (right) + 1 (cross) = 2',
         impact: 'Time: O(N log N) | Space: O(N)'
       }
     ]

@@ -1,9 +1,6 @@
 export { MatrixVisualizer } from './MatrixVisualizer';
-export { SortColorsVisualizer } from './SortColorsVisualizer';
-export { KadaneVisualizer } from './KadaneVisualizer';
 export { LinkedListVisualizer } from './LinkedListVisualizer';
 export { TreeVisualizer } from './TreeVisualizer';
-export { IntervalVisualizer } from './IntervalVisualizer';
 export { TwoPointerVisualizer } from './TwoPointerVisualizer';
 export { BinarySearchVisualizer } from './BinarySearchVisualizer';
 export { HeapVisualizer } from './HeapVisualizer';

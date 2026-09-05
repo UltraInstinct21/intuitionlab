@@ -1,6 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import {
+  getAppToken,
+  setAppToken,
+  clearAppToken,
+  fetchAuthMe,
+  googleLoginUrl,
+  AppTokenUser,
+} from '@/lib/api';
 
 export interface UserProfile {
   id: string;
@@ -18,6 +26,7 @@ interface AuthContextType {
   loading: boolean;
   isConfigured: boolean;
   signInWithPassword: (email: string, password: string) => Promise<{ error: string | null }>;
+  signInWithGoogle: () => void;
   signUpWithPassword: (email: string, password: string, username?: string) => Promise<{ error: string | null; needsEmailConfirmation?: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (username: string) => Promise<{ error: string | null }>;
@@ -76,6 +85,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Google-OAuth (backend app token) session. Runs alongside the Supabase
+  // flow; when an app token owns auth state, Supabase null-sessions are ignored.
+  useEffect(() => {
+    // The backend returns the user to where they started (?next=), so the
+    // token can land on any path — consume ?token= / ?error= wherever found.
+    const params = new URLSearchParams(window.location.search);
+    const callbackToken = params.get('token');
+    const err = params.get('error');
+    if (callbackToken || err) {
+      if (err) console.warn('Google sign-in failed:', err);
+      params.delete('token');
+      params.delete('error');
+      const rest = params.toString();
+      window.history.replaceState({}, '', window.location.pathname + (rest ? `?${rest}` : ''));
+    }
+    const token = callbackToken || getAppToken();
+    if (!token) return;
+    if (callbackToken) setAppToken(callbackToken);
+    let cancelled = false;
+    fetchAuthMe(token).then((appUser: AppTokenUser | null) => {
+      if (cancelled) return;
+      if (!appUser) {
+        clearAppToken();
+        return;
+      }
+      const now = new Date().toISOString();
+      setUser({
+        id: appUser.id,
+        email: appUser.email,
+        aud: 'authenticated',
+        created_at: now,
+        app_metadata: { provider: 'google' },
+        user_metadata: { username: appUser.username },
+      } as User);
+      setProfile({
+        id: appUser.id,
+        email: appUser.email,
+        username: appUser.username || appUser.email.split('@')[0],
+        role: appUser.role,
+        created_at: now,
+        updated_at: now,
+      });
+      setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   useEffect(() => {
     if (!isConfigured) {
       setLoading(false);
@@ -83,6 +141,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user && getAppToken()) {
+        // App-token session owns auth state — leave it to the effect above
+        return;
+      }
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id, session.user.email || '');
@@ -92,6 +154,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session: Session | null) => {
+        if (!session && getAppToken()) return;
         setUser(session?.user ?? null);
         if (session?.user) {
           fetchProfile(session.user.id, session.user.email || '');
@@ -217,7 +280,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { error: null, needsEmailConfirmation: true };
   };
 
+  const signInWithGoogle = () => {
+    window.location.href = googleLoginUrl(window.location.pathname);
+  };
+
   const signOut = async () => {
+    clearAppToken();
     if (isConfigured) {
       await supabase.auth.signOut();
     }
@@ -264,6 +332,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loading,
         isConfigured,
         signInWithPassword,
+        signInWithGoogle,
         signUpWithPassword,
         signOut,
         updateProfile,

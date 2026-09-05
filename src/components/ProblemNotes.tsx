@@ -110,22 +110,22 @@ export const ProblemNotes: React.FC<ProblemNotesProps> = ({ problemId, onOpenAut
   // If user is not logged in, lock notes behind Sign In CTA
   if (!user) {
     return (
-      <div className="rounded-2xl border-[1.5px] border-charcoal bg-surface p-6 shadow-hard space-y-4">
-        <div className="flex items-center justify-between">
+      <div className="rounded-xl border-[1.5px] border-charcoal bg-surface p-4 sm:p-6 shadow-hard space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
             <PenLine className="w-5 h-5 text-marker-orange" />
             <h3 className="font-display text-lg sm:text-xl font-bold lowercase text-charcoal">
               personal notes & scratchpad
             </h3>
           </div>
-          <span className="flex items-center gap-1 text-[11px] font-mono px-2.5 py-0.5 rounded-pill bg-dew-drop border border-outline/30 text-on-surface-variant font-bold">
+          <span className="flex items-center gap-1 text-[11px] font-mono px-2.5 py-0.5 rounded-md bg-dew-drop border border-outline/30 text-on-surface-variant font-bold">
             <Lock className="w-3 h-3 text-marker-orange" />
             <span>sign in required</span>
           </span>
         </div>
 
-        <div className="p-6 rounded-xl bg-dew-drop border border-dashed border-charcoal/40 text-center space-y-3.5">
-          <div className="w-11 h-11 rounded-full bg-primary-container border border-charcoal flex items-center justify-center mx-auto text-on-primary-container shadow-xs">
+        <div className="p-4 sm:p-6 rounded-lg bg-dew-drop border border-dashed border-charcoal/40 text-center space-y-3">
+          <div className="w-10 h-10 rounded-lg bg-primary-container border border-charcoal flex items-center justify-center mx-auto text-on-primary-container shadow-xs">
             <Lock className="w-5 h-5" />
           </div>
           <div className="space-y-1">
@@ -138,7 +138,7 @@ export const ProblemNotes: React.FC<ProblemNotesProps> = ({ problemId, onOpenAut
             size="sm"
             variant="primary"
             onClick={onOpenAuthModal}
-            className="h-9 px-4 text-xs font-mono font-bold flex items-center gap-1.5 mx-auto shadow-hard"
+            className="h-9 px-4 text-xs font-mono font-bold flex items-center gap-1.5 mx-auto shadow-hard rounded-md"
           >
             <User className="w-3.5 h-3.5" />
             <span>sign in to access notes</span>
@@ -149,23 +149,23 @@ export const ProblemNotes: React.FC<ProblemNotesProps> = ({ problemId, onOpenAut
   }
 
   return (
-    <div className="rounded-2xl border-[1.5px] border-charcoal bg-surface p-6 shadow-hard space-y-3.5">
+    <div className="rounded-xl border-[1.5px] border-charcoal bg-surface p-4 sm:p-6 shadow-hard space-y-3.5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <PenLine className="w-5 h-5 text-marker-orange" />
           <h3 className="font-display text-lg sm:text-xl font-bold lowercase text-charcoal">
             personal notes & scratchpad
           </h3>
-          <span className="flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-pill bg-dew-drop border border-outline/30 text-on-surface-variant font-bold">
+          <span className="flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-md bg-dew-drop border border-outline/30 text-on-surface-variant font-bold">
             <Cloud className="w-3 h-3 text-sprout-sticker" />
             <span>cloud synced</span>
           </span>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
           {/* 250 Character Countdown Badge */}
           <div
-            className={`text-xs font-mono font-bold px-2.5 py-1 rounded-pill border transition-all ${
+            className={`text-xs font-mono font-bold px-2.5 py-1 rounded-md border transition-all ${
               isAtLimit
                 ? 'bg-red-100 text-red-700 border-red-400 font-black animate-pulse'
                 : isNearLimit

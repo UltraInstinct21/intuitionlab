@@ -9,6 +9,7 @@ const server = app.listen(config.port, () => {
   console.log(`📡 URL: http://localhost:${config.port}`);
   console.log(`🛡️  Rate Limiting: Enabled`);
   console.log(`🔐 Supabase Auth: ${config.supabase.url ? 'Configured' : 'Dev/Mock Mode'}`);
+  console.log(`🔑 Google OAuth: ${config.google.clientId && config.jwt.secret ? 'Configured' : 'Disabled (set GOOGLE_* + JWT_SECRET)'}`);
   console.log(`=========================================`);
 });
 

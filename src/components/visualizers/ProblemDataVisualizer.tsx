@@ -124,9 +124,9 @@ export const ProblemDataVisualizer: React.FC<Props> = ({ problem }) => {
     <div ref={containerRef} className="space-y-4">
       {/* Difficulty + Tags */}
       <div className="flex flex-wrap items-center gap-1.5 text-xs font-mono">
-        <span className={`px-2 py-0.5 rounded-pill border font-bold ${difficultyColor[problem.difficulty] || ''}`}>{problem.difficulty}</span>
+        <span className={`px-2 py-0.5 rounded-md border font-bold ${difficultyColor[problem.difficulty] || ''}`}>{problem.difficulty}</span>
         {problem.tags.slice(0, 5).map(t => (
-          <span key={t} className="px-2 py-0.5 rounded-pill bg-surface-container-high text-on-surface-variant border border-outline/30">{t}</span>
+          <span key={t} className="px-2 py-0.5 rounded-md bg-surface-container-high text-on-surface-variant border border-outline/30">{t}</span>
         ))}
         {bestApproach && (
           <span className="ml-auto text-on-surface-variant hidden sm:inline">
@@ -158,11 +158,11 @@ export const ProblemDataVisualizer: React.FC<Props> = ({ problem }) => {
           {steps.length > 0 ? (
             <>
               {/* Step Dots */}
-              <div className="flex items-center gap-1 flex-wrap">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 {steps.map((s, i) => (
                   <button key={i} onClick={() => { setStep(i); setIsPlaying(false); }}
-                    className={`w-8 h-8 rounded-full text-xs font-mono font-bold transition-all flex items-center justify-center ${
-                      step === i ? 'bg-primary-container text-on-primary-container border-2 border-charcoal shadow-xs scale-110'
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md text-xs font-mono font-bold transition-all flex items-center justify-center ${
+                      step === i ? 'bg-primary-container text-on-primary-container border-2 border-charcoal shadow-xs scale-105'
                       : i < step ? 'bg-sprout-sticker/20 text-[#15803d] border border-sprout-sticker/40'
                       : 'bg-surface text-on-surface-variant border border-outline/30 hover:bg-cream-paper'
                     }`}>
@@ -172,10 +172,10 @@ export const ProblemDataVisualizer: React.FC<Props> = ({ problem }) => {
               </div>
 
               {/* Step Card */}
-              <div className="rounded-xl border-[1.5px] border-charcoal bg-dew-drop p-5 shadow-hard space-y-4" key={`step-${step}`}>
-                <div className="flex items-center justify-between border-b border-outline/20 pb-3">
+              <div className="rounded-xl border-[1.5px] border-charcoal bg-dew-drop p-4 sm:p-5 shadow-hard space-y-4" key={`step-${step}`}>
+                <div className="flex flex-wrap items-center justify-between border-b border-outline/20 pb-3 gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="bg-primary-container text-on-primary-container text-xs font-mono font-bold px-2.5 py-0.5 rounded-pill border border-charcoal">
+                    <span className="bg-primary-container text-on-primary-container text-xs font-mono font-bold px-2.5 py-0.5 rounded-md border border-charcoal">
                       step {step + 1} / {totalSteps}
                     </span>
                     <span className="font-display font-bold text-sm sm:text-base text-charcoal lowercase">
@@ -183,13 +183,13 @@ export const ProblemDataVisualizer: React.FC<Props> = ({ problem }) => {
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Button size="sm" variant="ghost" onClick={() => setIsPlaying(!isPlaying)} className="h-7 px-2">
+                    <Button size="sm" variant="ghost" onClick={() => setIsPlaying(!isPlaying)} className="h-7 px-2 rounded-md">
                       {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
                     </Button>
-                    <Button size="sm" variant="default" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0} className="h-7 px-2 text-xs">
+                    <Button size="sm" variant="default" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0} className="h-7 px-2 text-xs rounded-md">
                       <ChevronLeft className="w-3.5 h-3.5" />
                     </Button>
-                    <Button size="sm" variant="primary" onClick={() => setStep(Math.min(totalSteps - 1, step + 1))} disabled={step >= totalSteps - 1} className="h-7 px-2 text-xs">
+                    <Button size="sm" variant="primary" onClick={() => setStep(Math.min(totalSteps - 1, step + 1))} disabled={step >= totalSteps - 1} className="h-7 px-2 text-xs rounded-md">
                       <ChevronRight className="w-3.5 h-3.5" />
                     </Button>
                   </div>
@@ -230,8 +230,8 @@ export const ProblemDataVisualizer: React.FC<Props> = ({ problem }) => {
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full bg-surface-container-high rounded-full h-1.5 border border-outline/20">
-                <div className="bg-primary-container h-full rounded-full transition-all duration-500"
+              <div className="w-full bg-surface-container-high rounded h-1.5 border border-outline/20">
+                <div className="bg-primary-container h-full rounded transition-all duration-500"
                   style={{ width: `${((step + 1) / totalSteps) * 100}%` }} />
               </div>
             </>
@@ -259,10 +259,10 @@ export const ProblemDataVisualizer: React.FC<Props> = ({ problem }) => {
         <div className="space-y-3">
           {/* Complexity badges */}
           <div className="flex items-center gap-3 text-xs font-mono">
-            <span className="px-2.5 py-1 rounded-pill bg-[#22c55e]/15 text-[#15803d] border border-[#22c55e] font-bold">
+            <span className="px-2.5 py-1 rounded-md bg-[#22c55e]/15 text-[#15803d] border border-[#22c55e] font-bold">
               <Clock className="w-3 h-3 inline mr-1" />{bestApproach.timeComplexity}
             </span>
-            <span className="px-2.5 py-1 rounded-pill bg-[#f59e0b]/15 text-[#b45309] border border-[#f59e0b] font-bold">
+            <span className="px-2.5 py-1 rounded-md bg-[#f59e0b]/15 text-[#b45309] border border-[#f59e0b] font-bold">
               Space: {bestApproach.spaceComplexity}
             </span>
           </div>
@@ -271,7 +271,7 @@ export const ProblemDataVisualizer: React.FC<Props> = ({ problem }) => {
           {problem.approaches.length > 1 && (
             <div className="flex items-center gap-1 flex-wrap">
               {problem.approaches.map((a, i) => (
-                <span key={i} className={`text-[10px] font-mono px-2 py-0.5 rounded-pill border ${
+                <span key={i} className={`text-[10px] font-mono px-2 py-0.5 rounded-md border ${
                   i === problem.approaches.length - 1 ? 'bg-primary-container border-charcoal font-bold' : 'bg-surface-container-high border-outline/30 text-on-surface-variant'
                 }`}>{a.name}</span>
               ))}

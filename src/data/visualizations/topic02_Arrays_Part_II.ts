@@ -47,7 +47,7 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         title: 'Step 2: Reverse Row 0',
         whatHappens: 'Reverse the first row [1, 4, 7] in-place to become [7, 4, 1].',
         whyRationale: 'Reversing horizontally places the columns into their correct rotated clockwise positions.',
-        codeSnippet: 'for row in matrix:\n    row.reverse()',
+        codeSnippet: 'matrix[0].reverse()',
         grid: [
           [7, 4, 1],
           [2, 5, 8],
@@ -64,7 +64,7 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         title: 'Complete Rotation: Reverse All Remaining Rows',
         whatHappens: 'Reverse row 1 [2, 5, 8] -> [8, 5, 2] and row 2 [3, 6, 9] -> [9, 6, 3].',
         whyRationale: 'All rows are now flipped horizontally, completing the exact 90-degree clockwise in-place transformation.',
-        codeSnippet: '# Matrix is now fully rotated 90 degrees clockwise in-place',
+        codeSnippet: 'for r in range(1, n):\n    matrix[r].reverse()  # [8, 5, 2], [9, 6, 3]',
         grid: [
           [7, 4, 1],
           [8, 5, 2],
@@ -123,12 +123,12 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         whatHappens: 'Next interval [8, 10] starts at 8 > last merged end 6. No overlap. Append [8, 10] as new separate interval.',
         whyRationale: 'There is a gap between 6 and 8, so [8, 10] starts a completely separate merged group.',
         codeSnippet: 'else:\n    result.append(interval)',
-        arrayState: ['[1, 6]', '[8, 10]', '[15, 18]'],
+        arrayState: ['[1, 6]', '[2, 6]', '[8, 10]', '[15, 18]'],
         pointers: [
           { idx: 0, label: '[1, 6]', color: '#64748b' },
-          { idx: 1, label: 'append [8, 10]', color: '#3b82f6' }
+          { idx: 2, label: 'append [8, 10]', color: '#3b82f6' }
         ],
-        highlightIndices: [1],
+        highlightIndices: [2],
         result: '[[1, 6], [8, 10]]',
         states: {
           overlap_detected: false,
@@ -170,6 +170,7 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         arrayState: [1, 2, 3, 0, 0, 0],
         pointers: [
           { idx: 2, label: 'i (3)', color: '#3b82f6' },
+          { idx: 2, label: 'j (6)', color: '#a855f7' },
           { idx: 5, label: 'k (write)', color: '#ef4444' }
         ],
         states: {
@@ -177,6 +178,7 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
           'nums1[i]': 3,
           j: 2,
           'nums2[j]': 6,
+          nums2: '[2, 5, 6]',
           k: 5
         },
         impact: 'Time: O(1) | Space: O(1)'
@@ -189,6 +191,7 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         arrayState: [1, 2, 3, 0, 0, 6],
         pointers: [
           { idx: 2, label: 'i (3)', color: '#3b82f6' },
+          { idx: 1, label: 'j (5)', color: '#a855f7' },
           { idx: 4, label: 'k (write)', color: '#ef4444' },
           { idx: 5, label: 'placed 6', color: '#22c55e' }
         ],
@@ -198,6 +201,7 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
           i: 2,
           j: 1,
           'nums2[j]': 5,
+          nums2: '[2, 5, 6]',
           k: 4
         },
         impact: 'Time: O(1) | Space: O(1)'
@@ -210,6 +214,7 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         arrayState: [1, 2, 3, 0, 5, 6],
         pointers: [
           { idx: 2, label: 'i (3)', color: '#3b82f6' },
+          { idx: 0, label: 'j (2)', color: '#a855f7' },
           { idx: 3, label: 'k (write)', color: '#ef4444' }
         ],
         highlightIndices: [4],
@@ -218,6 +223,7 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
           i: 2,
           j: 0,
           'nums2[j]': 2,
+          nums2: '[2, 5, 6]',
           k: 3
         },
         impact: 'Time: O(1) | Space: O(1)'
@@ -230,6 +236,7 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         arrayState: [1, 2, 3, 3, 5, 6],
         pointers: [
           { idx: 1, label: 'i (2)', color: '#3b82f6' },
+          { idx: 0, label: 'j (2)', color: '#a855f7' },
           { idx: 2, label: 'k (write)', color: '#ef4444' },
           { idx: 3, label: 'placed 3', color: '#22c55e' }
         ],
@@ -239,23 +246,51 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
           i: 1,
           j: 0,
           'nums2[j]': 2,
+          nums2: '[2, 5, 6]',
           k: 2
         },
         impact: 'Time: O(1) | Space: O(1)'
       },
       {
-        title: 'Place nums2[0]=2 at nums1[2] & Finalize Array',
-        whatHappens: 'Place remaining nums2 element 2 at nums1[2]. j becomes -1. Merge complete in-place.',
+        title: 'Compare nums1[1]=2 with nums2[0]=2: Tie Takes nums2 (else Branch)',
+        whatHappens: 'nums1[1] (2) is not greater than nums2[0] (2). The tie falls through to the else branch: take nums2[0].',
+        whyRationale: 'With `>` as the comparison, equal values resolve to nums2, keeping the merge stable.',
+        codeSnippet: 'if nums1[i] > nums2[j]:\n    nums1[k] = nums1[i]; i -= 1\nelse:  # tie 2 vs 2 -> take nums2\n    nums1[k] = nums2[j]; j -= 1\nk -= 1',
+        arrayState: [1, 2, 3, 3, 5, 6],
+        pointers: [
+          { idx: 1, label: 'i (2)', color: '#3b82f6' },
+          { idx: 0, label: 'j (2)', color: '#a855f7' },
+          { idx: 2, label: 'k (write)', color: '#ef4444' }
+        ],
+        highlightIndices: [1, 2],
+        states: {
+          i: 1,
+          'nums1[i]': 2,
+          j: 0,
+          'nums2[j]': 2,
+          nums2: '[2, 5, 6]',
+          k: 2,
+          tie_break: 'else branch takes nums2'
+        },
+        impact: 'Time: O(1) | Space: O(1)'
+      },
+      {
+        title: 'Drain Remaining nums2 Element & Finalize Array',
+        whatHappens: 'Write nums2[0]=2 into nums1[2], then copy down the remaining nums1 elements. j is exhausted (-1). Merge complete in-place.',
         whyRationale: 'All elements from nums2 are merged. The array is fully sorted in non-decreasing order.',
         codeSnippet: 'while j >= 0:\n    nums1[k] = nums2[j]\n    j -= 1; k -= 1',
         arrayState: [1, 2, 2, 3, 5, 6],
         pointers: [
-          { idx: 0, label: 'sorted', color: '#22c55e' },
-          { idx: 5, label: 'sorted', color: '#22c55e' }
+          { idx: 1, label: 'i (2)', color: '#3b82f6' },
+          { idx: 0, label: 'j done', color: '#a855f7' },
+          { idx: 2, label: 'k placed 2', color: '#22c55e' }
         ],
-        highlightRange: [0, 5],
+        highlightIndices: [2],
         result: '[1, 2, 2, 3, 5, 6]',
         states: {
+          i: 1,
+          j: -1,
+          k: 1,
           is_merged: true,
           result: '[1, 2, 2, 3, 5, 6]'
         },
@@ -286,13 +321,30 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         impact: 'Time: O(1) | Space: O(1)'
       },
       {
-        title: 'Phase 1: Detect Cycle Intersection',
-        whatHappens: 'Step 1: slow=nums[1]=3, fast=nums[nums[1]]=nums[3]=2. Step 2: slow=nums[3]=2, fast=nums[nums[2]]=nums[4]=2. slow == fast == 2.',
+        title: 'Phase 1: Advance Once (slow=3, fast=2)',
+        whatHappens: 'slow=nums[1]=3, fast=nums[nums[1]]=nums[3]=2. The pointers have not met yet.',
         whyRationale: 'Fast pointer moves twice as fast as slow pointer. They must collide inside the cycle formed by the duplicate.',
-        codeSnippet: 'while True:\n    slow = nums[slow]\n    fast = nums[nums[fast]]\n    if slow == fast:\n        break',
+        codeSnippet: 'slow = nums[slow]\nfast = nums[nums[fast]]',
         arrayState: [1, 3, 4, 2, 2],
-        pointers: [{ idx: 2, label: 'intersection (2)', color: '#8b5cf6' }],
-        highlightIndices: [2, 3, 4],
+        pointers: [
+          { idx: 1, label: 'slow (3)', color: '#3b82f6' },
+          { idx: 3, label: 'fast (2)', color: '#ef4444' }
+        ],
+        highlightIndices: [1, 3],
+        states: {
+          slow: 3,
+          fast: 2
+        },
+        impact: 'Time: O(1) | Space: O(1)'
+      },
+      {
+        title: 'Phase 1: Detect Cycle Intersection',
+        whatHappens: 'slow=nums[3]=2, fast=nums[nums[fast]]=nums[nums[2]]=nums[4]=2. slow == fast == 2.',
+        whyRationale: 'Both pointers land on node 2 (the value 2 lives at indices 3 and 4). The meeting point proves a cycle exists.',
+        codeSnippet: 'while slow != fast:\n    slow = nums[slow]\n    fast = nums[nums[fast]]',
+        arrayState: [1, 3, 4, 2, 2],
+        pointers: [{ idx: 3, label: 'intersection (2)', color: '#8b5cf6' }],
+        highlightIndices: [3, 4],
         states: {
           slow: 2,
           fast: 2,
@@ -307,10 +359,10 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         codeSnippet: 'slow = nums[0]\nwhile slow != fast:\n    slow = nums[slow]\n    fast = nums[fast]',
         arrayState: [1, 3, 4, 2, 2],
         pointers: [
-          { idx: 3, label: 'slow (3)', color: '#3b82f6' },
-          { idx: 4, label: 'fast (4)', color: '#ef4444' }
+          { idx: 1, label: 'slow (3)', color: '#3b82f6' },
+          { idx: 2, label: 'fast (4)', color: '#ef4444' }
         ],
-        highlightIndices: [3, 4],
+        highlightIndices: [1, 2],
         states: {
           slow: 3,
           fast: 4,
@@ -324,8 +376,8 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         whyRationale: 'The cycle entrance node has multiple incoming edges (duplicate index references), proving 2 is the duplicate number.',
         codeSnippet: 'return slow',
         arrayState: [1, 3, 4, 2, 2],
-        pointers: [{ idx: 2, label: 'duplicate = 2', color: '#22c55e' }],
-        highlightIndices: [2],
+        pointers: [{ idx: 3, label: 'duplicate = 2', color: '#22c55e' }],
+        highlightIndices: [3, 4],
         result: '2',
         states: {
           duplicate_number: 2,
@@ -392,10 +444,7 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         whyRationale: 'Adding the two equations cancels y to solve x; substituting back yields y.',
         codeSnippet: 'x = (diff + sum_xy) // 2  # repeating\ny = sum_xy - x           # missing\nreturn [x, y]',
         arrayState: [4, 3, 6, 2, 1, 1],
-        pointers: [
-          { idx: 4, label: 'Repeating: 1', color: '#ef4444' },
-          { idx: 5, label: 'Missing: 5', color: '#22c55e' }
-        ],
+        pointers: [{ idx: 4, label: 'Repeating: 1', color: '#ef4444' }],
         result: 'Repeating = 1, Missing = 5',
         states: {
           repeating_x: 1,
@@ -411,32 +460,32 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
     steps: [
       {
         title: 'Divide Array into Left & Right Subarrays',
-        whatHappens: 'Input arr = [2, 4, 1, 3, 5]. Divide into Left = [2, 4] and Right = [1, 3, 5].',
+        whatHappens: 'Input arr = [2, 4, 1, 3, 5]. mid = (0 + 4) // 2 = 2. Divide into Left = [2, 4, 1] and Right = [3, 5].',
         whyRationale: 'Modified Merge Sort counts inversions during the merge step in O(N log N) time.',
         codeSnippet: 'mid = (left + right) // 2\ninv_count += mergeSort(arr, temp, left, mid)\ninv_count += mergeSort(arr, temp, mid + 1, right)',
         arrayState: [2, 4, 1, 3, 5],
         pointers: [
-          { idx: 0, label: 'Left [2, 4]', color: '#3b82f6' },
-          { idx: 2, label: 'Right [1, 3, 5]', color: '#8b5cf6' }
+          { idx: 0, label: 'Left [2, 4, 1]', color: '#3b82f6' },
+          { idx: 3, label: 'Right [3, 5]', color: '#8b5cf6' }
         ],
         highlightRange: [0, 4],
         states: {
           left: 0,
-          mid: 1,
+          mid: 2,
           right: 4,
           inversion_count: 0
         },
         impact: 'Time: O(log N) recursion depth | Space: O(N)'
       },
       {
-        title: 'Merge Step 1: arr[i=0]=2 > arr[j=2]=1 (+2 Inversions)',
-        whatHappens: 'Comparing arr[0]=2 with arr[2]=1. Since 2 > 1, element 1 is smaller than all remaining elements in left half (2 and 4).',
-        whyRationale: 'Left half is sorted, so if arr[i] > arr[j], all elements from i to mid form inversions with arr[j]. inv += (mid - i + 1) = (1 - 0 + 1) = 2 (pairs (2,1), (4,1)).',
+        title: 'Sort Left Half [2, 4, 1] -> [1, 2, 4] (+2 Inversions)',
+        whatHappens: 'Merging sorted sub-halves [2, 4] and [1]: 1 is smaller than both 2 and 4, so place 1 first, then 2, then 4.',
+        whyRationale: 'Left sub-half [2, 4] is sorted, so if arr[i] > arr[j], all elements from i to mid form inversions with arr[j]. inv += (mid - i + 1) = (1 - 0 + 1) = 2 (pairs (2,1), (4,1)).',
         codeSnippet: 'if arr[i] > arr[j]:\n    temp[k] = arr[j]\n    inv_count += (mid - i + 1)\n    j += 1',
-        arrayState: [1, 4, 2, 3, 5],
+        arrayState: [1, 2, 4, 3, 5],
         pointers: [
-          { idx: 0, label: 'i (2)', color: '#3b82f6' },
-          { idx: 2, label: 'j (1)', color: '#ef4444' }
+          { idx: 1, label: 'i (2)', color: '#3b82f6' },
+          { idx: 0, label: 'j (1)', color: '#ef4444' }
         ],
         highlightIndices: [0, 1, 2],
         states: {
@@ -448,16 +497,16 @@ export const topic02Visualizations: Record<string, ProblemVisualization> = {
         impact: 'Time: O(1) | Space: O(1)'
       },
       {
-        title: 'Merge Step 2: arr[i=1]=4 > arr[j=3]=3 (+1 Inversion)',
-        whatHappens: 'Comparing arr[1]=4 with arr[3]=3. 4 > 3 -> 1 inversion added (mid - 1 + 1 = 1) for pair (4, 3).',
+        title: 'Merge Step 2: 4 > 3 (+1 Inversion)',
+        whatHappens: 'Left half [1, 2, 4] contributes 1 and 2 freely (both < 3). Comparing 4 with 3: 4 > 3 -> place 3, adding 1 inversion for pair (4, 3).',
         whyRationale: 'Element 4 from the left partition is greater than 3 from the right partition.',
-        codeSnippet: 'inv_count += (mid - i + 1) # 1 - 1 + 1 = 1',
+        codeSnippet: 'inv_count += (mid - i + 1) # 2 - 2 + 1 = 1',
         arrayState: [1, 2, 3, 4, 5],
         pointers: [
-          { idx: 1, label: 'i (4)', color: '#3b82f6' },
-          { idx: 3, label: 'j (3)', color: '#ef4444' }
+          { idx: 3, label: 'i (4)', color: '#3b82f6' },
+          { idx: 2, label: 'j (3)', color: '#ef4444' }
         ],
-        highlightIndices: [1, 3],
+        highlightIndices: [2, 3],
         states: {
           'arr[i]': 4,
           'arr[j]': 3,

@@ -226,7 +226,7 @@ export const AdminDashboard: React.FC<{ isOpen: boolean; onClose: () => void }> 
                 <h2 className="font-display text-lg font-bold text-charcoal lowercase">
                   superadmin control center
                 </h2>
-                <span className="px-2 py-0.5 rounded-pill bg-marker-orange text-white text-[10px] font-mono font-bold">
+                <span className="px-2 py-0.5 rounded-md bg-marker-orange text-white text-[10px] font-mono font-bold">
                   v1.0.0
                 </span>
               </div>
@@ -247,7 +247,7 @@ export const AdminDashboard: React.FC<{ isOpen: boolean; onClose: () => void }> 
             </button>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-surface border border-charcoal/40 flex items-center justify-center text-charcoal hover:bg-surface-container-high transition-colors"
+              className="w-8 h-8 rounded-md bg-surface border border-charcoal/40 flex items-center justify-center text-charcoal hover:bg-surface-container-high transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -345,12 +345,12 @@ export const AdminDashboard: React.FC<{ isOpen: boolean; onClose: () => void }> 
                   {metrics.topNotedProblems.map((prob, idx) => (
                     <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg bg-dew-drop border border-outline/30 text-xs font-mono">
                       <div className="flex items-center gap-2 truncate">
-                        <span className="w-5 h-5 rounded-full bg-cream-paper border border-charcoal flex items-center justify-center font-bold text-[10px]">
+                        <span className="w-5 h-5 rounded-md bg-cream-paper border border-charcoal flex items-center justify-center font-bold text-[10px]">
                           {idx + 1}
                         </span>
                         <span className="text-charcoal font-semibold truncate">{prob.problem_id}</span>
                       </div>
-                      <span className="font-bold text-marker-orange px-2 py-0.5 rounded-pill bg-cream-paper border border-charcoal/30">
+                      <span className="font-bold text-marker-orange px-2 py-0.5 rounded-md bg-cream-paper border border-charcoal/30">
                         {prob.count} notes
                       </span>
                     </div>
@@ -394,9 +394,9 @@ export const AdminDashboard: React.FC<{ isOpen: boolean; onClose: () => void }> 
                 </div>
               </div>
 
-              {/* Users Table */}
-              <div className="border border-charcoal rounded-xl overflow-hidden bg-surface shadow-sm">
-                <table className="w-full text-left text-xs font-mono">
+              {/* Users Table Container with Horizontal Scroll */}
+              <div className="border border-charcoal rounded-xl overflow-x-auto bg-surface shadow-sm max-w-full">
+                <table className="w-full text-left text-xs font-mono min-w-[600px]">
                   <thead className="bg-dew-drop border-b border-charcoal/40 text-charcoal font-bold">
                     <tr>
                       <th className="p-3">User</th>
@@ -416,7 +416,7 @@ export const AdminDashboard: React.FC<{ isOpen: boolean; onClose: () => void }> 
                         </td>
                         <td className="p-3">
                           <span
-                            className={`px-2 py-0.5 rounded-pill text-[10px] font-bold border ${
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                               u.role === 'admin'
                                 ? 'bg-primary-container text-on-primary-container border-charcoal'
                                 : 'bg-dew-drop text-charcoal border-outline/40'

@@ -76,27 +76,27 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-charcoal/30 bg-surface/95 px-4 md:px-8 backdrop-blur-xs transition-all">
+      <header className="sticky top-0 z-30 flex h-14 sm:h-16 items-center justify-between border-b border-charcoal/30 bg-surface/95 px-2.5 sm:px-4 md:px-8 backdrop-blur-xs transition-all w-full max-w-full overflow-x-hidden">
         {/* Left Side: Mobile Menu, Brand Logo, Breadcrumb */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <button
             onClick={onOpenMobileSidebar}
-            className="md:hidden p-1.5 rounded-full border border-charcoal bg-dew-drop text-charcoal shadow-xs active:scale-95"
+            className="md:hidden p-1.5 rounded-md border border-charcoal bg-dew-drop text-charcoal shadow-xs active:scale-95 flex-shrink-0"
             aria-label="Toggle Topic Navigation"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
           <div
-            className="flex items-center gap-2 group cursor-pointer"
+            className="flex items-center gap-2 group cursor-pointer flex-shrink-0"
             onClick={onNavigateHome || onRandomProblem}
             title="Return to Home Landing Page"
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-container text-on-primary-container font-extrabold text-sm border border-charcoal shadow-sm group-hover:rotate-12 transition-transform duration-300">
-              <Lightbulb className="w-4 h-4 text-on-primary-container" />
+            <span className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md bg-primary-container text-on-primary-container font-extrabold text-xs sm:text-sm border border-charcoal shadow-sm group-hover:rotate-12 transition-transform duration-300">
+              <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-on-primary-container" />
             </span>
             <div className="flex flex-col">
-              <span className="font-display text-lg font-extrabold lowercase leading-tight text-charcoal tracking-tight">
+              <span className="font-display text-base sm:text-lg font-extrabold lowercase leading-tight text-charcoal tracking-tight">
                 intuition<span className="text-marker-orange">lab.</span>
               </span>
               <span className="text-[9px] font-mono text-on-surface-variant hidden sm:inline-block">
@@ -105,8 +105,8 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          <div className="hidden lg:flex items-center gap-2 text-xs font-mono text-on-surface-variant pl-4 border-l border-outline/30">
-            <span className="bg-dew-drop px-2 py-0.5 rounded-pill border border-outline/30">
+          <div className="hidden lg:flex items-center gap-2 text-xs font-mono text-on-surface-variant pl-3 border-l border-outline/30 min-w-0">
+            <span className="bg-dew-drop px-2 py-0.5 rounded-md border border-outline/30 flex-shrink-0">
               {problem.topicTitle}
             </span>
             <span>/</span>
@@ -117,14 +117,14 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right Side: Quick Action Toolbar & Auth */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
           {/* Admin Panel Button (Exclusive to Admin Users) */}
           {isAdmin && (
             <Button
               size="sm"
               variant="default"
               onClick={onOpenAdminModal}
-              className="h-8 px-2.5 bg-dew-drop border-2 border-marker-orange text-marker-orange hover:bg-primary-fixed-dim font-mono font-bold text-xs flex items-center gap-1.5 shadow-xs"
+              className="h-8 px-2 sm:px-2.5 bg-dew-drop border-2 border-marker-orange text-marker-orange hover:bg-primary-fixed-dim font-mono font-bold text-xs flex items-center gap-1.5 shadow-xs rounded-md"
               title="Open Superadmin Panel"
             >
               <Shield className="w-3.5 h-3.5 fill-marker-orange/20" />
@@ -133,20 +133,20 @@ export const Header: React.FC<HeaderProps> = ({
           )}
 
           {/* Quick Prev / Next Buttons */}
-          <div className="hidden sm:flex items-center border border-charcoal/40 rounded-pill bg-dew-drop p-0.5">
+          <div className="hidden sm:flex items-center border border-charcoal/40 rounded-md bg-dew-drop p-0.5">
             <button
               onClick={onPrevProblem}
-              className="p-1 text-charcoal hover:bg-cream-paper rounded-full transition-all"
+              className="p-1 text-charcoal hover:bg-cream-paper rounded transition-all"
               title="Previous Problem (Left Arrow)"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="text-[10px] font-mono px-1 text-on-surface-variant">
+            <span className="text-[10px] font-mono px-1.5 text-on-surface-variant font-bold">
               {currentIndex + 1}
             </span>
             <button
               onClick={onNextProblem}
-              className="p-1 text-charcoal hover:bg-cream-paper rounded-full transition-all"
+              className="p-1 text-charcoal hover:bg-cream-paper rounded transition-all"
               title="Next Problem (Right Arrow)"
             >
               <ChevronRight className="w-4 h-4" />
@@ -158,7 +158,7 @@ export const Header: React.FC<HeaderProps> = ({
             size="sm"
             variant="default"
             onClick={onRandomProblem}
-            className="h-8 px-2.5 text-xs flex items-center gap-1.5 hidden sm:inline-flex"
+            className="h-8 px-2.5 text-xs rounded-md items-center gap-1.5 hidden md:inline-flex"
             title="Surprise me with a random problem"
           >
             <Shuffle className="w-3.5 h-3.5 text-marker-orange" />
@@ -168,7 +168,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Bookmark Button */}
           <button
             onClick={onToggleBookmarked}
-            className={`p-2 rounded-full border transition-all active:scale-95 ${
+            className={`p-1.5 sm:p-2 rounded-md border transition-all active:scale-95 ${
               isBookmarked
                 ? 'bg-marker-orange text-white border-charcoal shadow-sm'
                 : 'border-charcoal/40 bg-dew-drop text-charcoal hover:bg-cream-paper'
@@ -183,10 +183,10 @@ export const Header: React.FC<HeaderProps> = ({
             size="sm"
             variant={isSolved ? 'primary' : 'default'}
             onClick={handleSolvedClick}
-            className="h-8 px-3 text-xs flex items-center gap-1.5"
+            className="h-8 px-2 sm:px-3 text-xs flex items-center gap-1.5 rounded-md"
           >
             <CheckCircle2 className={`w-3.5 h-3.5 ${isSolved ? 'text-white' : 'text-sprout-sticker'}`} />
-            <span>{isSolved ? 'solved!' : 'mark solved'}</span>
+            <span className="hidden xs:inline">{isSolved ? 'solved!' : 'mark solved'}</span>
           </Button>
 
           {/* LeetCode Direct Link */}
@@ -194,7 +194,7 @@ export const Header: React.FC<HeaderProps> = ({
             href={problem.leetcodeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="h-8 px-2.5 flex items-center gap-1 rounded-pill border border-charcoal bg-dew-drop text-charcoal text-xs font-mono font-bold hover:bg-primary-fixed-dim transition-all shadow-xs"
+            className="h-8 px-2 sm:px-2.5 flex items-center gap-1 rounded-md border border-charcoal bg-dew-drop text-charcoal text-xs font-mono font-bold hover:bg-primary-fixed-dim transition-all shadow-xs"
             title="Open on LeetCode"
           >
             <span className="hidden sm:inline">leetcode</span>
@@ -203,13 +203,13 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Auth Button: Profile or Sign In */}
           {user ? (
-            <div className="flex items-center gap-1.5 bg-dew-drop p-0.5 rounded-pill border border-charcoal">
-              <span className="text-[11px] font-mono font-bold px-2 py-0.5 text-charcoal truncate max-w-[100px]">
+            <div className="flex items-center gap-1 bg-dew-drop p-0.5 rounded-md border border-charcoal">
+              <span className="text-[11px] font-mono font-bold px-1.5 py-0.5 text-charcoal truncate max-w-[80px] sm:max-w-[100px]">
                 {profile?.username || user.email?.split('@')[0]}
               </span>
               <button
                 onClick={signOut}
-                className="p-1 text-on-surface-variant hover:text-red-600 rounded-full transition-colors"
+                className="p-1 text-on-surface-variant hover:text-red-600 rounded transition-colors"
                 title="Sign Out"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -220,17 +220,17 @@ export const Header: React.FC<HeaderProps> = ({
               size="sm"
               variant="default"
               onClick={onOpenAuthModal}
-              className="h-8 px-2.5 text-xs font-mono font-bold flex items-center gap-1 bg-surface border border-charcoal text-charcoal hover:bg-dew-drop"
+              className="h-8 px-2 sm:px-2.5 text-xs font-mono font-bold flex items-center gap-1 bg-surface border border-charcoal text-charcoal hover:bg-dew-drop rounded-md"
             >
               <User className="w-3.5 h-3.5 text-marker-orange" />
-              <span>sign in</span>
+              <span className="hidden xs:inline">sign in</span>
             </Button>
           )}
 
           {/* Shortcuts Info Dialog Trigger */}
           <button
             onClick={() => setShowShortcuts(true)}
-            className="p-1.5 text-on-surface-variant hover:text-charcoal hover:bg-dew-drop rounded-full transition-colors hidden md:inline-flex"
+            className="p-1.5 text-on-surface-variant hover:text-charcoal hover:bg-dew-drop rounded-md transition-colors hidden md:inline-flex"
             title="Keyboard Shortcuts"
           >
             <Keyboard className="w-4 h-4" />

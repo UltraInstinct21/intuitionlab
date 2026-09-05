@@ -14,19 +14,6 @@ export const apiLimiter = rateLimit({
   },
 });
 
-// Authentication rate limiter (Sign in, Sign up)
-export const authLimiter = rateLimit({
-  windowMs: config.rateLimits.authWindowMs,
-  max: config.rateLimits.authMax,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: {
-    success: false,
-    error: 'Too many authentication attempts. Please try again after 15 minutes.',
-    timestamp: new Date().toISOString(),
-  },
-});
-
 // Notes write/update rate limiter (prevents note spamming)
 export const notesWriteLimiter = rateLimit({
   windowMs: config.rateLimits.notesWriteWindowMs,
