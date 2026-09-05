@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useSettings } from '@/context/SettingsContext';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
+import { API_URL, getAppToken } from '@/lib/api';
 import {
   Shield, Users, Activity, Sliders, X, Search,
   RefreshCw, CheckCircle2, AlertTriangle, MessageSquare, CheckSquare,
@@ -106,56 +107,33 @@ export const AdminDashboard: React.FC<{ isOpen: boolean; onClose: () => void }> 
     },
   ]);
 
+  // Admin reads go through the service-role endpoint: RLS lets users see only
+  // their own rows (and Google-login admins hold no Supabase session at all),
+  // so direct anon-key queries come back empty and the placeholders stick.
+  const adminFetch = async (path: string, init?: RequestInit) => {
+    const sessionToken = (await supabase.auth.getSession()).data.session?.access_token;
+    const token = getAppToken() || sessionToken;
+    if (!token) throw new Error('Not signed in');
+    const r = await fetch(`${API_URL}${path}`, {
+      ...init,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        ...(init?.headers || {}),
+      },
+    });
+    if (!r.ok) throw new Error(`Admin API responded ${r.status}`);
+    const body = await r.json();
+    if (!body?.success) throw new Error(body?.error || 'Admin API failed');
+    return body.data;
+  };
+
   const fetchAdminData = async () => {
     setLoading(true);
     try {
-      if (isSupabaseConfigured()) {
-        const { data: profilesData } = await supabase.from('profiles').select('*');
-        if (profilesData && profilesData.length > 0) {
-          const userList: AdminUser[] = await Promise.all(
-            profilesData.map(async (p: any) => {
-              const { count: nCnt } = await supabase
-                .from('problem_notes')
-                .select('id', { count: 'exact', head: true })
-                .eq('user_id', p.id);
-
-              const { data: prog } = await supabase
-                .from('user_progress')
-                .select('solved_problem_ids')
-                .eq('user_id', p.id)
-                .maybeSingle();
-
-              return {
-                id: p.id,
-                email: p.email,
-                username: p.username || p.email.split('@')[0],
-                role: p.role,
-                created_at: p.created_at,
-                notes_count: nCnt || 0,
-                solved_count: prog?.solved_problem_ids?.length || 0,
-              };
-            })
-          );
-          setUsers(userList);
-
-          // Update Analytics Metrics
-          const { count: totalNotesCount } = await supabase
-            .from('problem_notes')
-            .select('id', { count: 'exact', head: true });
-
-          setMetrics({
-            totalUsers: profilesData.length,
-            activeUsers24h: Math.max(1, Math.ceil(profilesData.length * 0.4)),
-            totalNotes: totalNotesCount || 0,
-            avgNoteLength: 138,
-            topNotedProblems: [
-              { problem_id: '01-arrays-04-kadanes-algorithm', count: Math.ceil((totalNotesCount || 10) * 0.25) },
-              { problem_id: '05-linked-list-01-reverse-a-ll', count: Math.ceil((totalNotesCount || 10) * 0.18) },
-              { problem_id: '01-arrays-01-set-matrix-zeroes', count: Math.ceil((totalNotesCount || 10) * 0.15) },
-            ],
-          });
-        }
-      }
+      const data = await adminFetch('/api/v1/admin/users');
+      if (Array.isArray(data.users)) setUsers(data.users as AdminUser[]);
+      if (data.metrics) setMetrics(data.metrics as SystemMetrics);
     } catch (err) {
       console.warn('Failed to load admin data:', err);
     } finally {
@@ -174,9 +152,10 @@ export const AdminDashboard: React.FC<{ isOpen: boolean; onClose: () => void }> 
   const handleToggleRole = async (userId: string, currentRole: 'user' | 'admin') => {
     const nextRole = currentRole === 'admin' ? 'user' : 'admin';
     try {
-      if (isSupabaseConfigured()) {
-        await supabase.from('profiles').update({ role: nextRole }).eq('id', userId);
-      }
+      await adminFetch('/api/v1/admin/users', {
+        method: 'PATCH',
+        body: JSON.stringify({ userId, role: nextRole }),
+      });
       setUsers(users.map(u => u.id === userId ? { ...u, role: nextRole } : u));
       setSuccessToast(`User role updated to ${nextRole}`);
       setTimeout(() => setSuccessToast(null), 2500);
