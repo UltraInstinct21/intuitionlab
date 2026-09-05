@@ -9,7 +9,13 @@ const getEnvVar = (key: string): string => {
   }
 };
 
-export const API_URL = getEnvVar('VITE_API_URL') || 'http://localhost:5000';
+// Same-origin in production (Vercel serves the API from /api/*), localhost
+// backend only for local dev — so no VITE_API_URL is needed on Vercel.
+const sameOrigin =
+  typeof window !== 'undefined' &&
+  !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname);
+
+export const API_URL = getEnvVar('VITE_API_URL') || (sameOrigin ? window.location.origin : 'http://localhost:5000');
 
 const TOKEN_KEY = 'intuitionlab_app_token';
 
