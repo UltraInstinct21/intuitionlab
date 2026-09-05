@@ -106,16 +106,16 @@ export const DiagramVisualizer: React.FC<DiagramVisualizerProps> = ({
   return (
     <div
       ref={containerRef}
-      className="rounded-xl border-[1.5px] border-charcoal bg-surface p-5 sm:p-7 shadow-hard-lg relative overflow-hidden space-y-6"
+      className="rounded-xl border-[1.5px] border-charcoal bg-surface p-4 sm:p-6 md:p-7 shadow-hard-lg relative overflow-hidden space-y-5 sm:space-y-6 w-full"
     >
       {/* Visualizer Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-outline/30 pb-4 gap-3">
-        <div className="flex items-center gap-3">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-container text-on-primary-container text-sm font-bold border-[1.5px] border-charcoal shadow-xs">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <span className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md bg-primary-container text-on-primary-container text-xs sm:text-sm font-bold border-[1.5px] border-charcoal shadow-xs flex-shrink-0">
             ✦
           </span>
           <div>
-            <h3 className="font-display text-xl sm:text-2xl font-bold lowercase text-charcoal tracking-tight">
+            <h3 className="font-display text-lg sm:text-xl md:text-2xl font-bold lowercase text-charcoal tracking-tight">
               interactive step-by-step visualizer
             </h3>
             <p className="text-xs sm:text-sm text-on-surface-variant font-sans">
@@ -124,9 +124,9 @@ export const DiagramVisualizer: React.FC<DiagramVisualizerProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           {currentApproach && (
-            <span className="text-xs font-mono font-bold px-2.5 py-1 rounded bg-cream-paper border border-charcoal/30 text-charcoal shadow-xs">
+            <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-cream-paper border border-charcoal/30 text-charcoal shadow-xs">
               {currentApproach.timeComplexity}
             </span>
           )}
@@ -138,7 +138,7 @@ export const DiagramVisualizer: React.FC<DiagramVisualizerProps> = ({
 
       {/* Approach Selector Switcher (if problem has multiple approaches) */}
       {problem.approaches && problem.approaches.length > 1 && onSelectApproach && (
-        <div className="flex items-center gap-2 flex-wrap bg-dew-drop p-2.5 rounded-xl border border-outline/30">
+        <div className="flex items-center gap-2 flex-wrap bg-dew-drop p-2 sm:p-2.5 rounded-lg border border-outline/30">
           <span className="text-xs font-mono font-bold text-on-surface-variant px-1">
             Selected Solution Model:
           </span>
@@ -148,7 +148,7 @@ export const DiagramVisualizer: React.FC<DiagramVisualizerProps> = ({
               <button
                 key={idx}
                 onClick={() => onSelectApproach(idx)}
-                className={`px-3 py-1 text-xs font-mono font-bold rounded-pill transition-all lowercase ${
+                className={`px-3 py-1 text-xs font-mono font-bold rounded-md transition-all lowercase ${
                   isSelected
                     ? 'bg-primary-container text-on-primary-container border-[1.5px] border-charcoal shadow-sm scale-105'
                     : 'bg-surface text-charcoal hover:bg-surface-container-high border border-outline/40'

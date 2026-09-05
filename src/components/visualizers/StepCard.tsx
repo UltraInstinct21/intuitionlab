@@ -11,6 +11,7 @@ interface StepCardProps {
   variableStates: Record<string, string | number | boolean | undefined>;
   codeSnippet?: string;
   timeSpaceImpact?: string;
+  result?: string | number | (string | number)[];
 }
 
 export const StepCard: React.FC<StepCardProps> = ({
@@ -22,12 +23,13 @@ export const StepCard: React.FC<StepCardProps> = ({
   variableStates,
   codeSnippet,
   timeSpaceImpact,
+  result,
 }) => {
   return (
     <div className="rounded-xl border-[1.5px] border-charcoal bg-dew-drop p-4 sm:p-5 shadow-hard space-y-3.5">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-outline/20 pb-2.5">
         <div className="flex items-center gap-2">
-          <span className="bg-primary-container text-on-primary-container text-xs font-mono font-bold px-2.5 py-0.5 rounded-pill border border-charcoal">
+          <span className="bg-primary-container text-on-primary-container text-xs font-mono font-bold px-2.5 py-0.5 rounded-md border border-charcoal">
             step {stepNumber} / {totalSteps}
           </span>
           <span className="font-display font-bold text-sm sm:text-base text-charcoal lowercase">
@@ -35,8 +37,13 @@ export const StepCard: React.FC<StepCardProps> = ({
           </span>
         </div>
         {timeSpaceImpact && (
-          <span className="text-xs font-mono text-on-surface-variant font-medium bg-cream-paper px-2.5 py-0.5 rounded border border-outline/30">
+          <span className="text-xs font-mono text-on-surface-variant font-medium bg-cream-paper px-2.5 py-0.5 rounded-md border border-outline/30">
             {timeSpaceImpact}
+          </span>
+        )}
+        {result !== undefined && (
+          <span className="text-xs font-mono font-bold bg-sprout-sticker/15 text-emerald-700 px-2.5 py-0.5 rounded-md border border-sprout-sticker max-w-[300px] truncate">
+            result: {Array.isArray(result) ? `[${result.join(', ')}]` : String(result)}
           </span>
         )}
       </div>

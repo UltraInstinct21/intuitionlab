@@ -93,6 +93,8 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ problem, custo
 
   const nodes = cur.nodes || defaultNodes;
   const edges = cur.edges || defaultEdges;
+  // ponytail: local cast until directed ships in GraphStep type / data; defaults off so undirected look is unchanged
+  const isDirected = (cur as GraphStep & { directed?: boolean }).directed ?? false;
 
   // Dynamically compute bounding box with generous padding so graph never clips
   const viewBox = useMemo(() => {
@@ -141,6 +143,12 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ problem, custo
               <filter id="graphNodeShadow" x="-20%" y="-20%" width="140%" height="140%">
                 <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#000000" floodOpacity="0.12" />
               </filter>
+              <marker id="graphArrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L7,3 L0,6 z" fill="#9ca3af" />
+              </marker>
+              <marker id="graphArrowActive" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L7,3 L0,6 z" fill="#ff6f1e" />
+              </marker>
             </defs>
 
             {/* Edges */}
@@ -154,16 +162,27 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ problem, custo
                 (cur.activePath.map(String).includes(String(fromId)) && cur.activePath.map(String).includes(String(toId)))
               );
 
+              // Trim directed edges short of the node circles so arrowheads stay visible
+              const dx = toNode.x - fromNode.x;
+              const dy = toNode.y - fromNode.y;
+              const len = Math.hypot(dx, dy) || 1;
+              const trim = isDirected && len > 44 ? 20 / len : 0;
+              const x1 = fromNode.x + dx * trim;
+              const y1 = fromNode.y + dy * trim;
+              const x2 = toNode.x - dx * (trim + (isDirected ? 4 / len : 0));
+              const y2 = toNode.y - dy * (trim + (isDirected ? 4 / len : 0));
+
               return (
                 <g key={`edge-${idx}`}>
                   <line
-                    x1={fromNode.x}
-                    y1={fromNode.y}
-                    x2={toNode.x}
-                    y2={toNode.y}
+                    x1={x1}
+                    y1={y1}
+                    x2={x2}
+                    y2={y2}
                     stroke={isPath ? '#ff6f1e' : '#9ca3af'}
                     strokeWidth={isPath ? 3.5 : 2}
                     strokeLinecap="round"
+                    markerEnd={isDirected ? (isPath ? 'url(#graphArrowActive)' : 'url(#graphArrow)') : undefined}
                     className="transition-all duration-300"
                   />
                   {label && (

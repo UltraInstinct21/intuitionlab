@@ -90,9 +90,9 @@ export const BinarySearchVisualizer: React.FC<BinarySearchVisualizerProps> = ({ 
             return (
               <div key={idx} className="flex flex-col items-center gap-1 min-w-[48px]">
                 <div className="h-5 flex gap-1 items-center justify-center">
-                  {isLow && <span className="bg-sky-500 text-white px-1.5 py-0.2 rounded-pill text-[9px] font-mono font-bold">L</span>}
-                  {isMid && <span className="bg-orange-500 text-white px-1.5 py-0.2 rounded-pill text-[9px] font-mono font-bold">M</span>}
-                  {isHigh && <span className="bg-emerald-500 text-white px-1.5 py-0.2 rounded-pill text-[9px] font-mono font-bold">H</span>}
+                  {isLow && <span className="bg-sky-500 text-white px-1.5 py-0.2 rounded text-[9px] font-mono font-bold">L</span>}
+                  {isMid && <span className="bg-orange-500 text-white px-1.5 py-0.2 rounded text-[9px] font-mono font-bold">M</span>}
+                  {isHigh && <span className="bg-emerald-500 text-white px-1.5 py-0.2 rounded text-[9px] font-mono font-bold">H</span>}
                 </div>
                 <div
                   className={`min-w-[44px] px-1.5 h-13 md:h-15 flex items-center justify-center font-mono font-bold rounded-lg border-2 transition-all duration-300 overflow-hidden text-center ${

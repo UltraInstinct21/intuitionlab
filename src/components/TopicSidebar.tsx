@@ -108,25 +108,26 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
       )}
 
       {/* Sidebar Container */}
+      {/* Sidebar Container */}
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-50 flex flex-col h-full w-80 lg:w-88 bg-surface-container-low border-r border-charcoal/30 shadow-[2px_0_0_0_rgba(23,23,23,0.06)] transition-transform duration-300 ease-in-out shrink-0 overflow-hidden ${
+        className={`fixed md:static inset-y-0 left-0 z-50 flex flex-col h-full w-[85vw] max-w-xs sm:w-80 lg:w-88 bg-surface-container-low border-r border-charcoal/30 shadow-[2px_0_0_0_rgba(23,23,23,0.06)] transition-transform duration-300 ease-in-out shrink-0 overflow-hidden ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
         {/* Sidebar Top Header */}
-        <div className="p-4 border-b border-outline/30 bg-dew-drop">
-          <div className="flex items-center justify-between mb-2.5">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center border-[1.5px] border-charcoal shadow-xs">
+        <div className="p-3.5 sm:p-4 border-b border-outline/30 bg-dew-drop">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-md bg-primary-container flex items-center justify-center border-[1.5px] border-charcoal shadow-xs">
                 <BookOpen className="w-4 h-4 text-on-primary-container" />
               </div>
-              <h2 className="font-display text-2xl font-extrabold lowercase text-charcoal tracking-tight">
+              <h2 className="font-display text-xl sm:text-2xl font-extrabold lowercase text-charcoal tracking-tight">
                 notebook topics
               </h2>
             </div>
             <button
               onClick={onCloseMobile}
-              className="p-1 rounded-full text-on-surface-variant hover:bg-surface-container-high md:hidden"
+              className="p-1 rounded-md text-on-surface-variant hover:bg-surface-container-high md:hidden"
             >
               <X className="w-5 h-5" />
             </button>
@@ -140,9 +141,9 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
                 {totalSolvedCount} / {totalProblemsCount} ({progressPercent}%)
               </span>
             </div>
-            <div className="h-2 w-full bg-surface-container-high rounded-full overflow-hidden border border-outline/30">
+            <div className="h-2 w-full bg-surface-container-high rounded overflow-hidden border border-outline/30">
               <div
-                className="h-full bg-marker-orange rounded-full transition-all duration-500 ease-out"
+                className="h-full bg-marker-orange rounded transition-all duration-500 ease-out"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -158,7 +159,7 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
               placeholder="Search problems, #number, tags..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-8 py-1.5 text-xs font-mono rounded-lg border border-outline/40 bg-dew-drop text-charcoal placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-1 focus:ring-primary focus:bg-surface transition-all"
+              className="w-full pl-9 pr-8 py-1.5 text-xs font-mono rounded-md border border-outline/40 bg-dew-drop text-charcoal placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-1 focus:ring-primary focus:bg-surface transition-all"
             />
             {searchQuery && (
               <button
@@ -176,7 +177,7 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
                 <button
                   key={d}
                   onClick={() => setSelectedDifficulty(d === 'Med' ? 'Medium' : d)}
-                  className={`px-2.5 py-1 rounded-pill font-mono text-xs font-semibold transition-all lowercase ${
+                  className={`px-2.5 py-1 rounded-md font-mono text-xs font-semibold transition-all lowercase ${
                     (selectedDifficulty === d || (d === 'Med' && selectedDifficulty === 'Medium'))
                       ? 'bg-primary-container text-on-primary-container border-[1.5px] border-charcoal shadow-xs font-bold'
                       : 'bg-surface-container-high text-on-surface-variant hover:bg-dew-drop'
@@ -190,7 +191,7 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setFilterMode(filterMode === 'solved' ? 'all' : 'solved')}
-                className={`p-1.5 rounded-pill transition-all ${
+                className={`p-1.5 rounded-md transition-all ${
                   filterMode === 'solved'
                     ? 'bg-sprout-sticker text-white border-[1.5px] border-charcoal shadow-xs'
                     : 'text-on-surface-variant hover:bg-surface-container-high'
@@ -201,7 +202,7 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
               </button>
               <button
                 onClick={() => setFilterMode(filterMode === 'bookmarked' ? 'all' : 'bookmarked')}
-                className={`p-1.5 rounded-pill transition-all ${
+                className={`p-1.5 rounded-md transition-all ${
                   filterMode === 'bookmarked'
                     ? 'bg-marker-orange text-white border-[1.5px] border-charcoal shadow-xs'
                     : 'text-on-surface-variant hover:bg-surface-container-high'
@@ -246,7 +247,7 @@ export const TopicSidebar: React.FC<TopicSidebarProps> = ({
                   </div>
 
                   <div className="flex items-center gap-1 shrink-0 ml-1">
-                    <span className="text-[11px] font-mono font-medium text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded-pill border border-outline/20">
+                    <span className="text-[11px] font-mono font-medium text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded-md border border-outline/20">
                       {topicSolvedCount}/{topic.count}
                     </span>
                   </div>

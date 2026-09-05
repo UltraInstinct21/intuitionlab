@@ -92,7 +92,7 @@ export const StackStepVisualizer: React.FC<StackStepVisualizerProps> = ({ proble
               {cur.action === 'push' && <ArrowDown className="w-5 h-5 text-marker-orange" />}
               {cur.action === 'pop' && <ArrowUp className="w-5 h-5 text-destructive" />}
             </div>
-            <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-pill uppercase ${
+            <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-md uppercase ${
               cur.action === 'push' ? 'bg-primary-container text-on-primary-container border border-charcoal'
               : cur.action === 'pop' ? 'bg-destructive/15 text-destructive border border-destructive'
               : cur.action === 'match' ? 'bg-sprout-sticker/15 text-emerald-700 border border-sprout-sticker'
@@ -132,6 +132,38 @@ export const StackStepVisualizer: React.FC<StackStepVisualizerProps> = ({ proble
               )}
             </div>
           </div>
+          {/* Queue Lane */}
+          {cur.queue !== undefined && (
+            <div className="flex flex-col items-center gap-1.5">
+              <span className="text-xs font-mono font-bold text-on-surface-variant">Queue (Front on Left)</span>
+              <div className="flex items-center gap-1.5 min-h-[58px] p-2 bg-surface-container-high rounded-xl border-2 border-charcoal shadow-hard min-w-[200px] justify-start flex-wrap">
+                {cur.queue.length === 0 ? (
+                  <span className="text-xs font-mono text-on-surface-variant italic px-4 py-2">Empty Queue</span>
+                ) : (
+                  cur.queue.map((item, idx) => {
+                    const isFront = idx === 0;
+                    const itemStr = String(item);
+                    const isLong = itemStr.length > 3;
+
+                    return (
+                      <div
+                        key={idx}
+                        className={`min-w-[44px] px-2 h-10 md:h-11 flex items-center justify-center font-mono font-bold rounded-lg border-2 shadow-xs transition-all duration-200 overflow-hidden text-center ${
+                          isLong ? 'text-xs' : 'text-sm'
+                        } ${
+                          isFront
+                            ? 'border-sky-500 bg-sky-50 scale-105 shadow-sm text-charcoal'
+                            : 'border-charcoal bg-surface text-charcoal'
+                        }`}
+                      >
+                        <span className="truncate max-w-full">{item}</span>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {cur.inputRemaining && cur.inputRemaining.length > 0 && (

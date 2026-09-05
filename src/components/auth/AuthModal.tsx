@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { isGoogleEnabled } from '@/lib/api';
 import { X, Lock, Mail, User as UserIcon, Sparkles, AlertCircle, ArrowRight, CheckCircle2, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -14,7 +15,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onClose,
   defaultTab = 'signin',
 }) => {
-  const { signInWithPassword, signUpWithPassword, isConfigured } = useAuth();
+  const { signInWithPassword, signInWithGoogle, signUpWithPassword, isConfigured } = useAuth();
+  const [googleAvailable, setGoogleAvailable] = useState(false);
+
+  // Show the Google button only when the backend has OAuth configured
+  useEffect(() => {
+    if (isOpen) {
+      isGoogleEnabled().then(setGoogleAvailable);
+    }
+  }, [isOpen]);
   const [tab, setTab] = useState<'signin' | 'signup' | 'forgot'>(defaultTab);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -78,14 +87,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <h2 className="font-display text-base font-bold text-charcoal lowercase">
                 {tab === 'signin' ? 'sign in to intuitionlab' : tab === 'signup' ? 'create an account' : 'reset password'}
               </h2>
-              <p className="text-[11px] font-mono text-on-surface-variant">
-                sync notes (250 chars) & track your mastery
-              </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-full bg-surface border border-charcoal/40 flex items-center justify-center text-charcoal hover:bg-surface-container-high transition-colors"
+            className="w-7 h-7 rounded-md bg-surface border border-charcoal/40 flex items-center justify-center text-charcoal hover:bg-surface-container-high transition-colors"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -221,12 +227,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </>
             )}
           </Button>
-        </form>
 
-        {/* Footer Note */}
-        <div className="bg-dew-drop/50 p-3 border-t border-charcoal/20 text-center text-[10px] font-mono text-on-surface-variant">
-          Protected with Supabase Auth & JWT token verification.
-        </div>
+          {googleAvailable && (
+            <>
+              <div className="flex items-center gap-3 pt-1">
+                <div className="flex-1 h-px bg-charcoal/20" />
+                <span className="text-[10px] font-mono font-bold text-on-surface-variant">or</span>
+                <div className="flex-1 h-px bg-charcoal/20" />
+              </div>
+              <button
+                type="button"
+                onClick={signInWithGoogle}
+                className="w-full h-10 bg-surface border border-charcoal/50 hover:bg-surface-container-high font-mono font-bold text-xs text-charcoal rounded-xl transition-all flex items-center justify-center gap-2"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z" />
+                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z" />
+                  <path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z" />
+                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z" />
+                </svg>
+                <span>continue with google</span>
+              </button>
+            </>
+          )}
+        </form>
       </div>
     </div>
   );

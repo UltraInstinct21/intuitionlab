@@ -9,7 +9,7 @@ export const topic21Visualizations: Record<string, ProblemVisualization> = {
         title: 'Step 1: Start at Root 10 (Target X = 12)',
         whatHappens: 'Compare target X=12 with root.data=10. Since 10 <= 12, 10 is a valid candidate floor! Update floor = 10. Move right to search for a larger candidate.',
         whyRationale: 'In a BST, values in the right subtree are larger and might still be <= X.',
-        states: { targetX: 12, currentNode: 10, candidateFloor: 10, nextDirection: 'right' },
+        states: { targetX: 12, currentNode: 10, candidateFloor: 10, nextDirection: 'right', phase: 'go-right' },
         codeSnippet: 'if root.data <= x:\n    floor_val = root.data\n    root = root.right',
         impact: 'Time: O(1) | Space: O(1)',
         nodes: [
@@ -26,7 +26,7 @@ export const topic21Visualizations: Record<string, ProblemVisualization> = {
         title: 'Step 2: Inspect Node 15 (15 > 12 -> Move Left)',
         whatHappens: 'Current node = 15. Since 15 > 12, 15 cannot be the floor. Move left to find smaller values.',
         whyRationale: 'All values in the right subtree of 15 would be > 15 > 12, so we eliminate the right subtree.',
-        states: { targetX: 12, currentNode: 15, candidateFloor: 10, nextDirection: 'left' },
+        states: { targetX: 12, currentNode: 15, candidateFloor: 10, nextDirection: 'left', phase: 'go-left' },
         codeSnippet: 'else:\n    root = root.left',
         impact: 'Time: O(1) | Space: O(1)',
         nodes: [
@@ -43,7 +43,7 @@ export const topic21Visualizations: Record<string, ProblemVisualization> = {
         title: 'Step 3: Reach NULL - Return Floor = 10',
         whatHappens: '15.left is NULL. Traversal finishes. The largest value <= 12 in the BST is 10.',
         whyRationale: 'We tracked the best valid candidate during O(H) traversal without extra storage.',
-        states: { targetX: 12, finalFloor: 10 },
+        states: { targetX: 12, finalFloor: 10, phase: 'done' },
         codeSnippet: 'return floor_val # 10',
         impact: 'Time: O(H) | Space: O(1)',
         nodes: [
@@ -66,7 +66,7 @@ export const topic21Visualizations: Record<string, ProblemVisualization> = {
         title: 'Step 1: Start at Root 10 (Target X = 12)',
         whatHappens: 'Compare target X=12 with root.data=10. Since 10 < 12, 10 cannot be ceil. Move right.',
         whyRationale: 'In a BST, all values in the left subtree are < 10 < 12, so ceil must be in the right subtree.',
-        states: { targetX: 12, currentNode: 10, candidateCeil: -1, nextDirection: 'right' },
+        states: { targetX: 12, currentNode: 10, candidateCeil: -1, nextDirection: 'right', phase: 'go-right' },
         codeSnippet: 'if root.data < x:\n    root = root.right',
         impact: 'Time: O(1) | Space: O(1)',
         nodes: [
@@ -83,7 +83,7 @@ export const topic21Visualizations: Record<string, ProblemVisualization> = {
         title: 'Step 2: Inspect Node 15 (15 >= 12 -> Candidate Ceil)',
         whatHappens: 'Current node = 15. Since 15 >= 12, update ceil = 15. Move left to find if a smaller value >= 12 exists.',
         whyRationale: 'Left child of 15 holds values < 15 that might still be >= 12.',
-        states: { targetX: 12, currentNode: 15, candidateCeil: 15, nextDirection: 'left' },
+        states: { targetX: 12, currentNode: 15, candidateCeil: 15, nextDirection: 'left', phase: 'go-left' },
         codeSnippet: 'if root.data >= x:\n    ceil_val = root.data\n    root = root.left',
         impact: 'Time: O(1) | Space: O(1)',
         nodes: [
@@ -100,7 +100,7 @@ export const topic21Visualizations: Record<string, ProblemVisualization> = {
         title: 'Step 3: Reach NULL - Return Ceil = 15',
         whatHappens: '15.left is NULL. Traversal complete. Return ceil = 15 (smallest value >= 12 in the BST).',
         whyRationale: 'The Ceil is the smallest element >= X, found efficiently in O(H) time and O(1) space.',
-        states: { targetX: 12, finalCeil: 15 },
+        states: { targetX: 12, finalCeil: 15, phase: 'done' },
         codeSnippet: 'return ceil_val # 15',
         impact: 'Time: O(H) | Space: O(1)',
         nodes: [
@@ -300,9 +300,26 @@ export const topic21Visualizations: Record<string, ProblemVisualization> = {
         edges: [[5, 3], [5, 6], [3, 2], [3, 4], [2, 1]],
       },
       {
-        title: 'Step 3: Advance Pointers to Left at 3, Right at 6 (Sum = 9 == k)',
-        whatHappens: 'Next steps move left pointer to 3 (val 3) and right stays at 6 (val 6) or (4 + 5 = 9). Sum = 3 + 6 = 9 == target k.',
-        whyRationale: 'Two pointer convergence finds valid pair in linear time.',
+        title: 'Step 3: Two Pointers: Left at 2, Right at 6 (Sum = 8 < 9)',
+        whatHappens: 'left = index 1 (val 2), right = index 5 (val 6). Sum = 2 + 6 = 8 < 9. Move left pointer to index 2 (val 3).',
+        whyRationale: 'Since array is sorted and sum is smaller than target, incrementing left increases the sum.',
+        states: { leftVal: 2, rightVal: 6, sum: 8, target: 9, action: 'left++' },
+        codeSnippet: 'if sum < k:\n    left += 1',
+        impact: 'Time: O(1) | Space: O(1)',
+        nodes: [
+          { id: 5, val: 5, x: 200, y: 35, leftId: 3, rightId: 6, status: 'default' },
+          { id: 3, val: 3, x: 120, y: 95, leftId: 2, rightId: 4, status: 'default' },
+          { id: 6, val: 6, x: 280, y: 95, status: 'highlight' },
+          { id: 2, val: 2, x: 80, y: 155, leftId: 1, status: 'active' },
+          { id: 4, val: 4, x: 160, y: 155, status: 'default' },
+          { id: 1, val: 1, x: 55, y: 205, status: 'visited' },
+        ],
+        edges: [[5, 3], [5, 6], [3, 2], [3, 4], [2, 1]],
+      },
+      {
+        title: 'Step 4: Two Pointers: Left at 3, Right at 6 (Sum = 9 == k)',
+        whatHappens: 'left = index 2 (val 3), right = index 5 (val 6). Sum = 3 + 6 = 9 == target k. Pair found!',
+        whyRationale: 'Pointers converged on values whose sum exactly equals the target.',
         states: { leftVal: 3, rightVal: 6, sum: 9, target: 9, pairFound: true },
         codeSnippet: 'if sum == k:\n    return True',
         impact: 'Time: O(N) | Space: O(N)',
@@ -317,9 +334,9 @@ export const topic21Visualizations: Record<string, ProblemVisualization> = {
         edges: [[5, 3], [5, 6], [3, 2], [3, 4], [2, 1]],
       },
       {
-        title: 'Step 4: Return True (Pair Exists)',
+        title: 'Step 5: Return True (Pair Exists)',
         whatHappens: 'Pair (3, 6) sums to 9. Return true.',
-        whyRationale: 'The existence of a pair summing to k is verified.',
+        whyRationale: 'Checked 1 + 6 = 7 < 9, then 2 + 6 = 8 < 9, then 3 + 6 = 9 == k — pair (3, 6) verified.',
         states: { result: true },
         codeSnippet: 'return True',
         impact: 'Time: O(N) | Space: O(N)',
@@ -393,7 +410,7 @@ export const topic21Visualizations: Record<string, ProblemVisualization> = {
         whatHappens: 'Pop 9 (leaf) -> return 9. Stack = [15]. hasNext() checks len(stack) > 0 -> True.',
         whyRationale: 'Stack retains unvisited elements maintaining strictly O(H) space complexity.',
         states: { popped: 9, returned: 9, stack: '[15]', hasNext: true },
-        codeSnippet: 'return len(stack) > 0 # True',
+        codeSnippet: 'node = stack.pop() # 9\nreturn node.val # 9\nhasNext = len(stack) > 0 # True',
         impact: 'Time: O(1) | Space: O(H)',
         nodes: [
           { id: 7, val: '7 ✓', x: 200, y: 35, leftId: 3, rightId: 15, status: 'visited' },
@@ -409,7 +426,7 @@ export const topic21Visualizations: Record<string, ProblemVisualization> = {
 
   // 7. Size of the Largest BST in a Binary Tree
   '21_Binary_Search_Tree_Part_II/07-size-of-the-largest-bst-in-a-binary-tree': {
-    type: 'bst',
+    type: 'tree',
     steps: [
       {
         title: 'Step 1: Evaluate Leaf Nodes via Post-Order Traversal',
@@ -537,7 +554,7 @@ export const topic21Visualizations: Record<string, ProblemVisualization> = {
         whatHappens: 'Read next tokens: "1" -> root = TreeNode(1). Next "2" -> 1.left = TreeNode(2). Next "null", "null" -> 2.left = 2.right = None.',
         whyRationale: 'Consuming iterator values recursively guarantees exact structural restoration.',
         states: { token: 2, nodeCreated: 'TreeNode(2)', '1.left': 'TreeNode(2)' },
-        codeSnippet: 'val = next(values)\nif val == "null": return None\nnode = TreeNode(int(val))\nnode.left = deserialize(values)',
+        codeSnippet: 'val = next(values) # "2"\nnode = TreeNode(int(val))\nnode.left = deserialize(values)',
         impact: 'Time: O(1) | Space: O(H)',
         nodes: [
           { id: 1, val: 1, x: 200, y: 35, leftId: 2, status: 'active' },

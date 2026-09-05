@@ -49,7 +49,7 @@ export const AnnouncementBanner: React.FC = () => {
 
       <button
         onClick={() => setIsDismissed(true)}
-        className="p-1 rounded-full hover:bg-black/5 text-current/70 hover:text-current transition-colors flex-shrink-0"
+        className="p-1 rounded-md hover:bg-black/5 text-current/70 hover:text-current transition-colors flex-shrink-0"
         title="Dismiss announcement"
         aria-label="Dismiss announcement"
       >

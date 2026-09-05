@@ -51,16 +51,16 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   return (
     <div className="flex flex-col rounded-xl border-[1.5px] border-charcoal bg-inverse-surface text-inverse-on-surface shadow-hard-lg overflow-hidden w-full">
       {/* Top Header: Approaches Tabs & Language Switcher */}
-      <div className="bg-[#1c1917] border-b border-charcoal/80 p-3.5 flex flex-wrap items-center justify-between gap-3">
-        {/* Approach Selector Pills */}
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="bg-[#1c1917] border-b border-charcoal/80 p-3 sm:p-3.5 flex flex-wrap items-center justify-between gap-3">
+        {/* Approach Selector Buttons */}
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
           {problem.approaches.map((app, idx) => {
             const isSelected = idx === selectedApproachIndex;
             return (
               <button
                 key={idx}
                 onClick={() => handleSelectApproach(idx)}
-                className={`px-3.5 py-1.5 text-xs md:text-sm font-bold rounded-pill transition-all lowercase ${
+                className={`px-3 py-1.5 text-xs md:text-sm font-bold rounded-md transition-all lowercase ${
                   isSelected
                     ? 'bg-primary-container text-on-primary-container border-[1.5px] border-charcoal shadow-sm scale-105'
                     : 'bg-[#2b2725] text-[#d6ccc2] hover:bg-[#383330] border border-transparent'
@@ -73,11 +73,11 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
         </div>
 
         {/* Language Tabs & Copy Button */}
-        <div className="flex items-center gap-2.5">
-          <div className="flex items-center bg-[#292524] rounded-pill p-1 border border-charcoal">
+        <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
+          <div className="flex items-center bg-[#292524] rounded-lg p-1 border border-charcoal">
             <button
               onClick={() => setSelectedLanguage('python')}
-              className={`px-3.5 py-1 text-xs md:text-sm font-bold rounded-pill transition-all lowercase ${
+              className={`px-3 py-1 text-xs md:text-sm font-bold rounded-md transition-all lowercase ${
                 selectedLanguage === 'python'
                   ? 'bg-primary-container text-on-primary-container shadow-xs'
                   : 'text-[#a8a29e] hover:text-white'
@@ -87,7 +87,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
             </button>
             <button
               onClick={() => setSelectedLanguage('cpp')}
-              className={`px-3.5 py-1 text-xs md:text-sm font-bold rounded-pill transition-all lowercase ${
+              className={`px-3 py-1 text-xs md:text-sm font-bold rounded-md transition-all lowercase ${
                 selectedLanguage === 'cpp'
                   ? 'bg-primary-container text-on-primary-container shadow-xs'
                   : 'text-[#a8a29e] hover:text-white'
@@ -101,7 +101,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
             size="sm"
             variant="ghost"
             onClick={handleCopy}
-            className="h-9 px-3.5 bg-[#292524] border border-charcoal text-inverse-on-surface hover:bg-[#3d3835] rounded-pill text-xs md:text-sm font-bold flex items-center gap-1.5"
+            className="h-9 px-3 bg-[#292524] border border-charcoal text-inverse-on-surface hover:bg-[#3d3835] rounded-md text-xs md:text-sm font-bold flex items-center gap-1.5"
           >
             {copied ? <Check className="w-4 h-4 text-sprout-sticker" /> : <Copy className="w-4 h-4" />}
             <span>{copied ? 'copied!' : 'copy code'}</span>

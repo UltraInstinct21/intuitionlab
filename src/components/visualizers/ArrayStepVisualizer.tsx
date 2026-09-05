@@ -92,7 +92,7 @@ export const ArrayStepVisualizer: React.FC<ArrayStepVisualizerProps> = ({ proble
                 <div className="h-6 flex items-center justify-center">
                   {ptr && (
                     <span
-                      className="text-white px-2 py-0.5 rounded-pill text-[10px] font-mono font-bold shadow-xs max-w-[80px] truncate"
+                      className="text-white px-2 py-0.5 rounded-md text-[10px] font-mono font-bold shadow-xs max-w-[80px] truncate"
                       style={{ backgroundColor: ptr.color || '#ff6f1e' }}
                     >
                       {ptr.label}

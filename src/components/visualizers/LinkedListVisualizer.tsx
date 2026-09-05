@@ -111,7 +111,7 @@ export const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({ prob
                           return (
                             <span
                               key={pName}
-                              className={`px-2 py-0.5 rounded-pill text-[10px] font-mono font-bold shadow-xs border ${col.bg} ${col.text} ${col.border}`}
+                              className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold shadow-xs border ${col.bg} ${col.text} ${col.border}`}
                             >
                               {pName}
                             </span>

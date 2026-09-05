@@ -59,7 +59,7 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
         impact: 'Time: O(N) | Space: O(H)',
         nodes: [
           { id: -10, val: -10, x: 200, y: 50, leftId: 9, rightId: 20, status: 'default' },
-          { id: 9, val: 9, x: 120, y: 120, status: 'default' },
+          { id: 9, val: 9, x: 120, y: 120, status: 'visited' },
           { id: 20, val: '20 (sum=42)', x: 280, y: 120, leftId: 15, rightId: 7, status: 'matched' },
           { id: 15, val: '15 (gain=15)', x: 230, y: 190, status: 'matched' },
           { id: 7, val: '7 (gain=7)', x: 330, y: 190, status: 'matched' },
@@ -81,8 +81,8 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
         codeSnippet: 'self.max_sum = max(42, -10 + 9 + 35)  # 42\nreturn self.max_sum  # 42',
         impact: 'Time: O(N) | Space: O(H)',
         nodes: [
-          { id: -10, val: '-10 (path=34)', x: 200, y: 50, leftId: 9, rightId: 20, status: 'default' },
-          { id: 9, val: 9, x: 120, y: 120, status: 'default' },
+          { id: -10, val: '-10 (path=34)', x: 200, y: 50, leftId: 9, rightId: 20, status: 'active' },
+          { id: 9, val: 9, x: 120, y: 120, status: 'visited' },
           { id: 20, val: '20 [OPTIMAL]', x: 280, y: 120, leftId: 15, rightId: 7, status: 'matched' },
           { id: 15, val: '15 [PATH]', x: 230, y: 190, status: 'matched' },
           { id: 7, val: '7 [PATH]', x: 330, y: 190, status: 'matched' },
@@ -156,8 +156,8 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
         title: 'Step 4: Attach Leaves 15 and 7 — Tree Complete',
         whatHappens: 'Next in preorder are 15 and 7. Attach 15 as 20.left and 7 as 20.right. Full binary tree constructed accurately!',
         whyRationale: 'All elements from preorder and inorder processed into the complete original binary tree.',
-        states: { treeComplete: true },
-        codeSnippet: 'root.left = Node(15)\nroot.right = Node(7)\nreturn root',
+        states: { preIdx: 4, treeComplete: true },
+        codeSnippet: 'root.right = build(2, 2) -> 15; build(4, 4) -> 7\nreturn root',
         impact: 'Time: O(N) | Space: O(N)',
         nodes: [
           { id: 3, val: 3, x: 200, y: 50, leftId: 9, rightId: 20, status: 'matched' },
@@ -267,7 +267,7 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
         whatHappens: 'Call isMirror(left=2_L, right=2_R). Both nodes exist and have equal values (2 == 2).',
         whyRationale: 'A binary tree is symmetric if its left and right subtrees are mirror reflections of each other.',
         states: { leftVal: 2, rightVal: 2, match: true },
-        codeSnippet: 'def isMirror(t1, t2):\n    if not t1 and not t2: return True\n    if not t1 or not t2: return False\n    return t1.val == t2.val and ...',
+        codeSnippet: 'def isMirror(t1, t2):\n    if not t1 and not t2: return True\n    if not t1 or not t2: return False\n    return t1.val == t2.val and isMirror(t1.left, t2.right) and isMirror(t1.right, t2.left)',
         impact: 'Time: O(N) | Space: O(H)',
         nodes: [
           { id: 1, val: 1, x: 200, y: 50, leftId: 21, rightId: 22, status: 'visited' },
@@ -286,7 +286,7 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
           [22, 42],
           [22, 32],
         ],
-        activePath: [21, 22],
+        activePath: [1, 21, 22],
         traversalOrder: [1],
       },
       {
@@ -313,7 +313,7 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
           [22, 42],
           [22, 32],
         ],
-        activePath: [31, 32],
+        activePath: [1, 31, 32],
         traversalOrder: [1, 31, 32],
       },
       {
@@ -340,7 +340,7 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
           [22, 42],
           [22, 32],
         ],
-        activePath: [41, 42],
+        activePath: [1, 41, 42],
         traversalOrder: [1, 31, 32, 41, 42],
       },
       {
@@ -506,7 +506,7 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
           [22, 42],
           [22, 32],
         ],
-        activePath: [21, 22],
+        activePath: [1, 21, 22],
         traversalOrder: [1],
       },
       {
@@ -533,7 +533,7 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
           [22, 42],
           [22, 32],
         ],
-        activePath: [21, 22],
+        activePath: [1, 21, 22],
         traversalOrder: [1, 21, 22],
       },
       {
@@ -607,10 +607,10 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
           { id: 10, val: 10, x: 200, y: 50, leftId: 4, rightId: 6, status: 'default' },
           { id: 4, val: 4, x: 120, y: 120, leftId: 1, rightId: 3, status: 'default' },
           { id: 6, val: 6, x: 280, y: 120, leftId: 2, rightId: 42, status: 'default' },
-          { id: 1, val: 1, x: 70, y: 190, status: 'matched' },
-          { id: 3, val: 3, x: 170, y: 190, status: 'matched' },
-          { id: 2, val: 2, x: 230, y: 190, status: 'matched' },
-          { id: 42, val: 4, x: 330, y: 190, status: 'matched' },
+          { id: 1, val: 1, x: 70, y: 190, status: 'default' },
+          { id: 3, val: 3, x: 170, y: 190, status: 'default' },
+          { id: 2, val: 2, x: 230, y: 190, status: 'default' },
+          { id: 42, val: 4, x: 330, y: 190, status: 'default' },
         ],
         edges: [
           [10, 4],
@@ -620,8 +620,8 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
           [6, 2],
           [6, 42],
         ],
-        activePath: [1, 3, 2, 42],
-        traversalOrder: [1, 3, 2, 42],
+        activePath: [],
+        traversalOrder: [],
       },
       {
         title: 'Step 2: Validate Left Subtree Node 4',
@@ -636,8 +636,8 @@ export const topic19Visualizations: Record<string, ProblemVisualization> = {
           { id: 6, val: 6, x: 280, y: 120, leftId: 2, rightId: 42, status: 'default' },
           { id: 1, val: 1, x: 70, y: 190, status: 'matched' },
           { id: 3, val: 3, x: 170, y: 190, status: 'matched' },
-          { id: 2, val: 2, x: 230, y: 190, status: 'matched' },
-          { id: 42, val: 4, x: 330, y: 190, status: 'matched' },
+          { id: 2, val: 2, x: 230, y: 190, status: 'default' },
+          { id: 42, val: 4, x: 330, y: 190, status: 'default' },
         ],
         edges: [
           [10, 4],

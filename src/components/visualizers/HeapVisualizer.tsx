@@ -72,6 +72,7 @@ export const HeapVisualizer: React.FC<HeapVisualizerProps> = ({ problem, customD
         </div>
       </div>
 
+      {cur.heapArray.length > 0 && (
       <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-6 overflow-x-auto select-none">
         <div className="flex flex-col items-center gap-2">
           <span className="text-xs font-mono font-bold text-on-surface-variant">Heap Array Representation:</span>
@@ -86,8 +87,8 @@ export const HeapVisualizer: React.FC<HeapVisualizerProps> = ({ problem, customD
               return (
                 <div key={idx} className="flex flex-col items-center gap-1 min-w-[50px]">
                   <div className="h-5 text-[10px] font-mono font-bold">
-                    {isRoot && <span className="bg-sky-500 text-white px-1.5 py-0.2 rounded-pill">root</span>}
-                    {isActive && !isRoot && <span className="bg-orange-500 text-white px-1.5 py-0.2 rounded-pill">swap</span>}
+                    {isRoot && <span className="bg-sky-500 text-white px-1.5 py-0.2 rounded">root</span>}
+                    {isActive && !isRoot && <span className="bg-orange-500 text-white px-1.5 py-0.2 rounded">swap</span>}
                   </div>
                   <div
                     className={`min-w-[48px] px-2 h-14 md:h-16 flex items-center justify-center font-mono font-bold rounded-xl border-2 shadow-hard transition-all duration-200 overflow-hidden text-center ${
@@ -109,6 +110,7 @@ export const HeapVisualizer: React.FC<HeapVisualizerProps> = ({ problem, customD
           </div>
         </div>
       </div>
+      )}
 
       <StepCard
         stepNumber={step + 1}
@@ -119,6 +121,7 @@ export const HeapVisualizer: React.FC<HeapVisualizerProps> = ({ problem, customD
         variableStates={cur.states || {}}
         codeSnippet={cur.codeSnippet}
         timeSpaceImpact={cur.impact || 'Time: O(N) | Space: O(1)'}
+        result={cur.result}
       />
     </div>
   );

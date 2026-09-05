@@ -60,8 +60,8 @@ export const TwoPointerVisualizer: React.FC<{ problem: Problem }> = ({ problem }
             return (
               <div key={idx} className="flex flex-col items-center gap-1.5">
                 <div className="h-6 text-xs font-mono font-bold">
-                  {isL && <span className="bg-sky-sticker text-white px-2 py-0.5 rounded-pill">L</span>}
-                  {isR && <span className="bg-sprout-sticker text-white px-2 py-0.5 rounded-pill">R</span>}
+                  {isL && <span className="bg-sky-sticker text-white px-2 py-0.5 rounded">L</span>}
+                  {isR && <span className="bg-sprout-sticker text-white px-2 py-0.5 rounded">R</span>}
                 </div>
                 <div className={`w-14 h-14 md:w-16 md:h-16 flex items-center justify-center font-mono font-bold text-lg rounded-lg border-2 shadow-hard transition-all duration-300 ${
                   isMatch ? 'border-marker-orange bg-primary-container text-on-primary-container scale-105'

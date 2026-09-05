@@ -87,7 +87,7 @@ export const StringVisualizer: React.FC<StringVisualizerProps> = ({ problem, cus
                 <div className="h-5 text-xs font-mono font-bold flex items-center justify-center">
                   {ptr && (
                     <span
-                      className="text-white px-2 py-0.5 rounded-pill text-[10px] shadow-xs max-w-[70px] truncate"
+                      className="text-white px-2 py-0.5 rounded-md text-[10px] shadow-xs max-w-[70px] truncate"
                       style={{ backgroundColor: ptr.color || '#ff6f1e' }}
                     >
                       {ptr.label}
@@ -112,6 +112,45 @@ export const StringVisualizer: React.FC<StringVisualizerProps> = ({ problem, cus
             );
           })}
         </div>
+        {cur.pattern !== undefined && cur.pattern.length > 0 && (
+          <div className="flex flex-col items-center gap-1.5">
+            <span className="text-xs font-mono font-bold text-on-surface-variant">Pattern</span>
+            <div className="flex items-center justify-center gap-1.5 md:gap-2 flex-wrap min-w-max">
+              {cur.pattern.map((char, idx) => {
+                const ptr = cur.patternPointers?.find(p => p.idx === idx);
+                const charStr = String(char);
+                const isLong = charStr.length > 2;
+
+                return (
+                  <div key={idx} className="flex flex-col items-center gap-1 min-w-[46px]">
+                    <div className="h-5 text-xs font-mono font-bold flex items-center justify-center">
+                      {ptr && (
+                        <span
+                          className="text-white px-2 py-0.5 rounded-md text-[10px] shadow-xs max-w-[70px] truncate"
+                          style={{ backgroundColor: ptr.color || '#8b5cf6' }}
+                        >
+                          {ptr.label}
+                        </span>
+                      )}
+                    </div>
+                    <div
+                      className={`min-w-[42px] px-1.5 h-13 md:h-15 flex items-center justify-center font-mono font-bold rounded-xl border-2 shadow-hard transition-all duration-200 overflow-hidden text-center ${
+                        isLong ? 'text-xs md:text-sm' : 'text-base md:text-lg'
+                      } ${
+                        ptr
+                          ? 'border-sky-500 bg-sky-50 scale-105 shadow-sm text-charcoal'
+                          : 'border-charcoal bg-surface text-charcoal'
+                      }`}
+                    >
+                      <span className="truncate max-w-full">{char}</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-on-surface-variant">[{idx}]</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       <StepCard

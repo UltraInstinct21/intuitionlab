@@ -55,6 +55,14 @@ export const TrieVisualizer: React.FC<TrieVisualizerProps> = ({ problem, customD
   }, [isPlaying, steps.length]);
 
   const nodesList = Object.values(cur.nodes || {});
+  // ponytail: flat edge chips from children maps; upgrade to SVG tree when layout data exists
+  const trieEdges = nodesList.flatMap(node =>
+    Object.entries(node.children || {}).map(([ch, childId]) => ({
+      fromChar: String(node.char),
+      ch,
+      toChar: String(cur.nodes?.[childId]?.char ?? childId),
+    }))
+  );
 
   return (
     <div className="space-y-6">
@@ -74,11 +82,21 @@ export const TrieVisualizer: React.FC<TrieVisualizerProps> = ({ problem, customD
         <div className="text-xs md:text-sm font-mono flex items-center gap-3">
           <span className="text-marker-orange font-bold">step {step + 1} of {steps.length}</span>
           {cur.currentWord && <span className="text-sky-sticker font-bold max-w-[200px] truncate">word: "{cur.currentWord}"</span>}
+          {cur.currentCharIdx !== undefined && <span className="text-on-surface-variant font-bold">char idx: {cur.currentCharIdx}</span>}
           {cur.result !== undefined && <span className="text-sprout-sticker font-bold max-w-[200px] truncate">result: {String(cur.result)}</span>}
         </div>
       </div>
 
       <div className="py-6 px-4 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-6 overflow-x-auto select-none">
+        {trieEdges.length > 0 && (
+          <div className="flex items-center gap-1.5 flex-wrap justify-center min-w-max text-[11px] font-mono">
+            {trieEdges.map((e, i) => (
+              <span key={i} className="bg-surface px-2 py-0.5 rounded border border-outline/30 font-bold truncate max-w-[160px]">
+                {e.fromChar} <span className="text-marker-orange">-{e.ch}→</span> {e.toChar}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="flex items-center gap-3 flex-wrap justify-center min-w-max">
           {nodesList.map(node => {
             const isActive = cur.activeNodeId === node.id;
@@ -106,11 +124,16 @@ export const TrieVisualizer: React.FC<TrieVisualizerProps> = ({ problem, customD
                 </span>
                 <div className="flex gap-1 items-center flex-wrap justify-center">
                   {node.isEnd && (
-                    <span className="bg-sprout-sticker text-white text-[9px] font-mono px-1 rounded-pill">END</span>
+                    <span className="bg-sprout-sticker text-white text-[9px] font-mono px-1 rounded">END</span>
                   )}
                   {node.count !== undefined && (
                     <span className="bg-surface-container-high text-on-surface-variant text-[9px] font-mono px-1 rounded">
                       cnt:{node.count}
+                    </span>
+                  )}
+                  {node.prefixCount !== undefined && (
+                    <span className="bg-surface-container-high text-on-surface-variant text-[9px] font-mono px-1 rounded">
+                      pre:{node.prefixCount}
                     </span>
                   )}
                 </div>

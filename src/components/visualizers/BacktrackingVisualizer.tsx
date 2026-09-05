@@ -68,7 +68,7 @@ export const BacktrackingVisualizer: React.FC<BacktrackingVisualizerProps> = ({ 
         </div>
         <div className="text-xs md:text-sm font-mono flex items-center gap-3">
           <span className="text-marker-orange font-bold">step {step + 1} of {steps.length}</span>
-          <span className={`px-2.5 py-0.5 rounded-pill font-bold uppercase text-[11px] ${
+          <span className={`px-2.5 py-0.5 rounded-md font-bold uppercase text-[11px] ${
             cur.status === 'solution' ? 'bg-sprout-sticker/20 text-emerald-700 border border-sprout-sticker'
             : cur.status === 'backtrack' ? 'bg-destructive/20 text-destructive border border-destructive'
             : cur.status === 'prune' ? 'bg-amber-100 text-amber-800 border border-amber-300'

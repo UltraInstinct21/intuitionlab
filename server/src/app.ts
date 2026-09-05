@@ -2,7 +2,9 @@ import express, { Express } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import passport from 'passport';
 import { config } from './config/env.js';
+import { initPassport } from './config/passport.js';
 import { apiLimiter } from './middlewares/rateLimiter.middleware.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 import apiRouter from './routes/index.js';
@@ -36,6 +38,10 @@ export function createApp(): Express {
   // Body parsers
   app.use(express.json({ limit: '1mb' }));
   app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+  // Stateless Passport (Google OAuth) — no sessions
+  initPassport();
+  app.use(passport.initialize());
 
   // Global API rate limiting
   app.use('/api', apiLimiter);

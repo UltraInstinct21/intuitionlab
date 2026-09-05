@@ -266,9 +266,9 @@ export const topic25Visualizations: Record<string, ProblemVisualization> = {
       },
       {
         title: "Match Character 'c' (Row 3)",
-        whatHappens: "'b' does not match. In row 3, text1[2]=='c' matches text2[1]=='c': dp[3][2] = dp[2][1] + 1 = 1 + 1 = 2.",
+        whatHappens: "Row 2 ('b') carries forward 1s (no match: dp[2][j] = max(top, left) = 1). In row 3, text1[2]=='c' matches text2[1]=='c': dp[3][2] = dp[2][1] + 1 = 1 + 1 = 2, then dp[3][3] = max(top 1, left 2) = 2.",
         whyRationale: "LCS of prefixes 'abc' and 'ac' is 'ac' of length 2.",
-        codeSnippet: 'else:\n    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])',
+        codeSnippet: 'if text1[i - 1] == text2[j - 1]:\n    dp[i][j] = dp[i - 1][j - 1] + 1  # dp[3][2] = dp[2][1] + 1 = 2',
         states: { i: 3, j: 2, 'text1[2]': 'c', 'text2[1]': 'c', 'dp[3][2]': 2 },
         grid: [
           [0, 0, 0, 0],
@@ -287,7 +287,7 @@ export const topic25Visualizations: Record<string, ProblemVisualization> = {
       },
       {
         title: "Match Character 'e' (Row 5) -> LCS = 3",
-        whatHappens: "text1[4]=='e' matches text2[2]=='e': dp[5][3] = dp[4][2] + 1 = 2 + 1 = 3. LCS is 'ace' of length 3.",
+        whatHappens: "Row 4 ('d') carries forward (no match: dp[4][1] = 1, dp[4][2] = 2, dp[4][3] = 2). Then text1[4]=='e' matches text2[2]=='e': dp[5][3] = dp[4][2] + 1 = 2 + 1 = 3. LCS is 'ace' of length 3.",
         whyRationale: 'Bottom-right cell contains the length of the longest common subsequence across both full strings.',
         codeSnippet: 'return dp[m][n]  # 3',
         states: { i: 5, j: 3, 'text1[4]': 'e', 'text2[2]': 'e', 'dp[5][3]': 3, result: 3 },
@@ -375,7 +375,7 @@ export const topic25Visualizations: Record<string, ProblemVisualization> = {
         ],
         rowHeaders: ['nums', 'dp (LIS)'],
         colHeaders: ['0(10)', '1(9)', '2(2)', '3(5)', '4(3)', '5(7)', '6(101)', '7(18)'],
-        activeCell: [1, 6],
+        activeCell: [1, 7],
         highlightCells: [[1, 5], [1, 6], [1, 7]],
         formula: 'dp[6] = dp[5] + 1 = 4, dp[7] = dp[5] + 1 = 4',
         impact: 'Time: O(N^2) DP or O(N log N) with Binary Search',
@@ -409,9 +409,9 @@ export const topic25Visualizations: Record<string, ProblemVisualization> = {
       },
       {
         title: "Rows 1 ('h') & 2 ('o') - Match on 'o'",
-        whatHappens: "At [1,1] ('h' vs 'r'): replace gives 1. At [2,2] ('o' vs 'o'): characters match, copy diagonal dp[1][1] = 1 with 0 extra cost.",
-        whyRationale: 'When characters match (word1[i-1] == word2[j-1]), no edit operation is required, preserving previous cost.',
-        codeSnippet: 'if word1[i - 1] == word2[j - 1]:\n    dp[i][j] = dp[i - 1][j - 1]',
+        whatHappens: "At [1,1] ('h' vs 'r'): replace gives 1 + dp[0][0] = 1; rest of row 1 fills via mismatch to [1, 2, 3]. At [2,2] ('o' vs 'o'): characters match, copy diagonal dp[1][1] = 1 with 0 extra cost.",
+        whyRationale: 'Mismatch takes 1 + min(delete, insert, replace); match (word1[i-1] == word2[j-1]) copies the diagonal with no extra cost.',
+        codeSnippet: 'if word1[i - 1] == word2[j - 1]:\n    dp[i][j] = dp[i - 1][j - 1]  # dp[2][2] = dp[1][1] = 1\nelse:\n    dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])',
         states: { i: 2, j: 2, 'word1[1]': 'o', 'word2[1]': 'o', 'dp[2][2]': 1 },
         grid: [
           [0, 1, 2, 3],
@@ -430,9 +430,9 @@ export const topic25Visualizations: Record<string, ProblemVisualization> = {
       },
       {
         title: "Rows 3 ('r') & 4 ('s') - Match on 's'",
-        whatHappens: "At [3,1] 'r' matches 'r' -> dp[3][1] = 2. At [4,3] 's' matches 's' -> copy diagonal dp[3][2] = 2.",
-        whyRationale: 'Matching characters keep minimum operations accumulated so far without added penalty.',
-        codeSnippet: 'dp[4][3] = dp[3][2]  # "s" matches "s"',
+        whatHappens: "At [3,1] 'r' matches 'r' -> dp[3][1] = dp[2][0] = 2; rest of row 3 fills via mismatch to [2, 2, 2]. Row 4 fills [4,1] = 3, [4,2] = 3 via mismatch, then [4,3] 's' matches 's' -> copy diagonal dp[3][2] = 2.",
+        whyRationale: 'Mismatch takes 1 + min(delete, insert, replace); match keeps minimum operations accumulated so far without added penalty.',
+        codeSnippet: 'if word1[i - 1] == word2[j - 1]:\n    dp[i][j] = dp[i - 1][j - 1]  # dp[4][3] = dp[3][2] = 2\nelse:\n    dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])',
         states: { i: 4, j: 3, 'word1[3]': 's', 'word2[2]': 's', 'dp[4][3]': 2 },
         grid: [
           [0, 1, 2, 3],
@@ -451,7 +451,7 @@ export const topic25Visualizations: Record<string, ProblemVisualization> = {
       },
       {
         title: "Row 5 ('e') -> Minimum Edit Distance = 3",
-        whatHappens: "At [5,3] ('horse' -> 'ros'): 'e' != 's'. Take 1 + min(delete: 2, insert: 4, replace: 3) = 1 + 2 = 3.",
+        whatHappens: "Row 5 starts with mismatch fills [5,1] = 4, [5,2] = 4. At [5,3] ('horse' -> 'ros'): 'e' != 's'. Take 1 + min(delete: 2, insert: 4, replace: 3) = 1 + 2 = 3.",
         whyRationale: 'Optimal 3 operations: replace "h"->"r" ("rorse"), delete "r" ("rose"), delete "e" ("ros"). Total cost = 3.',
         codeSnippet: 'return dp[m][n]  # 3',
         states: { i: 5, j: 3, delete: 2, insert: 4, replace: 3, 'dp[5][3]': 3, result: 3 },
@@ -511,7 +511,7 @@ export const topic25Visualizations: Record<string, ProblemVisualization> = {
         colHeaders: ['idx 0 (2)', 'idx 1 (3)', 'idx 2 (-2)', 'idx 3 (4)'],
         activeCell: [1, 1],
         highlightCells: [[1, 0], [1, 1], [3, 1]],
-        formula: 'curr_max = max(3, 3*6) = 6, curr_min = min(3, 3*3) = 3',
+        formula: 'curr_max = max(3, 3*2) = 6, curr_min = min(3, 3*2) = 3',
         impact: 'Time: O(1) | Space: O(1)',
       },
       {
