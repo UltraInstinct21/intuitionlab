@@ -1,14 +1,10 @@
 import { supabaseAdmin } from '../config/supabase.js';
 import { UserProfile, UserProgress } from '../types/user.types.js';
 
-// In-memory fallback
-const memoryProfiles = new Map<string, UserProfile>();
-const memoryProgress = new Map<string, UserProgress>();
-
 export class UserService {
   async getProfile(userId: string): Promise<UserProfile | null> {
     if (!supabaseAdmin) {
-      return memoryProfiles.get(userId) || {
+      return {
         id: userId,
         email: 'dev@intuitionlab.local',
         username: 'DevAdmin',
@@ -35,19 +31,14 @@ export class UserService {
     const now = new Date().toISOString();
 
     if (!supabaseAdmin) {
-      const existing = await this.getProfile(userId);
-      const updated: UserProfile = {
-        ...(existing || {
-          id: userId,
-          email: 'dev@intuitionlab.local',
-          role: 'user',
-          created_at: now,
-        }),
+      return {
+        id: userId,
+        email: 'dev@intuitionlab.local',
+        role: 'user',
+        created_at: now,
         username: updates.username,
         updated_at: now,
       };
-      memoryProfiles.set(userId, updated);
-      return updated;
     }
 
     const { data, error } = await supabaseAdmin
@@ -69,7 +60,7 @@ export class UserService {
 
   async getUserProgress(userId: string): Promise<UserProgress> {
     if (!supabaseAdmin) {
-      return memoryProgress.get(userId) || {
+      return {
         user_id: userId,
         solved_problem_ids: [],
         bookmarked_problem_ids: [],
@@ -103,14 +94,12 @@ export class UserService {
     const now = new Date().toISOString();
 
     if (!supabaseAdmin) {
-      const progress: UserProgress = {
+      return {
         user_id: userId,
         solved_problem_ids: solvedIds,
         bookmarked_problem_ids: bookmarkedIds,
         updated_at: now,
       };
-      memoryProgress.set(userId, progress);
-      return progress;
     }
 
     const { data, error } = await supabaseAdmin

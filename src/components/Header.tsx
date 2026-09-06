@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Problem } from '@/types/problem';
 import { Button } from '@/components/ui/button';
-import confetti from 'canvas-confetti';
 import { useAuth } from '@/context/AuthContext';
 import {
   Menu,
@@ -64,14 +63,6 @@ export const Header: React.FC<HeaderProps> = ({
 
   const handleSolvedClick = () => {
     onToggleSolved();
-    if (!isSolved) {
-      confetti({
-        particleCount: 80,
-        spread: 60,
-        origin: { y: 0.2 },
-        colors: ['#ff6f1e', '#22c55e', '#3b82f6', '#ff66cf', '#2b1a07'],
-      });
-    }
   };
 
   return (

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { specificRefactors, unnestHelperFunctions } = require('./refactor_nested_solutions.cjs');
+const { unnestHelperFunctions } = require('./refactor_nested_solutions.cjs');
 
 const baseDir = path.resolve(__dirname, '../SDE_Sheet_Solutions');
 const outputDir = path.resolve(__dirname, '../src/data');
@@ -280,12 +280,7 @@ function parseMarkdownFile(filePath, topicFolder, topicIndex) {
     const cppMatch = sectionContent.match(/```(?:cpp|c\+\+|c)\s*([\s\S]*?)```/i);
     let cppCode = cppMatch ? cppMatch[1].trim() : '';
 
-    // If specific clean refactor exists for this file
-    if (specificRefactors[relativeKey]) {
-      if (pythonCode) pythonCode = specificRefactors[relativeKey].python || pythonCode;
-      if (cppCode) cppCode = specificRefactors[relativeKey].cpp || cppCode;
-    }
-
+    
     // Extract description from ### Approach or from the top of section
     const descMatch = sectionContent.match(/### Approach\s*([\s\S]*?)(?=### Code|### Complexity|```|$)/i);
     let description = descMatch ? cleanMarkdown(descMatch[1]) : '';
@@ -330,11 +325,6 @@ function parseMarkdownFile(filePath, topicFolder, topicIndex) {
     let pyCode = pyMatch ? pyMatch[1].trim() : '';
     let cCode = cppMatch ? cppMatch[1].trim() : '';
 
-    if (specificRefactors[relativeKey]) {
-      if (pyCode) pyCode = specificRefactors[relativeKey].python || pyCode;
-      if (cCode) cCode = specificRefactors[relativeKey].cpp || cCode;
-    }
-
     approachSections.push({
       name: 'Optimal Solution',
       description: approachOverview || intuition || 'Standard optimal algorithm for this problem.',
@@ -350,11 +340,6 @@ function parseMarkdownFile(filePath, topicFolder, topicIndex) {
   const allCppCodes = raw.match(/```(?:cpp|c\+\+|c)\s*([\s\S]*?)```/gi) || [];
   let defaultPy = allPyCodes.length > 0 ? allPyCodes[allPyCodes.length - 1].replace(/^```(?:python|py)\s*/i, '').replace(/```$/, '').trim() : '';
   let defaultCpp = allCppCodes.length > 0 ? allCppCodes[allCppCodes.length - 1].replace(/^```(?:cpp|c\+\+|c)\s*/i, '').replace(/```$/, '').trim() : '';
-
-  if (specificRefactors[relativeKey]) {
-    defaultPy = specificRefactors[relativeKey].python || defaultPy;
-    defaultCpp = specificRefactors[relativeKey].cpp || defaultCpp;
-  }
 
   approachSections.forEach(app => {
     if (!app.pythonCode && defaultPy) app.pythonCode = formatPythonCode(defaultPy);

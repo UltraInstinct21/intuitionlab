@@ -22,7 +22,7 @@ export default defineConfig({
           'vendor-react': ['react', 'react-dom'],
           'vendor-supabase': ['@supabase/supabase-js'],
           'vendor-analytics': ['@vercel/analytics/react', '@vercel/speed-insights/react'],
-          'vendor-fx': ['canvas-confetti', 'gsap'],
+          'vendor-fx': ['gsap'],
         },
       },
     },

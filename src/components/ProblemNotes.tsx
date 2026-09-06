@@ -3,13 +3,12 @@ import { Button } from '@/components/ui/button';
 import { PenLine, Check, Save, Cloud, Lock, User, Trash2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { MAX_NOTE_LENGTH } from '@/types/note.types';
 
 interface ProblemNotesProps {
   problemId: string;
   onOpenAuthModal?: () => void;
 }
-
-const MAX_NOTE_LENGTH = 250;
 
 export const ProblemNotes: React.FC<ProblemNotesProps> = ({ problemId, onOpenAuthModal }) => {
   const { user, isConfigured } = useAuth();

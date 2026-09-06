@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import problemsData from '@/data/problems.json';
 import topicsData from '@/data/topics.json';
 import { Problem, Topic } from '@/types/problem';
 import { PaperShaderBackground } from '@/components/PaperShaderBackground';
 import { TopicSidebar } from '@/components/TopicSidebar';
 import { Header } from '@/components/Header';
-import { ProblemHero } from '@/components/ProblemHero';
+import { ProblemHero, ProblemIntuition, ProblemKeyInsight } from '@/components/ProblemHero';
 import { DiagramVisualizer } from '@/components/DiagramVisualizer';
 import { CodeViewer } from '@/components/CodeViewer';
-import { ProblemExamples } from '@/components/ProblemExamples';
+import { ProblemExamples, ProblemConstraints, ProblemApproachSteps } from '@/components/ProblemExamples';
+import { MasonryFlow } from '@/components/MasonryFlow';
 import { ProblemNotes } from '@/components/ProblemNotes';
 import { FooterNav } from '@/components/FooterNav';
 import { LandingPage } from '@/components/LandingPage';
@@ -16,9 +17,10 @@ import { AuthProvider } from '@/context/AuthContext';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { AnnouncementBanner } from '@/components/AnnouncementBanner';
 import { AuthModal } from '@/components/auth/AuthModal';
-import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+
+const AdminDashboard = lazy(() => import('@/components/admin/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
 
 const MainApp: React.FC = () => {
   const problems: Problem[] = problemsData as Problem[];
@@ -226,10 +228,12 @@ const MainApp: React.FC = () => {
           isOpen={isAuthModalOpen}
           onClose={() => setIsAuthModalOpen(false)}
         />
-        <AdminDashboard
-          isOpen={isAdminModalOpen}
-          onClose={() => setIsAdminModalOpen(false)}
-        />
+        <Suspense fallback={null}>
+          <AdminDashboard
+            isOpen={isAdminModalOpen}
+            onClose={() => setIsAdminModalOpen(false)}
+          />
+        </Suspense>
         <Analytics />
         <SpeedInsights />
       </div>
@@ -281,32 +285,28 @@ const MainApp: React.FC = () => {
           id="main-content-canvas"
           className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 lg:p-10 space-y-8 scroll-smooth"
         >
-          {/* Problem Hero & Metadata */}
+          {/* 1. Problem Statement (full width) */}
           <ProblemHero problem={currentProblem} />
 
-          {/* Dual Column Layout: Interactive Visualizer & Code Viewer */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-            {/* Left: Step-by-Step Visualizer */}
-            <div className="w-full">
-              <DiagramVisualizer
-                problem={currentProblem}
-                selectedApproachIndex={selectedApproachIndex}
-                onSelectApproach={setSelectedApproachIndex}
-              />
-            </div>
-
-            {/* Right: Code Viewer */}
-            <div className="w-full">
-              <CodeViewer
-                problem={currentProblem}
-                selectedApproachIndex={selectedApproachIndex}
-                onSelectApproach={setSelectedApproachIndex}
-              />
-            </div>
-          </div>
-
-          {/* Test Cases & Constraints */}
-          <ProblemExamples problem={currentProblem} />
+          {/* 2+. Masonry flow: natural heights, shortest-column packing,
+              DOM order = reading order — no stretched filler, no gaps */}
+          <MasonryFlow resetKey={currentProblem.id}>
+            <ProblemExamples problem={currentProblem} />
+            <ProblemConstraints problem={currentProblem} />
+            <ProblemIntuition problem={currentProblem} />
+            <ProblemApproachSteps problem={currentProblem} />
+            <DiagramVisualizer
+              problem={currentProblem}
+              selectedApproachIndex={selectedApproachIndex}
+              onSelectApproach={setSelectedApproachIndex}
+            />
+            <CodeViewer
+              problem={currentProblem}
+              selectedApproachIndex={selectedApproachIndex}
+              onSelectApproach={setSelectedApproachIndex}
+            />
+            <ProblemKeyInsight problem={currentProblem} />
+          </MasonryFlow>
 
           {/* Personal Scratchpad & Notes (Strict 250-char max & Supabase Cloud Sync) */}
           <ProblemNotes
@@ -331,10 +331,12 @@ const MainApp: React.FC = () => {
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
       />
-      <AdminDashboard
-        isOpen={isAdminModalOpen}
-        onClose={() => setIsAdminModalOpen(false)}
-      />
+      <Suspense fallback={null}>
+        <AdminDashboard
+          isOpen={isAdminModalOpen}
+          onClose={() => setIsAdminModalOpen(false)}
+        />
+      </Suspense>
 
       {/* Vercel Analytics & Speed Insights */}
       <Analytics />

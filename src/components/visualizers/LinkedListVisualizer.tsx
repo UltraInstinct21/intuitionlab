@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { Problem } from '@/types/problem';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, RotateCcw, Play, Pause, ArrowRight } from 'lucide-react';
 import { StepCard } from './StepCard';
-import { LinkedListVisualizationData, LinkedListStep } from '@/types/visualization';
+import { LinkedListVisualizationData, LinkedListStep, LinkedListNodeVisual } from '@/types/visualization';
 
 interface LinkedListVisualizerProps {
   problem: Problem;
@@ -26,9 +26,16 @@ const POINTER_COLORS: Record<string, { bg: string; text: string; border: string 
   right: { bg: 'bg-emerald-500', text: 'text-white', border: 'border-emerald-600' },
 };
 
+// Fixed lane heights keep every arrow centered on its node box — no offsets.
+const BADGE_LANE = 'h-7';
+const NODE_H = 'h-14';
+
 export const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({ problem, customData }) => {
   const [step, setStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [fit, setFit] = useState({ scale: 1, height: 0, left: 24 });
 
   const defaultSteps: LinkedListStep[] = [
     {
@@ -45,6 +52,47 @@ export const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({ prob
 
   const steps: LinkedListStep[] = customData?.steps && customData.steps.length > 0 ? customData.steps : defaultSteps;
   const cur = steps[step] || steps[0];
+
+  // ponytail: one status source — nodes and their incoming arrows read the same flags
+  const litFlags = (node: LinkedListNodeVisual, idx: number) => {
+    const hasPtr = Object.entries(cur.pointers || {}).some(
+      ([, v]) => v === node.val || v === idx || String(v) === String(node.val) || String(v) === `Node(${node.val})`
+    );
+    return {
+      hot: node.status === 'active' || hasPtr,
+      ok: node.status === 'success',
+      bad: node.status === 'danger',
+      muted: node.status === 'muted',
+    };
+  };
+  const flags = cur.nodes.map((n, i) => litFlags(n, i));
+
+  // Scale the chain to fit — no horizontal scroll, ever
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    const content = contentRef.current;
+    if (!container || !content) return;
+    const compute = () => {
+      const PAD = 24;
+      const avail = container.clientWidth - PAD * 2;
+      const natural = content.offsetWidth;
+      const scale = natural > 0 ? Math.min(1, avail / natural) : 1;
+      const height = content.offsetHeight * scale;
+      const left = PAD + Math.max(0, (avail - natural * scale) / 2);
+      setFit((prev) =>
+        Math.abs(prev.scale - scale) < 0.001 &&
+        Math.abs(prev.height - height) < 0.5 &&
+        Math.abs(prev.left - left) < 0.5
+          ? prev
+          : { scale, height, left }
+      );
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(container);
+    ro.observe(content);
+    return () => ro.disconnect();
+  }, [step, problem.id, customData]);
 
   useEffect(() => {
     setStep(0);
@@ -87,31 +135,37 @@ export const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({ prob
         </div>
       </div>
 
-      <div className="py-8 px-5 bg-cream-paper rounded-xl border border-dashed border-outline/40 flex flex-col items-center gap-6 overflow-x-auto select-none">
-        <div className="flex items-center gap-2 md:gap-3 flex-nowrap min-w-max pb-2">
+      <div
+        ref={containerRef}
+        className="relative bg-cream-paper rounded-xl border border-dashed border-outline/40 overflow-hidden select-none"
+        style={fit.height > 0 ? { height: fit.height } : undefined}
+      >
+        <div ref={contentRef} className="absolute top-0 w-max py-9" style={{ left: fit.left, transform: `scale(${fit.scale})`, transformOrigin: 'top left' }}>
+        <div className="flex items-start w-max">
           {cur.nodes.map((node, idx) => {
             const activePtrs = Object.entries(cur.pointers || {}).filter(
               ([, v]) => v === node.val || v === idx || String(v) === String(node.val) || String(v) === `Node(${node.val})`
             );
 
-            const isHighlighted = node.status === 'active' || activePtrs.length > 0;
-            const isSuccess = node.status === 'success';
-            const isDanger = node.status === 'danger';
-            const isMuted = node.status === 'muted';
+            const f = flags[idx];
+            const isHighlighted = f.hot;
+            const isSuccess = f.ok;
+            const isDanger = f.bad;
+            const isMuted = f.muted;
 
             return (
               <React.Fragment key={idx}>
-                <div className="flex flex-col items-center gap-1 min-w-[72px]">
-                  {/* Floating Pointer Badges with Carat */}
-                  <div className="min-h-[26px] flex flex-col items-center justify-end">
+                <div className="flex flex-col items-center">
+                  {/* Pointer badges — fixed lane, no layout shift */}
+                  <div className={`${BADGE_LANE} flex items-end justify-center pb-1`}>
                     {activePtrs.length > 0 && (
-                      <div className="flex flex-wrap gap-1 items-center justify-center animate-bounce-subtle">
+                      <div className="flex gap-1 items-center justify-center max-w-[12rem] flex-wrap">
                         {activePtrs.map(([pName]) => {
                           const col = POINTER_COLORS[pName.toLowerCase()] || { bg: 'bg-primary-fixed', text: 'text-charcoal', border: 'border-charcoal' };
                           return (
                             <span
                               key={pName}
-                              className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold shadow-xs border ${col.bg} ${col.text} ${col.border}`}
+                              className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold shadow-xs border whitespace-nowrap ${col.bg} ${col.text} ${col.border}`}
                             >
                               {pName}
                             </span>
@@ -121,9 +175,9 @@ export const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({ prob
                     )}
                   </div>
 
-                  {/* Clean Memory-Card Node */}
+                  {/* Classic [ data | next ] node — roomy value cell */}
                   <div
-                    className={`w-16 h-20 md:w-18 md:h-22 rounded-xl border-[1.5px] shadow-hard flex flex-col overflow-hidden transition-all duration-200 ${
+                    className={`flex ${NODE_H} rounded-xl border-[1.5px] shadow-hard overflow-hidden transition-all duration-200 ${
                       isHighlighted
                         ? 'border-marker-orange ring-2 ring-marker-orange/20 scale-105 bg-primary-fixed'
                         : isSuccess
@@ -135,61 +189,69 @@ export const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({ prob
                         : 'border-charcoal bg-surface'
                     }`}
                   >
-                    {/* Node Header (index / address) */}
-                    <div className="px-1.5 py-0.5 bg-surface-container-high/60 border-b border-outline/20 text-[9px] font-mono text-on-surface-variant flex items-center justify-between">
-                      <span>[{idx}]</span>
-                      <span className="text-[8px] opacity-70">val</span>
-                    </div>
-
-                    {/* Node Main Value */}
-                    <div className="flex-1 flex items-center justify-center font-mono font-bold text-base md:text-lg text-charcoal px-1">
+                    <div className="min-w-[3.5rem] px-4 flex items-center justify-center font-mono font-bold text-lg tabular-nums whitespace-nowrap text-charcoal">
                       {node.val}
                     </div>
-
-                    {/* Node Footer Label (if any) */}
-                    {node.label && (
-                      <div className="px-1 py-0.5 bg-dew-drop/80 border-t border-outline/20 text-[9px] font-sans font-medium text-center text-on-surface-variant truncate">
-                        {node.label}
-                      </div>
-                    )}
+                    <div className="w-[1.5px] bg-charcoal/15" />
+                    <div className="w-11 flex items-center justify-center bg-charcoal/[0.04]">
+                      <span className="w-2 h-2 rounded-full bg-charcoal/60" />
+                    </div>
                   </div>
 
-                  {/* Auxiliary Pointers (random / bottom) */}
-                  <div className="min-h-[20px] flex flex-col items-center gap-0.5 pt-1">
+                  {/* Index + auxiliary pointers below the chain */}
+                  <div className="min-h-[1.5rem] flex flex-col items-center gap-1 pt-1.5">
+                    <span className="text-[10px] font-mono text-on-surface-variant">[{idx}]</span>
                     {node.randomVal !== undefined && (
-                      <span className="text-[9px] font-mono font-bold text-sky-700 bg-sky-100 border border-sky-300 px-1.5 py-0.2 rounded">
+                      <span className="text-[9px] font-mono font-bold text-sky-700 bg-sky-100 border border-sky-300 px-1.5 py-0.5 rounded whitespace-nowrap">
                         rand ⤹ {String(node.randomVal)}
                       </span>
                     )}
                     {node.bottomVal !== undefined && (
-                      <span className="text-[9px] font-mono font-bold text-purple-700 bg-purple-100 border border-purple-300 px-1.5 py-0.2 rounded">
+                      <span className="text-[9px] font-mono font-bold text-purple-700 bg-purple-100 border border-purple-300 px-1.5 py-0.5 rounded whitespace-nowrap">
                         child ↓ {String(node.bottomVal)}
+                      </span>
+                    )}
+                    {node.label && (
+                      <span className="text-[9px] font-sans font-medium text-on-surface-variant whitespace-nowrap">
+                        {node.label}
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Connecting Arrow */}
-                {idx < cur.nodes.length - 1 && (
-                  <div className="flex items-center text-charcoal px-1 pt-2">
-                    <div className="w-6 h-[2px] bg-charcoal relative">
-                      <div className="absolute -right-1 -top-[3px] w-2 h-2 border-t-2 border-r-2 border-charcoal rotate-45" />
+                {/* Link arrow — glows with its target node's state */}
+                {idx < cur.nodes.length - 1 && (() => {
+                  const t = flags[idx + 1];
+                  const line = t.hot ? 'bg-marker-orange' : t.ok ? 'bg-sprout-sticker' : t.bad ? 'bg-destructive' : 'bg-charcoal/70';
+                  const head = t.hot ? 'border-marker-orange' : t.ok ? 'border-sprout-sticker' : t.bad ? 'border-destructive' : 'border-charcoal/70';
+                  return (
+                    <div className="flex flex-col" aria-hidden>
+                      <div className={BADGE_LANE} />
+                      <div className={`flex ${NODE_H} w-10 items-center`}>
+                        <div className={`relative h-[2.5px] w-full transition-colors duration-200 ${line}`}>
+                          <div className={`absolute -right-[1px] -top-[4.5px] h-2.5 w-2.5 border-t-[2.5px] border-r-[2.5px] rotate-45 rounded-[1px] transition-colors duration-200 ${head}`} />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </React.Fragment>
             );
           })}
 
-          {/* Clean NULL Termination Pill */}
-          <div className="flex items-center gap-1.5 pl-1 pt-2">
-            <div className="w-5 h-[2px] bg-outline relative">
-              <div className="absolute -right-1 -top-[3px] w-2 h-2 border-t-2 border-r-2 border-outline rotate-45" />
-            </div>
-            <div className="px-2.5 py-1 rounded-lg border border-dashed border-outline/50 bg-surface-container-high text-on-surface-variant font-mono text-xs font-bold shadow-xs">
-              ∅ null
+          {/* NULL terminator on the same baseline */}
+          <div aria-hidden>
+            <div className={`${BADGE_LANE}`} />
+            <div className={`flex ${NODE_H} items-center gap-2 pl-1`}>
+              <div className="w-6 h-[2.5px] bg-outline relative">
+                <div className="absolute -right-[1px] -top-[4.5px] w-2.5 h-2.5 border-t-[2.5px] border-r-[2.5px] border-outline rotate-45 rounded-[1px]" />
+              </div>
+              <div className="px-2.5 py-1 rounded-lg border border-dashed border-outline/50 bg-surface-container-high text-on-surface-variant font-mono text-xs font-bold shadow-xs whitespace-nowrap">
+                ∅ null
+              </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
 
