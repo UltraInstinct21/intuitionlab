@@ -42,6 +42,23 @@ const LABELS: Record<string, string> = {
   array: 'Array Step-by-Step Model',
 };
 
+const VISUALIZERS: Record<string, React.ComponentType<any>> = {
+  matrix: MatrixVisualizer,
+  linked_list: LinkedListVisualizer,
+  tree: TreeVisualizer,
+  bst: TreeVisualizer,
+  graph: GraphVisualizer,
+  dp: DPStepVisualizer,
+  stack: StackStepVisualizer,
+  binary_search: BinarySearchVisualizer,
+  backtracking: BacktrackingVisualizer,
+  greedy: GreedyVisualizer,
+  heap: HeapVisualizer,
+  string: StringVisualizer,
+  trie: TrieVisualizer,
+  array: ArrayStepVisualizer,
+};
+
 export const DiagramVisualizer: React.FC<DiagramVisualizerProps> = ({
   problem,
   selectedApproachIndex = 0,
@@ -62,41 +79,13 @@ export const DiagramVisualizer: React.FC<DiagramVisualizerProps> = ({
 
   const vizType = customViz?.type || 'array';
   const currentApproach = problem.approaches?.[selectedApproachIndex] || problem.approaches?.[0];
+  const Visualizer = VISUALIZERS[vizType] || ArrayStepVisualizer;
 
   const renderVisualizer = () => {
     const vizKey = `${problem.id}-app-${selectedApproachIndex}`;
 
     if (customViz) {
-      switch (customViz.type) {
-        case 'matrix':
-          return <MatrixVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'linked_list':
-          return <LinkedListVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'tree':
-        case 'bst':
-          return <TreeVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'graph':
-          return <GraphVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'dp':
-          return <DPStepVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'stack':
-          return <StackStepVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'binary_search':
-          return <BinarySearchVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'backtracking':
-          return <BacktrackingVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'greedy':
-          return <GreedyVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'heap':
-          return <HeapVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'string':
-          return <StringVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'trie':
-          return <TrieVisualizer key={vizKey} problem={problem} customData={customViz} />;
-        case 'array':
-        default:
-          return <ArrayStepVisualizer key={vizKey} problem={problem} customData={customViz} />;
-      }
+      return <Visualizer key={vizKey} problem={problem} customData={customViz} />;
     }
 
     // Default fallback

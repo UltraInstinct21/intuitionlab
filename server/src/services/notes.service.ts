@@ -1,13 +1,10 @@
 import { supabaseAdmin } from '../config/supabase.js';
 import { ProblemNote, MAX_NOTE_LENGTH } from '../types/note.types.js';
 
-// In-memory fallback cache when Supabase is not connected in dev
-const memoryNotes = new Map<string, ProblemNote>();
-
 export class NotesService {
   async getUserNotes(userId: string): Promise<ProblemNote[]> {
     if (!supabaseAdmin) {
-      return Array.from(memoryNotes.values()).filter(n => n.user_id === userId);
+      return [];
     }
 
     const { data, error } = await supabaseAdmin
@@ -25,8 +22,7 @@ export class NotesService {
 
   async getNoteByProblem(userId: string, problemId: string): Promise<ProblemNote | null> {
     if (!supabaseAdmin) {
-      const key = `${userId}:${problemId}`;
-      return memoryNotes.get(key) || null;
+      return null;
     }
 
     const { data, error } = await supabaseAdmin
@@ -51,18 +47,14 @@ export class NotesService {
     const now = new Date().toISOString();
 
     if (!supabaseAdmin) {
-      const key = `${userId}:${problemId}`;
-      const existing = memoryNotes.get(key);
-      const note: ProblemNote = {
-        id: existing?.id || `note-${Date.now()}`,
+      return {
+        id: `note-${Date.now()}`,
         user_id: userId,
         problem_id: problemId,
         content,
-        created_at: existing?.created_at || now,
+        created_at: now,
         updated_at: now,
       };
-      memoryNotes.set(key, note);
-      return note;
     }
 
     const { data, error } = await supabaseAdmin
@@ -88,8 +80,7 @@ export class NotesService {
 
   async deleteNote(userId: string, problemId: string): Promise<boolean> {
     if (!supabaseAdmin) {
-      const key = `${userId}:${problemId}`;
-      return memoryNotes.delete(key);
+      return true;
     }
 
     const { error } = await supabaseAdmin

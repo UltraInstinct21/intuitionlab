@@ -1,7 +1,7 @@
 import React from 'react';
 import { Problem } from '@/types/problem';
 import { Badge } from '@/components/ui/badge';
-import { Lightbulb, Clock, HardDrive, Compass, Sparkles } from 'lucide-react';
+import { Clock, HardDrive, Compass, Sparkles, Lightbulb } from 'lucide-react';
 
 import { FormattedText } from '@/components/FormattedText';
 
@@ -86,38 +86,43 @@ export const ProblemHero: React.FC<ProblemHeroProps> = ({ problem }) => {
         </div>
       </div>
 
-      {/* Intuition & Key Insight Banner (Rendered clearly from md files) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {problem.intuition && (
-          <div className="rounded-xl border-[1.5px] border-charcoal bg-surface-container p-5 sm:p-6 shadow-hard relative">
-            <div className="flex items-center gap-2 mb-2.5">
-              <Sparkles className="w-5 h-5 text-sky-sticker" />
-              <span className="font-display text-base font-bold lowercase text-charcoal">
-                intuition & core logic
-              </span>
-            </div>
-            <FormattedText
-              text={problem.intuition}
-              className="font-sans text-sm sm:text-base leading-relaxed text-cocoa-ink font-medium"
-            />
-          </div>
-        )}
-
-        {problem.keyInsight && (
-          <div className="rounded-xl border-[1.5px] border-charcoal bg-secondary-container p-5 sm:p-6 shadow-hard relative">
-            <div className="flex items-center gap-2 mb-2.5">
-              <Lightbulb className="w-5 h-5 text-marker-orange" />
-              <span className="font-display text-base font-bold lowercase text-on-secondary-container">
-                key notebook insight
-              </span>
-            </div>
-            <FormattedText
-              text={problem.keyInsight}
-              className="font-sans text-sm sm:text-base leading-relaxed text-cocoa-ink font-medium"
-            />
-          </div>
-        )}
-      </div>
     </section>
+  );
+};
+
+// ponytail: standalone masonry items, no wrapper grid so each packs independently
+export const ProblemIntuition: React.FC<ProblemHeroProps> = ({ problem }) => {
+  if (!problem.intuition) return null;
+  return (
+    <div className="rounded-xl border-[1.5px] border-charcoal bg-surface-container p-5 sm:p-6 shadow-hard relative">
+      <div className="flex items-center gap-2 mb-2.5">
+        <Sparkles className="w-5 h-5 text-sky-sticker" />
+        <span className="font-display text-base font-bold lowercase text-charcoal">
+          intuition & core logic
+        </span>
+      </div>
+      <FormattedText
+        text={problem.intuition}
+        className="font-sans text-sm sm:text-base leading-relaxed text-cocoa-ink font-medium"
+      />
+    </div>
+  );
+};
+
+export const ProblemKeyInsight: React.FC<ProblemHeroProps> = ({ problem }) => {
+  if (!problem.keyInsight) return null;
+  return (
+    <div className="rounded-xl border-[1.5px] border-charcoal bg-secondary-container p-5 sm:p-6 shadow-hard relative">
+      <div className="flex items-center gap-2 mb-2.5">
+        <Lightbulb className="w-5 h-5 text-marker-orange" />
+        <span className="font-display text-base font-bold lowercase text-on-secondary-container">
+          key notebook insight
+        </span>
+      </div>
+      <FormattedText
+        text={problem.keyInsight}
+        className="font-sans text-sm sm:text-base leading-relaxed text-cocoa-ink font-medium"
+      />
+    </div>
   );
 };
